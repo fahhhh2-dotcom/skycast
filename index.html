@@ -893,7 +893,7 @@
       <div class="ph"><h3>Detail charts <span class="plus-pill">PLUS</span></h3><span>Next 48 hours</span></div>
       <div id="pcCharts"></div>
     </section>
-    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · $1/month</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
+    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · $5 one time</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
     <section class="panel o-cond">
       <div class="ph"><h3>Conditions</h3><span id="condTime"></span></div>
       <div class="tiles" id="tiles"></div>
@@ -1036,7 +1036,7 @@
     <button data-notif="freeze"><i></i>🥶 Freezing temperatures tonight</button>
   </div>
   <div class="sh-note">A separate mode from warnings: heads-ups from the forecast about 3 hours before rain, snow, storms or a freeze. SkyCast checks every minute while it's open or in a background tab. It can't send alerts when it's fully closed.</div>
-  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">$1 a month · see what's included</small></span><span class="go">›</span></button>
+  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">$5 once · Plus forever</small></span><span class="go">›</span></button>
   <a class="acct-row donate-row" href="https://cash.app/$SkyCastWeather" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><span class="acct-av">$</span><span><b>Support SkyCast</b><small>Donate on Cash App · $SkyCastWeather</small></span><span class="go">›</span></a>
   <div class="sh-h">Siri mode</div>
   <button class="sh-btn" id="siriBtn">🎙️ Set up Siri mode</button>
@@ -1081,10 +1081,10 @@
     <section class="onb-step" data-step="2">
       <div class="onb-ic">⭐</div>
       <h2>Try SkyCast Plus?</h2>
-      <p>Everything you've seen stays free. Plus adds extras for <b style="color:#fff">$1 a month</b>.</p>
+      <p>Everything you've seen stays free. Plus adds extras forever for a one-time <b style="color:#fff">$5</b>.</p>
       <ul class="plus-list" data-plus-list></ul>
       <div class="sh-note" data-plus-note></div>
-      <button class="onb-go" data-plus-buy>Subscribe for $1/month</button>
+      <button class="onb-go" data-plus-buy>💵 Get Plus forever · $5</button>
       <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
       <button class="onb-skip" data-next>Maybe later</button>
     </section>
@@ -1101,10 +1101,10 @@
 </div>
 <div class="sheet" id="plusView"><div class="sheet-in">
   <div class="sh-top"><b>⭐ SkyCast Plus</b><button class="mini-btn" id="plusClose">Done</button></div>
-  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus adds extras for <b style="color:var(--text)">$1 a month</b>, and you can cancel anytime.</p>
+  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus adds extras for a one-time <b style="color:var(--text)">$5</b>, and it's yours forever. No subscription.</p>
   <ul class="plus-list" data-plus-list></ul>
   <div class="sh-note" data-plus-note></div>
-  <button class="sh-btn plus-buy" data-plus-buy>Subscribe for $1/month</button>
+  <button class="sh-btn plus-buy" data-plus-buy>💵 Get Plus forever · $5</button>
   <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
 </div></div>
 <div class="sheet" id="acctView"><div class="sheet-in">
@@ -2707,7 +2707,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115034500";   // kept equal to version.json on every publish
+const BUILD = "20261115035000";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3138,19 +3138,124 @@ $("acctDelete").onclick = async () => {
 };
 paintAccount();
 
-/* ---------- SkyCast Plus ($1/month membership) ----------
-   Payments now go through Buy Me a Coffee Memberships:
+/* ---------- SkyCast Plus ($5 once on Cash App = Plus forever) ----------
+   Cash App: buyers pay $5 to $SkyCastWeather with their email in the note. The owner checks Cash App
+   and sends each buyer one unused Plus code from the private code list. The code unlocks Plus for good.
+   To shut off a leaked code, delete its fingerprint from PLUS_CODE_HASHES.
+   Older Buy Me a Coffee setup (PLUS_PROVIDER = "bmc"):
    1. Paste your Buy Me a Coffee page link into BMC_LINK.
    2. Members get the current Plus code from a members-only post and type it into SkyCast.
    3. To change the code, add the new code's fingerprint to PLUS_CODE_HASHES and remove the old one
       (people with an old code lose Plus until they enter the new one).
    To switch back to Stripe, set PLUS_PROVIDER to "stripe". */
-const PLUS_PROVIDER = "bmc";
+const PLUS_PROVIDER = "cashapp";
+const CASHAPP_LINK = "https://cash.app/$SkyCastWeather/5";   // opens Cash App with $5 filled in
+const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
 const PLUS_ACCOUNT_HASHES = ["a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f"];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
-const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144"];   // SHA-256 of the current Plus code(s) with dashes/spaces removed, so the code itself isn't in the page
+const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
+  "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
+  "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
+  "4c4346ce2edc04afc6d4a7808dadb736d7ee2c9990b8f7f805342a7aac031659",
+  "7536d14448d515f7bac78e6d2bfc6c3d8bb74a1f48c0ad5c2cf17330d69cd37a",
+  "9090a294ba522a00cabf957e414504fbd30e6e73fa7db3264f1fd3d7a7c1e8cb",
+  "2b212e260ad669a65a2c424eead6d4d019be2e53a0779bf92c8093ceeb6f7d4c",
+  "a4e9552942c1aea98aa56f19ef632ad309e7e74cfd616eafcc7fb93f1470c73c",
+  "b81d056817e5cbb4f3b803f95412c869f9857104a1dde7d738bf7ab1f1f16651",
+  "90d9743e5cbd3a5ea7c201ce0df1778c50a5dc63207781ac0846145cbcede25a",
+  "6781df4d8b2c4f524954bec19ebfd6a24694b832515302379640b9481f2f63ed",
+  "a5612157880771968e40d06e418c5a1f94acbf6e29996fa9834f09487a5bcd7d",
+  "d801a87c2f3f056f1427afff97044f87d27dde0cf9b1bdee6a9df94ed12a7435",
+  "257259f2ed998a3888cfdf520042b35e674491fed41a72b0e2a40f7a823450c4",
+  "e1effb18a4fdc012d97adb4941b4d1af299224be6799209400a613d03a7768b1",
+  "2815cdc72d3187fe92030b653f4b825023516efb3890ff962678faf438f4158d",
+  "ce38779da5cf179358dbc3ae7689a392712ab1522908096c8e17d69f0496c0af",
+  "77282b6ad9ae00306ab2b52f3b236cd54f9d99120423f40756ab417f311151dd",
+  "3c4d51947a8199223cb557f9bbf778bd759873eb11c39b226e89fa261aac2a63",
+  "79a727357129e0697f1f0f5cef13d896eb731d0fa6c939d42c9c5050319749f2",
+  "749b8a0c2a08744bef205747710c2772919082c1e52fb224c9dc730c2a5be0ca",
+  "92d1534530feaf1ade73cb67ffbf226661238d239d53c60619dfeeb4cc2ddb8d",
+  "3c3506ef6c1af18655c9d64b854f09a4474ac11c50feb97310497c1ca31ceb19",
+  "bc13226ddc0479e62cddb8a178ff716ba3c686fde0c4a04a017f26cebbd2ac59",
+  "e0c071bd91c578a524a53d1ad4d84dad251172e4decadbd48acd71d32dbcd9cd",
+  "7aa77352517a5289586b40054c653b39affeee1990b733ae3e392c959fe7efe7",
+  "a4c744eca3be00f6185b87fa3a3d3b781c98315966aa6607dd90cb37adda33ec",
+  "973f38159395bbffd4ed86d014f58afb79cde4f0937dc1e6ad4cd52b00d138b3",
+  "b78af252459dcb31ca82925b363c3554aedd55571168d0705acbcce64e1a7c96",
+  "6516d05eb7ac949d0447e6b8f76b83039e1686f5f5a2cfe34bbb9eba87589337",
+  "98411beec4fc9d053eee0a2e4f7d023523a613c8ed1764763fe443ebacef7d40",
+  "fdf2e1d93cb0129f17c96f637c596acdeb5e6a7b267aae2381c4dc9751d82dc5",
+  "a89d883406567cc02b170ecedc616438f8d5faa7c5f53d17a1d2b05b66bb35ed",
+  "d85e2c2a91ee2fa799900c370880fc1b6e88d36cece19ea63b243ffaca8d14bb",
+  "f95caad359b64abf108f4f65a4568a412b507a16797279f59b5cb368f2c73d8b",
+  "5b5137600c436e917e48b6d4716499a78ef70c22af4536c9a3ccf81f26549c0e",
+  "1b9f9de2b8baa1c6ff9e7a2fb4c69dc6baf205184af297c7285feddadd3a5abd",
+  "b1c877f885ecdf9a31646f9318e157f7ab9040dba8aad4eb62ad83f30570dfcc",
+  "e3250eb52fdd8d48049fe3320e1a2b35f489512cba350016d3437c9279da48cf",
+  "d8cb618478c95c69ceef7314a4fc878d34f82d50d7256235a224b3c5ff65b0fe",
+  "a7c2a192be23940d214ef2a387a44392616ad696bf8861e125c8a018bdce00f7",
+  "4a8e9b94641bd6b3a20eedc0bac5e591d97ba2b5e51d15b16c15ae2446303c11",
+  "923821c6ec1b120f812f3d135f3bb1fac8267da8a1a644b8c815728de7e4b722",
+  "cc46f4d963670cec4b602ad01e4fe73d2a0652ed2eab1db68975dd40380438a2",
+  "6fa3ed07ad0aed345f2cd7eea294613b2bb69b88171c41c518a8c158d53e4cae",
+  "6abc09b8c333bc5094e79813f19dd81d4291c4bd4f19e960afc93a457f90d900",
+  "0c077e4ca792db94d666b510273e0b5af531e0a85786736cea447c0ac053b743",
+  "8422022b614058819a587d67ef325aac190dc67c7df56eeba1590cbe5d6f6859",
+  "805d3ac01e1c16d7dfffbb1c77fbc6c6075075d973de57957deb224d48ac3f89",
+  "efdd2148dc61acda43385fc3269b1564b1ead98afe7af20047b03a6c8e387bb7",
+  "ddabf6e9e9c337147996d266ce525b5391f6e6d3f2796eca9ed5dca7284f4c5e",
+  "099704b1d05240eb7d2c38dd25006362874905eaf773e9bae1aa3639fa4fbb16",
+  "3414068e1e16658075109d106c7a66ee3a16a7ea7cb5636ddfd5aeb31ee4f737",
+  "5cfe887098a21e0c16949771e98a15306a19a5e6a127a4edcc4c12785c10d73f",
+  "0d4300538d96f7cf0024673e9d8444e8a05b3b3187cc5c773d50845991be9d02",
+  "a232cd711b52617edda374d99b188f4eab06b486161f07341c61c5ad7d594cc4",
+  "a3a72f3b136575fbb69308e3e8b09056b346490feb7138c4e8400da1f26e254f",
+  "8629a8c21ca9bd5721b23875eb9faf6ba1e51570ac29cc2e9232a09f21623ff3",
+  "a6ccf27139b38cf695ef74738854b6a7c0d29ae94ac7fa01bfe2963d7fd8e791",
+  "8a74bca7abdf71960f571f652294b28a9b58820d957fb7f0f97784781638b6a1",
+  "52da50e65a58fc6b1840a004b4083bd8306eb3951fd87ef3c80ee7453b5d7344",
+  "1a828cd97bd140130874797c856917fb9bfa1a94b7020cd4c52994ae5eb3fa76",
+  "97b514fd9eff5af64f40132fe1c18e3026a811a86e93abd69667730c8795255c",
+  "264adcd42576ad3b20475d65d9edaaa07adfdc304a90c7bb3aa682ad28207547",
+  "d17929b6de43ad7135598e273925b0b8756dfd7893e699fa33190219bc1112ab",
+  "7680033eb46c20958b6e6b4b11d9968658d9064eef31e8718a2e09819aac0eeb",
+  "0ac27d2feb270be103cb5ca7d26bf8257cc290505060b2fa06fd7af994087ce2",
+  "2aec7fa6922572581929eddacd2ae9a7d9befd55d1f1abb82628171c491a2048",
+  "be2aa85733add8cb82e3ba7344d64127ddbe2596611106eb0c6cca0651821691",
+  "50e4a703fb971f79d4ce89df7d9cb31dc72921de86d20071a046facea4fdee65",
+  "4678c640b4d578bdc73510a6fd32cb8557a008ed5269cdecafef0944897b0252",
+  "cba9090ea90a663c693236ad945c4550e73b9443b73622fa865cb7a826a23ce9",
+  "620f8ba8858747ae515bf520cbb9169c7cc186d48b0583239a3c403af3ea8469",
+  "27ef17a56547d70f362fb098b5f12310034bb7c9f7abf9133d99b453c57fd8c6",
+  "c2c6b440b08c6253e7f091758ed74fe60b4b2307fa18bfaa3896343d50540210",
+  "1c21847a8129e719b9590e74dc4726bd579f22aa3f7bf9a82bde620f62d26f20",
+  "45b4e5c33a6e748a273ee09d7f442c299449da53e8a9a4eb5274e7efb384208f",
+  "574c535780dbc2e7aab7385e536d0b839fa3f37bacaec2baf66d79e2ec0f5db0",
+  "7c8af18083b59c855bf8c0a8bffec6fd68f0cacc3296bf491d6f22f91336d679",
+  "02cb6a112e968d802141442dc3539aa274688ac813057adc2d4a1dfcd9e713fe",
+  "015a1ed3c34e6ce6dc93f92a5fd25f583cab5f1d01caf52b5e17e19035df3cc4",
+  "0fd32c8357a276b463b5fe6d15f5a4e7a9b0868dc767456871a7aaaa1072ff50",
+  "ff8b317f095432fb654bcce2f521eefc5b4cba2f070040db51c5baf41ac902ab",
+  "fa121a6e1a1a6c4fc8e2dda3ecc805f89060441d3443b85a468c1171da797ec8",
+  "f4f54e6293826a91975a67f4e8bf875ade0eaacd6bf5f707bafff23a26c6aec2",
+  "0d5e844c59b49b53be40f4a534587372e93ffdc51aefe1775067c3d1f2fc82d9",
+  "4a4cd954e9aba8cc4639422dc1d815b2a70a37beec498a417b2fbdb1e1565667",
+  "2684d278e716ad5725c1d142b3daf923c4f823dff6a34b3d0706c0c82f91cf46",
+  "148f98919138270536b83c81b618ec2ca62bdea862d0b419cad859100658d4cb",
+  "a5b2d63bec9dba7ea3c209b144e55ce226f7f1df37a42f3fe8d2e948e2f08868",
+  "d169965a4ee282a04c854e33a8826b52bcdf7a90b3d8a1cd0ed27c957cacb992",
+  "a4a319001f44cdca60806f9f556529912ce60baf959c596a9e375c170a771e6b",
+  "4714e4bc6a568bda25309777170339348813bd8e7b9e93a274196c70bc0e7cfe",
+  "70e39f739fdcc1fb08b3f1cd694c5a3b883f960b7ee40d1c4ea11616ba810bca",
+  "6312c2eaeeac0af12c37d981738bb35a0634a574a480d7245e2de90dc54ed561",
+  "f170c1177c843372d0dc5a1ebaf18b5fc1e7f41b5ff03a894b4cc2eb39786b97",
+  "92c4ac9a6dd724052b7a2e04d3a1077a96d25a3ecacea9350e625cb02b1088e7",
+  "4c5aceaaf78cc72be0c5e0fa9e94a19a9043e900ff8a94f3a7b5b209b6ddace6",
+  "6b50357d60e3c508ed69fc83d152b421f1028a8b23ec2bb28c6f3f8dc4886275",
+  "ccff58f3e168e033498ea438d40c115d7c9d3d9a20c68fb66132ca9a65401982",
+  "18223dad716bb23e5e9b491d5db846c7127949de3e2fad295b1fe2aa5c759b73"];   // SHA-256 of the current Plus code(s) with dashes/spaces removed, so the code itself isn't in the page
 const STRIPE_LINK = "https://buy.stripe.com/test_28E7sNcmzebh1XcacU93y00";   // Stripe sandbox (test) link, kept for later
-const PLUS_LINK = PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
+const PLUS_LINK = PLUS_PROVIDER === "cashapp" ? CASHAPP_LINK : PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
 const PLUS_PORTAL = "";   // optional: your Stripe customer portal link, so members can cancel or update their card
 const PLUS_FEATURES = [
   ["📈", "Hour-by-hour for all 7 days", "Every hour of the week, not just the next 24."],
@@ -3163,16 +3268,25 @@ const PLUS_FEATURES = [
 function paintPlus() {
   document.querySelectorAll("[data-plus-list]").forEach(ul => ul.innerHTML = PLUS_FEATURES.map(([i, t, d]) => `<li><span>${i}</span><div><b>${t}</b>${d}</div></li>`).join(""));
   const on = isPlus();
-  const bmc = PLUS_PROVIDER === "bmc";
+  const bmc = PLUS_PROVIDER === "bmc" || PLUS_PROVIDER === "cashapp";
+  if (PLUS_PROVIDER === "cashapp") {
+    document.querySelectorAll("[data-plus-buy]").forEach(b => { b.disabled = on; b.textContent = on ? "✓ You have Plus forever" : "💵 Get Plus forever · $5 on Cash App"; });
+    document.querySelectorAll("[data-plus-code]").forEach(f => f.hidden = on);
+    document.querySelectorAll("[data-plus-note]").forEach(n => n.textContent = on ? "Thanks for supporting SkyCast! Everything below is unlocked."
+      : "Pay $5 to " + CASHAPP_TAG + " on Cash App and put your email in the note. We'll email you your own Plus code (usually within a day). Type it below to unlock Plus forever.");
+    if ($("plusSub")) $("plusSub").textContent = on ? "You have Plus forever ✓" : "$5 once · Plus forever";
+    return;
+  }
   document.querySelectorAll("[data-plus-buy]").forEach(b => { b.disabled = on ? (bmc ? !BMC_LINK : !PLUS_PORTAL) : !PLUS_LINK;
     b.textContent = on ? (bmc ? (BMC_LINK ? "Manage membership on Buy Me a Coffee" : "✓ You're a Plus member") : PLUS_PORTAL ? "Manage subscription" : "✓ You're a Plus member") : PLUS_LINK ? (bmc ? "☕ Join on Buy Me a Coffee" : "Subscribe for $1/month") : "Coming soon"; });
   document.querySelectorAll("[data-plus-code]").forEach(f => f.hidden = on || !bmc);
   document.querySelectorAll("[data-plus-note]").forEach(n => n.textContent = on ? ((typeof plusTest !== "undefined" && plusTest && !plusActive) ? "Test mode: Plus is on for this device so you can try it. Real members are checked through Stripe." : "Thanks for supporting SkyCast! Everything below is unlocked.")
     : PLUS_PROVIDER === "bmc" ? (BMC_LINK ? "Join SkyCast Plus on Buy Me a Coffee. Your Plus code is in the members-only post there. Type it below to unlock Plus." : "Memberships aren't open yet. Already have a Plus code? Type it below.")
     : PLUS_LINK ? (signedIn() ? "Payments are handled securely by Stripe. Cancel anytime." : "Sign in first so your Plus membership follows your account.") : "Subscriptions aren't open yet. We'll let you know when Plus is ready.");
-  if ($("plusSub")) $("plusSub").textContent = on ? "You're a member ✓" : "$1 a month · see what's included";
+  if ($("plusSub")) $("plusSub").textContent = on ? "You're a member ✓" : "See what's included";
 }
 function buyPlus() {
+  if (PLUS_PROVIDER === "cashapp") { if (!isPlus()) window.open(CASHAPP_LINK, "_blank", "noopener"); return; }   // new tab so SkyCast stays open for the code
   if (PLUS_PROVIDER === "bmc") { if (BMC_LINK) window.open(BMC_LINK, "_blank", "noopener"); return; }   // opens in a new tab so SkyCast stays open for the code
   if (isPlus()) { if (PLUS_PORTAL) location.href = PLUS_PORTAL; return; }
   if (!PLUS_LINK) return;
@@ -3188,7 +3302,7 @@ document.querySelectorAll("[data-plus-code]").forEach(f => f.addEventListener("s
   const inp = f.querySelector("input"), msg = f.querySelector(".plus-codemsg"), code = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");   // dashes and spaces don't matter
   if (!code) return;
   let h = ""; try { h = await sha256(code); } catch(err) { msg.textContent = "This browser can't check codes. Try Safari or Chrome."; return; }
-  if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = "That code didn't work. Check the members-only post for the current code."; return; }
+  if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
   try { localStorage.setItem("skycast_plus_code", h); } catch(err) {}
   inp.value = ""; msg.textContent = "";
   paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels();
