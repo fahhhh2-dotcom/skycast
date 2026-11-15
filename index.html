@@ -82,7 +82,7 @@
   @media (max-width: 959px) {
     .col { display:contents; }
     .hero { order:1; } #alerts { order:2; } #tips { order:3; } .o-hourly { order:4; } .o-days { order:5; }
-    .o-storm { order:6; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; }
+    .o-storm { order:6; } .o-x { order:7; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; }
   }
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:20px; min-width:0; }
   .ph { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
@@ -682,6 +682,41 @@
   .st-days span { font-size:.78rem; padding:6px 10px; border-radius:12px; background:var(--panel2); border:1px solid var(--line); }
   .st-days b { color:var(--text); }
   .st-map { margin-top:8px; border:1px solid var(--line); background:transparent; color:var(--text); font:inherit; font-weight:700; font-size:.8rem; padding:7px 12px; border-radius:999px; cursor:pointer; }
+  /* ===== Extras ===== */
+  .xgrid { display:grid; gap:18px; grid-template-columns: 1fr; }
+  @media (min-width:600px) { .xgrid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width:959px) { .xgrid { gap:14px; } }
+  .xbig { font-size:2rem; font-weight:800; line-height:1; }
+  .xsub { font-size:.85rem; color:var(--soft); margin-top:6px; line-height:1.45; }
+  .xbar { height:8px; border-radius:99px; background:var(--panel2); margin-top:10px; overflow:hidden; }
+  .xbar i { display:block; height:100%; border-radius:99px; }
+  .hrs { display:flex; gap:4px; margin-top:6px; }
+  .hrs div { flex:1; text-align:center; font-size:.68rem; color:var(--soft); }
+  .hrs div i { display:block; height:34px; border-radius:8px; margin-bottom:4px; }
+  .acts { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-top:12px; }
+  .acts div { padding:10px; border-radius:12px; background:var(--panel2); font-size:.78rem; color:var(--soft); }
+  .acts b { display:block; color:var(--text); font-size:.92rem; margin-top:2px; }
+  .quiz-q { font-weight:700; line-height:1.4; }
+  .quiz-o { display:grid; gap:8px; margin-top:10px; }
+  .quiz-o button { text-align:left; padding:11px 13px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-size:.9rem; cursor:pointer; }
+  .quiz-o button.right { background:rgba(77,255,148,.18); border-color:rgba(77,255,148,.5); }
+  .quiz-o button.wrong { background:rgba(255,90,90,.18); border-color:rgba(255,90,90,.5); }
+  .quiz-why { font-size:.84rem; color:var(--soft); margin-top:10px; line-height:1.45; }
+  .fact { margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-size:.86rem; color:var(--soft); line-height:1.5; }
+  .fact b { color:var(--text); }
+  .trip-f { display:grid; grid-template-columns: 1fr 1fr auto; gap:8px; }
+  @media (max-width:500px) { .trip-f { grid-template-columns: 1fr; } }
+  .trip-f input { min-width:0; padding:11px 13px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-size:16px; outline:none; }
+  .trip-f button { border:0; border-radius:12px; padding:10px 18px; background:var(--text); color:#0b1424; font:inherit; font-weight:800; cursor:pointer; }
+  html.light .trip-f button { background:#0e1d38; color:#fff; }
+  .trip-r { display:grid; grid-template-columns: 22px 1fr auto auto; gap:10px; align-items:center; padding:9px 0; border-top:1px solid var(--line); font-size:.88rem; }
+  .trip-r:first-child { border-top:0; margin-top:8px; }
+  .trip-r .dot { width:12px; height:12px; border-radius:50%; background:var(--accent); margin:auto; }
+  .trip-r small { color:var(--soft); }
+  .cwk { grid-column: 1 / -1; font-size:.74rem; color:var(--soft); margin-top:-2px; }
+  .cwk b { color:var(--text); }
+  .rpt { font-size:18px; line-height:20px; text-align:center; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+  .tmpt { font-size:11px; font-weight:800; color:#0b1424; text-align:center; line-height:16px; text-shadow:0 0 3px rgba(255,255,255,.9); }
   /* ===== Custom backgrounds (Settings → Background) ===== */
   html[data-bg] body::before { background: var(--bgx); }
   html[data-bg="ocean"]    { --bgx: radial-gradient(1200px 700px at 15% -10%, #12b5c9, transparent 70%), linear-gradient(180deg, #073b55, #031420 90%); }
@@ -856,6 +891,17 @@
       <div class="ph"><h3>Conditions</h3><span id="condTime"></span></div>
       <div class="tiles" id="tiles"></div>
     </section>
+    <section class="panel o-x" id="xOutside" style="display:none"><div class="ph"><h3>🏃 Best time to go outside</h3><span>Next 12 hours</span></div><div id="outsideBody"></div></section>
+    <div class="xgrid o-x">
+      <section class="panel" id="xSnow" style="display:none"><div class="ph"><h3>❄️ Snow day chance</h3><span>Tomorrow</span></div><div id="snowBody"></div></section>
+      <section class="panel" id="xAir" style="display:none"><div class="ph"><h3>🌫️ Air quality</h3><span id="airTime"></span></div><div id="airBody"></div></section>
+      <section class="panel" id="xStars" style="display:none"><div class="ph"><h3>🌌 Stargazing tonight</h3><span></span></div><div id="starsBody"></div></section>
+      <section class="panel" id="xDay" style="display:none"><div class="ph"><h3>📅 On this day</h3><span id="dayDate"></span></div><div id="dayBody"></div></section>
+    </div>
+    <section class="panel o-x" id="xQuiz"><div class="ph"><h3>🧠 Weather quiz</h3><span id="quizStreak"></span></div><div id="quizBody"></div><div class="fact" id="factBody"></div></section>
+    <section class="panel o-x" id="xTrip"><div class="ph"><h3>🚗 Road trip weather</h3><span>Weather along the way, right now</span></div>
+      <form id="tripForm" class="trip-f"><input id="tripFrom" type="search" placeholder="From (city, state)" autocomplete="off"><input id="tripTo" type="search" placeholder="To (city, state)" autocomplete="off"><button type="submit">Go</button></form>
+      <div id="tripBody"></div></section>
   </div>
 
   <div class="col col-r">
@@ -879,7 +925,7 @@
       <div id="afd" class="nws-raw"></div>
     </section>
     <section class="panel" id="comparePanel" style="display:none">
-      <div class="ph"><h3>Your cities</h3><button class="mini-btn" id="cmpRefresh">Update</button></div>
+      <div class="ph"><h3>Your cities · weekend</h3><button class="mini-btn" id="cmpRefresh">Update</button></div>
       <div id="compare"></div>
     </section>
     <section class="panel notify">
@@ -920,6 +966,8 @@
         <button data-layer="outlook" aria-label="Storm outlook" title="Storm outlook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M13 13l-2 4h3l-2 4"/></svg></button>
         <button data-layer="storms" aria-label="Hurricanes" title="Hurricanes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><path d="M12 3c-5 0-8 3-8 6 3-2 5-1.5 6 .5M12 21c5 0 8-3 8-6-3 2-5 1.5-6-.5"/></svg></button>
         <button data-layer="winter" aria-label="Winter storms" title="Winter storms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 6.5l14.2 11M4.9 17.5l14.2-11M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></svg></button>
+        <button data-layer="reports" aria-label="Storm reports" title="Storm reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><path d="M12 6v4M12 13h.01"/></svg></button>
+        <button data-layer="tempmap" aria-label="Temperature map" title="Temperature map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/><path d="M12 10v6"/></svg></button>
         <button data-layer="jet" aria-label="Jet stream" title="Jet stream"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c3-3 6-3 9 0s6 3 9 0M2 15c3-3 6-3 9 0s6 3 9 0"/><path d="M18 6l3 3-3 3"/></svg></button>
         <button id="warnBtn" class="warn" aria-label="Warnings" title="Warnings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg></button>
       </div>
@@ -1100,7 +1148,7 @@
 <footer>
   Forecasts, observations &amp; warnings: <a href="https://www.weather.gov/" target="_blank" rel="noopener">National Weather Service</a> ·
   Radar: NWS NEXRAD &amp; NOAA HRRR via <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a> ·
-  14-day outlook: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Map labels © <a href="https://www.esri.com/">Esri</a> · Search &amp; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
+  14-day outlook, air quality, history &amp; model maps: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Map labels © <a href="https://www.esri.com/">Esri</a> · Search &amp; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
 </footer>
 
 <script>
@@ -1246,8 +1294,8 @@ async function fetchNWS(lat, lon) {
   const loc = P.relativeLocation && P.relativeLocation.properties;
 
   // hourly
-  const hourly = { time: [], temperature_2m: [], weather_code: [], precipitation_probability: [], is_day: [], humidity: [], dew: [], wind: [], text: [], feels: [], gust: [] };
-  const AT_H = new Map(expand(grid.apparentTemperature).map(x => [x.t, x.v])), WG_H = new Map(expand(grid.windGust).map(x => [x.t, x.v]));
+  const hourly = { time: [], temperature_2m: [], weather_code: [], precipitation_probability: [], is_day: [], humidity: [], dew: [], wind: [], text: [], feels: [], gust: [], sky: [] };
+  const AT_H = new Map(expand(grid.apparentTemperature).map(x => [x.t, x.v])), WG_H = new Map(expand(grid.windGust).map(x => [x.t, x.v])), SKY_H = new Map(expand(grid.skyCover).map(x => [x.t, x.v]));
   hp.forEach(p => {
     const pop = p.probabilityOfPrecipitation ? p.probabilityOfPrecipitation.value ?? 0 : 0;
     hourly.time.push(p.startTime.slice(0, 16));
@@ -1259,7 +1307,7 @@ async function fetchNWS(lat, lon) {
     hourly.dew.push(p.dewpoint ? p.dewpoint.value : null);
     hourly.wind.push({ kmh: mphText(p.windSpeed), dir: DIRS[p.windDirection] ?? 0 });
     hourly.text.push(p.shortForecast);
-    const t0 = Date.parse(p.startTime); hourly.feels.push(AT_H.get(t0) ?? null); hourly.gust.push(WG_H.get(t0) ?? null);
+    const t0 = Date.parse(p.startTime); hourly.feels.push(AT_H.get(t0) ?? null); hourly.gust.push(WG_H.get(t0) ?? null); hourly.sky.push(SKY_H.get(t0) ?? null);
   });
 
   // per-day numbers from the NWS forecast grid
@@ -1489,7 +1537,7 @@ async function renderCompare(refresh) {
       if (!d) return `<div class="cmp" data-i="${i}"><div class="cn">${esc(p.name)}<small>${esc(p.admin1 || "")}</small></div><div class="ci">…</div><div class="ct">—</div><div class="chl"></div></div>`;
       const ic = info(d.current.weather_code, 1).icon;
       return `<div class="cmp" data-i="${i}"><div class="cn">${esc(p.name)}<small>${esc(p.admin1 || "")}${Date.now() - c.t > 3 * 3600000 ? " · older" : ""}</small></div><div class="ci">${ic}</div>
-        <div class="ct">${cvtT(d.current.temperature_2m)}°</div><div class="chl">${cvtT(d.daily.temperature_2m_max[0])}° / ${cvtT(d.daily.temperature_2m_min[0])}°<br><span>${d.daily.precipitation_probability_max[0]}% rain</span></div></div>`;
+        <div class="ct">${cvtT(d.current.temperature_2m)}°</div><div class="chl">${cvtT(d.daily.temperature_2m_max[0])}° / ${cvtT(d.daily.temperature_2m_min[0])}°<br><span>${d.daily.precipitation_probability_max[0]}% rain</span></div>${weekendLine(d)}</div>`;
     }).join("");
     box.querySelectorAll(".cmp").forEach(el => el.onclick = () => goTo(saved[+el.dataset.i]));
   };
@@ -1868,7 +1916,7 @@ function initMap() {
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
   map.on("click", mapAlertPopup);
-  map.on("moveend", () => jetOnMove());
+  map.on("moveend", () => { jetOnMove(); tempOnMove(); });
   map.on("zoomstart", () => $("radar").classList.add("zooming"));
   map.on("zoomend", () => setTimeout(() => $("radar").classList.remove("zooming"), 60));
   setTimeout(startTornadoes, 0);
@@ -2410,7 +2458,7 @@ function setMapMode(m) {
   clearOverlay();
   const radarUI = m === "radar";
   ["#play", "#speedBtn", "#track", "#rangeChips"].forEach(sel => { const el = document.querySelector(sel); if (el) el.style.display = radarUI ? "" : "none"; });
-  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", jet: "💨 Jet stream", winter: "❄️ Winter storms" };
+  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", jet: "💨 Jet stream", winter: "❄️ Winter storms", reports: "📍 Storm reports", tempmap: "🌡️ Temperature" };
   $("layerPill").classList.toggle("show", !radarUI);
   $("layerPill").innerHTML = radarUI ? "" : `${names[m]}<button aria-label="Back to radar" onclick="setMapMode('radar')">✕</button>`;
   $("subopts").innerHTML = ""; $("futureNote").textContent = "";
@@ -2423,6 +2471,8 @@ function setMapMode(m) {
   if (m === "storms") showStorms();
   if (m === "jet") showJet();
   if (m === "winter") showWinter();
+  if (m === "reports") showReports();
+  if (m === "tempmap") showTempMap();
 }
 function badge(top, main, cls) { $("badge").className = "badge " + (cls || "future"); $("badge").innerHTML = `<small>${top}</small>${main}`; }
 
@@ -2648,7 +2698,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115024412";   // kept equal to version.json on every publish
+const BUILD = "20261115025117";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3523,6 +3573,259 @@ async function showWinter() {
   $("rtime").innerHTML = feats.length ? `<b>Winter storm impacts on the map</b> · zoom out to see the whole country` : "<b>No winter storm impacts expected</b> in the US for this day.";
   if (feats.length) { try { map.fitBounds(overlay.getBounds(), { maxZoom: 6, padding: [20, 20] }); } catch(e) {} }
 }
+
+/* ===================== Extras: outside score, snow day, air quality, stargazing, on this day, quiz, road trip, weekend, map layers ===================== */
+const cToF = c => c * 9 / 5 + 32;
+const loHi = (a) => a.filter(v => v != null);
+
+/* --- Best time to go outside (next 12 hours) --- */
+function outsideScores(i) {
+  const h = data.hourly, f = cToF(h.feels[i] ?? h.temperature_2m[i]), pop = h.precipitation_probability[i] || 0, mph = (h.wind[i] ? h.wind[i].kmh : 0) * 0.621;
+  const comfort = Math.max(0, 100 - Math.abs(f - 68) * 2.2), dark = h.is_day[i] ? 0 : 25;
+  const walk = Math.max(0, comfort - pop * 0.7 - Math.max(0, mph - 20) * 2 - dark);
+  const bike = Math.max(0, comfort - pop * 0.9 - Math.max(0, mph - 10) * 3 - dark * 1.4);
+  const sport = Math.max(0, comfort - pop * 1.0 - Math.max(0, mph - 15) * 2 - dark * 1.6);
+  return { walk, bike, sport, all: (walk + bike + sport) / 3 };
+}
+const scoreColor = v => v >= 70 ? "#4fd27b" : v >= 45 ? "#f0d34a" : v >= 25 ? "#ff9a4d" : "#ff5a6e";
+const scoreWord = v => lang === "es" ? (v >= 70 ? "Excelente" : v >= 45 ? "Bien" : v >= 25 ? "Regular" : "Malo") : (v >= 70 ? "Great" : v >= 45 ? "Good" : v >= 25 ? "Meh" : "Poor");
+function renderOutside() {
+  const h = data.hourly; if (!h || !h.feels) return;
+  const start = Math.max(0, h.time.findIndex(t => t.slice(0, 13) >= data.current.time.slice(0, 13)));
+  const idx = Array.from({ length: 12 }, (_, k) => start + k).filter(i => i < h.time.length);
+  if (!idx.length) return;
+  const sc = idx.map(i => ({ i, ...outsideScores(i) }));
+  const best = (k) => sc.reduce((a, b) => b[k] > a[k] ? b : a);
+  const b = best("all");
+  $("outsideBody").innerHTML = `<div class="xsub" style="margin-top:0">${lang === "es" ? "Mejor hora" : "Best time"}: <b style="color:var(--text)">${fmtHour(h.time[b.i])}</b> · ${scoreWord(b.all)}</div>
+    <div class="hrs">${sc.map(x => `<div><i style="background:${scoreColor(x.all)};opacity:${.35 + x.all / 160}"></i>${fmtHour(h.time[x.i]).replace(/\s?([AP])M/i, "$1").toLowerCase()}</div>`).join("")}</div>
+    <div class="acts">${[["🚶", lang === "es" ? "Caminar" : "Walking", "walk"], ["🚴", lang === "es" ? "Bici" : "Biking", "bike"], ["⚽", lang === "es" ? "Deportes" : "Sports", "sport"]].map(([ic, n, k]) => { const x = best(k); return `<div>${ic} ${n}<b>${fmtHour(h.time[x.i])} · ${scoreWord(x[k])}</b></div>`; }).join("")}</div>`;
+  $("xOutside").style.display = "";
+}
+
+/* --- Snow day chance (tomorrow) --- */
+function renderSnowDay() {
+  const d = data.daily; if (!d || d.time.length < 2) return;
+  const tm = new Date(d.time[1] + "T12:00"), dow = tm.getDay(), es = lang === "es";
+  const snowIn = (d.snowfall_sum[1] || 0) / 2.54, iceIn = ((d.ice_sum || [])[1] || 0) / 25.4, lowF = cToF(d.apparent_temperature_min[1] ?? d.temperature_2m_min[1]);
+  const wa = alerts.filter(a => /winter storm warning|ice storm warning|blizzard/i.test(a.event)).length ? 25 : alerts.filter(a => /winter weather advisory|winter storm watch|freezing/i.test(a.event)).length ? 10 : 0;
+  let pct = Math.min(snowIn, 8) * 11 + (iceIn >= 0.25 ? 60 : iceIn >= 0.1 ? 35 : iceIn >= 0.02 ? 15 : 0) + wa + (lowF <= -25 ? 45 : lowF <= -15 ? 20 : 0);
+  pct = Math.round(Math.max(0, Math.min(95, pct)));
+  const weekend = dow === 0 || dow === 6;
+  const word = es ? (pct >= 70 ? "¡Muy probable!" : pct >= 40 ? "Posible" : pct >= 15 ? "Poco probable" : "Muy baja") : (pct >= 70 ? "Very likely!" : pct >= 40 ? "Possible" : pct >= 15 ? "Not likely" : "Very low");
+  $("snowBody").innerHTML = weekend
+    ? `<div class="xbig">😎</div><div class="xsub">${es ? "Mañana es fin de semana, ¡no hay escuela!" : "Tomorrow is the weekend. No school anyway!"}</div>`
+    : `<div class="xbig" style="color:${pct >= 40 ? "#8fd0ff" : "var(--text)"}">${pct}%</div><div class="xbar"><i style="width:${pct}%;background:linear-gradient(90deg,#8fd0ff,#c9a6ff)"></i></div>
+       <div class="xsub"><b style="color:var(--text)">${word}</b> · ${snowIn >= 0.1 ? (es ? "Nieve: " : "Snow: ") + (unit === "F" ? snowIn.toFixed(1) + " in" : (snowIn * 2.54).toFixed(0) + " cm") + " · " : ""}${es ? "Sensación mín.: " : "Feels-like low: "}${cvtT(d.apparent_temperature_min[1] ?? d.temperature_2m_min[1])}°<br>${es ? "Solo por diversión: tu escuela decide." : "Just for fun. Your school makes the real call."}</div>`;
+  $("xSnow").style.display = "";
+}
+
+/* --- Air quality (Open-Meteo, US AQI) --- */
+const AQI = [[50, "Good", "#4fd27b", "Air is clean. Enjoy being outside."], [100, "Moderate", "#f0d34a", "Okay for most people. Very sensitive people may want to take it easy."], [150, "Unhealthy for sensitive groups", "#ff9a4d", "People with asthma, kids and older adults should limit long outdoor activity."], [200, "Unhealthy", "#ff5a6e", "Everyone should cut back on hard outdoor activity."], [300, "Very unhealthy", "#b06cff", "Avoid outdoor activity. Stay inside if you can."], [9999, "Hazardous", "#8a1538", "Stay indoors with windows closed."]];
+let airFor = "";
+async function renderAir() {
+  const key = place.latitude.toFixed(2) + "," + place.longitude.toFixed(2) + "|" + Math.floor(Date.now() / 1800000);
+  if (airFor === key) return; airFor = key;
+  try {
+    const j = await (await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${place.latitude.toFixed(3)}&longitude=${place.longitude.toFixed(3)}&current=us_aqi,pm2_5,ozone&timezone=auto`)).json();
+    const v = j.current && j.current.us_aqi; if (v == null) throw new Error();
+    const c = AQI.find(x => v <= x[0]);
+    $("airBody").innerHTML = `<div class="xbig" style="color:${c[2]}">${Math.round(v)}</div><div class="xbar"><i style="width:${Math.min(100, v / 3)}%;background:${c[2]}"></i></div>
+      <div class="xsub"><b style="color:var(--text)">${c[1]}</b> · ${c[3]}<br>PM2.5 ${Math.round(j.current.pm2_5 ?? 0)} µg/m³ · Ozone ${Math.round(j.current.ozone ?? 0)} µg/m³<br><small>Pollen forecasts aren't available for US cities from our free data source yet.</small></div>`;
+    $("airTime").textContent = "US AQI";
+    $("xAir").style.display = "";
+  } catch(e) { airFor = ""; $("xAir").style.display = "none"; }
+}
+
+/* --- Stargazing tonight --- */
+function renderStars() {
+  const h = data.hourly; if (!h || !h.sky) return;
+  const today = data.current.time.slice(0, 10);
+  const idx = h.time.map((t, i) => i).filter(i => { const t = h.time[i]; const hr = +t.slice(11, 13); return (t.slice(0, 10) === today && hr >= 20) || (t.slice(0, 10) > today && hr <= 3 && t.slice(0, 10) <= addDay(today)); });
+  if (!idx.length) return;
+  const sky = loHi(idx.map(i => h.sky[i])), cloud = sky.length ? sky.reduce((a, b) => a + b, 0) / sky.length : 50;
+  const rain = Math.max(...idx.map(i => h.precipitation_probability[i] || 0));
+  const moon = MOON.illum(Date.parse(today + "T23:00")).fraction;
+  const score = Math.max(0, Math.round(100 - cloud * 0.85 - rain * 0.4 - moon * 25));
+  const es = lang === "es";
+  const word = es ? (score >= 70 ? "Excelente" : score >= 45 ? "Buena" : score >= 25 ? "Regular" : "Mala") : (score >= 70 ? "Great" : score >= 45 ? "Good" : score >= 25 ? "Fair" : "Poor");
+  $("starsBody").innerHTML = `<div class="xbig">${score >= 70 ? "✨" : score >= 45 ? "🌟" : score >= 25 ? "⛅" : "☁️"} ${word}</div><div class="xbar"><i style="width:${score}%;background:linear-gradient(90deg,#3c4a8a,#c7d2ff)"></i></div>
+    <div class="xsub">${es ? "Nubes" : "Clouds"}: <b style="color:var(--text)">${Math.round(cloud)}%</b> · ${es ? "Luna" : "Moon"}: <b style="color:var(--text)">${Math.round(moon * 100)}% ${es ? "iluminada" : "lit"}</b><br>${es ? "Mejor después de las 9 PM, lejos de luces." : "Best after 9 PM, away from bright lights."}</div>`;
+  $("xStars").style.display = "";
+}
+function addDay(d) { const t = new Date(d + "T12:00Z"); t.setUTCDate(t.getUTCDate() + 1); return t.toISOString().slice(0, 10); }
+
+/* --- On this day: records for today's date since 1991 (Open-Meteo historical model data) --- */
+async function renderOnThisDay() {
+  const today = data.current.time.slice(0, 10), md = today.slice(5), key = "skycast_otd_" + place.latitude.toFixed(1) + "," + place.longitude.toFixed(1) + "_" + today;
+  let rec = null; try { rec = JSON.parse(localStorage.getItem(key) || "null"); } catch(e) {}
+  if (!rec) {
+    try {
+      const y = +today.slice(0, 4) - 1;
+      const j = await (await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${place.latitude.toFixed(2)}&longitude=${place.longitude.toFixed(2)}&start_date=1991-01-01&end_date=${y}-12-31&daily=temperature_2m_max,temperature_2m_min&timezone=auto`)).json();
+      const t = j.daily.time, hi = j.daily.temperature_2m_max, lo = j.daily.temperature_2m_min;
+      const rows = t.map((d, i) => ({ y: +d.slice(0, 4), hi: hi[i], lo: lo[i], md: d.slice(5) })).filter(r => r.md === md && r.hi != null && r.lo != null);
+      if (!rows.length) throw new Error();
+      const rh = rows.reduce((a, b) => b.hi > a.hi ? b : a), rl = rows.reduce((a, b) => b.lo < a.lo ? b : a);
+      rec = { rh: rh.hi, rhy: rh.y, rl: rl.lo, rly: rl.y, ah: rows.reduce((s, r) => s + r.hi, 0) / rows.length, al: rows.reduce((s, r) => s + r.lo, 0) / rows.length, from: rows[0].y };
+      try { Object.keys(localStorage).filter(k => k.startsWith("skycast_otd_")).forEach(k => localStorage.removeItem(k)); localStorage.setItem(key, JSON.stringify(rec)); } catch(e) {}
+    } catch(e) { $("xDay").style.display = "none"; return; }
+  }
+  const es = lang === "es", hiT = data.daily.temperature_2m_max[0], diff = cvtT(hiT) - cvtT(rec.ah);
+  $("dayDate").textContent = new Date(today + "T12:00").toLocaleDateString(LOC(), { month: "long", day: "numeric" });
+  $("dayBody").innerHTML = `<div class="xsub" style="margin-top:0">${es ? "Récord de calor" : "Warmest"}: <b style="color:#ff9a4d">${cvtT(rec.rh)}°</b> (${rec.rhy}) · ${es ? "Récord de frío" : "Coldest"}: <b style="color:#8fd0ff">${cvtT(rec.rl)}°</b> (${rec.rly})</div>
+    <div class="xsub">${es ? "Normal" : "Normal"}: ${cvtT(rec.ah)}° / ${cvtT(rec.al)}° · ${es ? "Hoy" : "Today"}: <b style="color:var(--text)">${cvtT(hiT)}°</b>, ${Math.abs(diff) < 2 ? (es ? "casi normal" : "about normal") : (Math.abs(diff) + "° " + (diff > 0 ? (es ? "más cálido" : "warmer") : (es ? "más frío" : "colder")) + (es ? " de lo normal" : " than normal"))}</div>
+    <div class="xsub"><small>${es ? "Desde" : "Since"} ${rec.from}, ${es ? "con datos históricos de modelos (no son récords oficiales de estaciones)." : "from historical model data (not official station records)."}</small></div>`;
+  $("xDay").style.display = "";
+}
+
+/* --- Daily weather quiz + fact of the day --- */
+const QUIZ = [
+  ["What's the hottest temperature ever officially recorded on Earth?", ["134°F (56.7°C)", "120°F (48.9°C)", "150°F (65.6°C)"], 0, "134°F was recorded at Death Valley, California, on July 10, 1913."],
+  ["How many sides does a snowflake usually have?", ["4", "6", "8"], 1, "Water molecules link up in a six-sided pattern, so snow crystals usually have six sides."],
+  ["To estimate how far away lightning is, count the seconds until thunder and…", ["Multiply by 2", "Divide by 5 for miles", "Add 10"], 1, "Sound travels about a mile every 5 seconds, so 10 seconds means about 2 miles away."],
+  ["What scale is used to rate tornadoes in the US?", ["Saffir-Simpson scale", "Richter scale", "Enhanced Fujita (EF) scale"], 2, "Tornadoes are rated EF0 to EF5 based on the damage they cause."],
+  ["What is fog?", ["A cloud touching the ground", "Smoke from fires", "Frozen rain"], 0, "Fog forms the same way clouds do, just right at ground level."],
+  ["A hurricane in the northwest Pacific Ocean is called a…", ["Monsoon", "Typhoon", "Tornado"], 1, "Same kind of storm, different name: hurricane (Atlantic and NE Pacific), typhoon (NW Pacific), cyclone (Indian Ocean and South Pacific)."],
+  ["If the wind is called a 'north wind', which way is it blowing FROM?", ["From the north", "Toward the north", "From the south"], 0, "Winds are named for the direction they come from."],
+  ["Where do you look to see a rainbow?", ["Toward the sun", "With the sun behind you", "Straight up"], 1, "Rainbows appear opposite the sun, so the sun needs to be behind you."],
+  ["What's the coldest temperature ever recorded on Earth?", ["−40°F (−40°C)", "−128.6°F (−89.2°C)", "−200°F (−129°C)"], 1, "It was measured at Vostok Station, Antarctica, on July 21, 1983."],
+  ["What shape are larger falling raindrops?", ["Tear-shaped", "Flattened, like a hamburger bun", "Perfect spheres"], 1, "Small drops are round. Bigger ones get flattened on the bottom by air pushing up as they fall."],
+  ["What does the 'dew point' tell you?", ["When it will rain", "The temperature air must cool to before it's saturated", "How windy it is"], 1, "When the air cools to the dew point, it can't hold more water vapor, so dew, fog or clouds form."],
+  ["What is the jet stream?", ["An ocean current", "A fast river of wind high in the sky", "A type of airplane"], 1, "It flows about 30,000–40,000 ft up and helps steer storms."],
+  ["How hot can a lightning bolt get?", ["About 500°F", "About 5,000°F", "About 50,000°F"], 2, "That's roughly five times hotter than the surface of the sun."],
+  ["Where did the largest hailstone in US history fall?", ["Vivian, South Dakota", "Miami, Florida", "Seattle, Washington"], 0, "It fell in 2010 and was 8 inches across, weighing nearly 2 pounds."]
+];
+const FACTS = [
+  "Lightning can heat the air around it to about 50,000°F, roughly five times hotter than the surface of the sun.",
+  "The fastest wind gust ever measured on Earth was 253 mph, on Barrow Island, Australia, during Tropical Cyclone Olivia in 1996.",
+  "Raindrops aren't tear-shaped. Small ones are round and bigger ones flatten out like a hamburger bun.",
+  "Fog is just a cloud that's touching the ground.",
+  "Snowflakes usually have six sides because of the way water molecules link together when they freeze.",
+  "Count the seconds between a lightning flash and the thunder, then divide by 5. That's about how many miles away it struck.",
+  "Wind is named for where it comes from: a 'west wind' blows from the west toward the east.",
+  "The hottest temperature ever officially recorded was 134°F, in Death Valley, California, in 1913.",
+  "The coldest temperature ever recorded was −128.6°F, at Vostok Station in Antarctica, in 1983.",
+  "A rainbow always appears on the opposite side of the sky from the sun.",
+  "The jet stream can blow faster than 200 mph and helps push storms across the country.",
+  "The largest hailstone in US history fell in Vivian, South Dakota, in 2010. It was 8 inches across!",
+  "Hurricanes, typhoons and cyclones are all the same kind of storm. They just have different names depending on the ocean."
+];
+function dayNum() { const t = new Date(); return Math.floor((Date.UTC(t.getFullYear(), t.getMonth(), t.getDate())) / 86400000); }
+function renderQuiz() {
+  const n = dayNum(), q = QUIZ[n % QUIZ.length], key = "skycast_quiz";
+  let st = { streak: 0, last: 0, answered: 0, pick: -1 }; try { st = { ...st, ...JSON.parse(localStorage.getItem(key) || "{}") }; } catch(e) {}
+  if (st.last < n - 1) st.streak = 0;   // missed a day: streak resets
+  const done = st.answered === n;
+  $("quizStreak").textContent = (st.streak > 0 ? "🔥 " + st.streak + " day streak" : "New question every day");
+  $("quizBody").innerHTML = `<div class="quiz-q">${q[0]}</div><div class="quiz-o">${q[1].map((o, i) => `<button data-qi="${i}" class="${done ? (i === q[2] ? "right" : i === st.pick ? "wrong" : "") : ""}" ${done ? "disabled" : ""}>${o}</button>`).join("")}</div>${done ? `<div class="quiz-why">${st.pick === q[2] ? "✅ Correct! " : "❌ Not quite. "}${q[3]}</div>` : ""}`;
+  document.querySelectorAll("[data-qi]").forEach(b => b.onclick = () => {
+    const pick = +b.dataset.qi, right = pick === q[2];
+    st.streak = right ? (st.last === n - 1 ? st.streak + 1 : 1) : 0; st.last = right ? n : st.last; st.answered = n; st.pick = pick;
+    try { localStorage.setItem(key, JSON.stringify(st)); } catch(e) {}
+    renderQuiz();
+  });
+  $("factBody").innerHTML = `<b>💡 Did you know?</b> ${FACTS[n % FACTS.length]}`;
+}
+
+/* --- Weekend in "Your cities" --- */
+function weekendLine(d) {
+  const t = d.daily.time, sat = t.findIndex(x => new Date(x + "T12:00").getDay() === 6), sun = t.findIndex((x, i) => i > sat && new Date(x + "T12:00").getDay() === 0);
+  const one = (i, n) => i < 0 ? "" : `${n} ${info(d.daily.weather_code[i]).icon} <b>${cvtT(d.daily.temperature_2m_max[i])}°</b>/${cvtT(d.daily.temperature_2m_min[i])}°${d.daily.precipitation_probability_max[i] >= 30 ? " · " + d.daily.precipitation_probability_max[i] + "%" : ""}`;
+  const a = one(sat, "Sat"), b = one(sun, "Sun");
+  return a || b ? `<div class="cwk">${[a, b].filter(Boolean).join(" &nbsp;·&nbsp; ")}</div>` : "";
+}
+
+/* --- Road trip weather (straight-line route, current conditions every ~1/5 of the way) --- */
+async function geocodeUS(q) {
+  const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&countrycodes=us&limit=1&accept-language=en`);
+  const j = await r.json(); if (!j[0]) return null;
+  const a = j[0].address || {}; return { name: a.city || a.town || a.village || a.county || j[0].name, st: STATES[a.state] || a.state || "", lat: +j[0].lat, lon: +j[0].lon };
+}
+$("tripForm").onsubmit = async e => {
+  e.preventDefault();
+  const fq = $("tripFrom").value.trim() || place.name + (place.admin1 ? ", " + place.admin1 : ""), tq = $("tripTo").value.trim();
+  if (!tq) { $("tripBody").innerHTML = `<div class="xsub">Type where you're going.</div>`; return; }
+  $("tripBody").innerHTML = `<div class="xsub">Checking the weather along the way…</div>`;
+  try {
+    const A = await geocodeUS(fq); await new Promise(r => setTimeout(r, 1100)); const B = await geocodeUS(tq);
+    if (!A || !B) { $("tripBody").innerHTML = `<div class="xsub">Couldn't find ${!A ? esc(fq) : esc(tq)}. Try "City, ST".</div>`; return; }
+    const N = 5, pts = Array.from({ length: N + 1 }, (_, k) => [A.lat + (B.lat - A.lat) * k / N, A.lon + (B.lon - A.lon) * k / N]);
+    const j = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pts.map(p => p[0].toFixed(3)).join(",")}&longitude=${pts.map(p => p[1].toFixed(3)).join(",")}&current=temperature_2m,weather_code,wind_speed_10m,precipitation&timezone=auto`)).json();
+    const list = Array.isArray(j) ? j : [j];
+    const R = 3958.8, toR = x => x * Math.PI / 180, dist = (a, b) => 2 * R * Math.asin(Math.sqrt(Math.sin(toR(b[0] - a[0]) / 2) ** 2 + Math.cos(toR(a[0])) * Math.cos(toR(b[0])) * Math.sin(toR(b[1] - a[1]) / 2) ** 2));
+    const total = dist(pts[0], pts[N]);
+    const bad = list.some(o => o.current && o.current.weather_code >= 51);
+    $("tripBody").innerHTML = list.map((o, k) => { const c = o.current || {}, ic = info(c.weather_code).icon, label = k === 0 ? `${esc(A.name)}${A.st ? ", " + esc(A.st) : ""}` : k === N ? `${esc(B.name)}${B.st ? ", " + esc(B.st) : ""}` : (unit === "F" ? Math.round(total * k / N) + " mi" : Math.round(total * k / N * 1.609) + " km") + " along";
+      return `<div class="trip-r"><span class="dot" style="${k === 0 || k === N ? "" : "opacity:.5;width:8px;height:8px"}"></span><span>${label}<br><small>${info(c.weather_code).text}</small></span><span style="font-size:1.3rem">${ic}</span><b>${c.temperature_2m != null ? cvtT(c.temperature_2m) + "°" : "—"}</b></div>`; }).join("") +
+      `<div class="xsub">${bad ? "⚠️ Rain or snow somewhere along the way right now. Drive carefully!" : "✅ No rain or snow along the way right now."} About ${unit === "F" ? Math.round(total) + " miles" : Math.round(total * 1.609) + " km"} in a straight line; real roads are longer. Conditions are for right now, not when you'll get there.</div>`;
+  } catch(err) { $("tripBody").innerHTML = `<div class="xsub">Road trip weather couldn't load right now. Try again in a moment.</div>`; }
+};
+
+/* --- Map: storm reports (NWS Local Storm Reports via Iowa Environmental Mesonet) --- */
+const RPT = [[/tornado/i, "🌪️", "Tornado"], [/funnel/i, "🌪️", "Funnel cloud"], [/hail/i, "🧊", "Hail"], [/wnd|wind|gust/i, "💨", "Damaging wind"], [/flood/i, "🌊", "Flooding"], [/snow|blizzard/i, "❄️", "Snow"], [/ice|sleet|freezing/i, "🧊", "Ice"]];
+async function showReports() {
+  badge("STORM REPORTS", "Last 24 hours", "live");
+  $("rtime").innerHTML = "Loading storm reports…";
+  $("legendBox").innerHTML = RPT.filter((x, i, a) => a.findIndex(y => y[2] === x[2]) === i).map(r => `<span class="lg">${r[1]} ${r[2]}</span>`).join("");
+  $("radarNote").textContent = "Real reports of tornadoes, hail, damaging wind, flooding and winter weather sent to the National Weather Service in the last 24 hours, from spotters, emergency managers and the public. Tap one for details.";
+  const now = new Date(), sts = new Date(now - 24 * 3600000), f = d => d.toISOString().slice(0, 16) + "Z";
+  let gj = null;
+  try { gj = await (await fetch(`https://mesonet.agron.iastate.edu/geojson/lsr.py?sts=${f(sts)}&ets=${f(now)}`)).json(); if (!gj.features) throw new Error(); } catch(e) { gj = null; }
+  if (mapMode !== "reports") return;
+  if (!gj) { $("rtime").textContent = "Storm reports couldn't load right now. Try again in a few minutes."; return; }
+  const g = L.layerGroup(); let n = 0;
+  gj.features.forEach(ft => {
+    const p = ft.properties || {}, tt = String(p.typetext || p.type || ""), m = RPT.find(r => r[0].test(tt));
+    if (!m || !ft.geometry || !ft.geometry.coordinates) return;
+    const [lo, la] = ft.geometry.coordinates; n++;
+    g.addLayer(L.marker([la, lo], { icon: L.divIcon({ className: "rpt", html: m[1], iconSize: [22, 22] }) })
+      .bindPopup(`<b>${m[1]} ${esc(tt.charAt(0) + tt.slice(1).toLowerCase())}${p.magnitude ? " · " + esc(p.magnitude) + (p.unit ? " " + esc(p.unit) : "") : ""}</b><br>${esc([p.city, p.county, p.state].filter(Boolean).join(", "))}<br><small>${p.valid ? new Date(p.valid + (String(p.valid).endsWith("Z") ? "" : "Z")).toLocaleString(LOC(), { weekday: "short", hour: "numeric", minute: "2-digit" }) : ""}${p.source ? " · " + esc(p.source) : ""}</small>${p.remark ? `<br>${esc(p.remark)}` : ""}`));
+  });
+  clearOverlay(); overlay = g.addTo(map);
+  $("rtime").innerHTML = n ? `<b>${n} storm report${n > 1 ? "s" : ""}</b> in the last 24 hours · zoom out to see the whole country` : "<b>No storm reports</b> in the last 24 hours.";
+}
+
+/* --- Map: temperature / feels-like (Open-Meteo model grid) --- */
+let tempTimer = null, tempReq = 0, tempKind = "temperature_2m";
+async function showTempMap() {
+  $("subopts").innerHTML = [["temperature_2m", "Temperature"], ["apparent_temperature", "Feels like"]].map(([k, n]) => `<button data-tk="${k}" class="${tempKind === k ? "on" : ""}">${n}</button>`).join("");
+  document.querySelectorAll("[data-tk]").forEach(b => b.onclick = () => { tempKind = b.dataset.tk; setMapMode("tempmap"); });
+  badge(tempKind === "temperature_2m" ? "TEMPERATURE" : "FEELS LIKE", "Right now", "live");
+  $("legendBox").innerHTML = `<span class="lg wide"><i style="background:linear-gradient(90deg,#783cc8,#3c5ae6,#5ac8ff,#5adc96,#c8e650,#ffc83c,#ff7828,#dc1e28)"></i>${unit === "F" ? "-13°F → 104°F" : "-25°C → 40°C"}</span>`;
+  $("radarNote").textContent = "Current temperatures from weather model data (Open-Meteo), updated hourly. 'Feels like' includes wind chill and humidity.";
+  await drawTempMap();
+}
+async function drawTempMap() {
+  if (!map || mapMode !== "tempmap") return;
+  const req = ++tempReq, b = map.getBounds().pad(0.05);
+  const COLSN = 11, ROWSN = 10, lat0 = Math.max(-84, b.getSouth()), lat1 = Math.min(84, b.getNorth()), lon0 = Math.max(-179.9, b.getWest()), lon1 = Math.min(179.9, b.getEast());
+  const dLat = (lat1 - lat0) / ROWSN, dLon = (lon1 - lon0) / COLSN, pts = [];
+  for (let r = 0; r < ROWSN; r++) for (let c = 0; c < COLSN; c++) pts.push([lat0 + (r + .5) * dLat, lon0 + (c + .5) * dLon]);
+  $("rtime").innerHTML = "Loading temperatures…";
+  let res;
+  try { const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + pts.map(p => p[0].toFixed(2)).join(",") + "&longitude=" + pts.map(p => p[1].toFixed(2)).join(",") + "&current=" + tempKind + "&timezone=GMT"); if (!r.ok) throw new Error(); res = await r.json(); }
+  catch(e) { if (req === tempReq) $("rtime").innerHTML = "<b>Temperatures couldn't load right now.</b> Try again in a little while."; return; }
+  if (req !== tempReq || mapMode !== "tempmap") return;
+  const list = Array.isArray(res) ? res : [res], g = L.layerGroup();
+  list.forEach((o, k) => {
+    const v = o && o.current && o.current[tempKind]; if (v == null) return;
+    const [la, lo] = pts[k], col = `rgb(${ramp(TEMP, v).join(",")})`;
+    g.addLayer(L.rectangle([[la - dLat / 2, lo - dLon / 2], [la + dLat / 2, lo + dLon / 2]], { stroke: false, fillColor: col, fillOpacity: .55, interactive: false }));
+    g.addLayer(L.marker([la, lo], { interactive: false, icon: L.divIcon({ className: "tmpt", html: cvtT(v) + "°", iconSize: [34, 16] }) }));
+  });
+  clearOverlay(); overlay = g.addTo(map);
+  $("rtime").innerHTML = `<b>${tempKind === "temperature_2m" ? "Temperature" : "Feels like"} right now</b> · move or zoom the map to update`;
+}
+function tempOnMove() { if (mapMode !== "tempmap") return; clearTimeout(tempTimer); tempTimer = setTimeout(drawTempMap, 700); }
+
+/* --- run the weather-tab extras whenever the forecast draws --- */
+function renderExtras() {
+  [renderOutside, renderSnowDay, renderStars, renderQuiz].forEach(fn => { try { fn(); } catch(e) { console.warn(e); } });
+  renderAir().catch(() => {}); renderOnThisDay().catch(() => {});
+}
+{ const _r3 = render; render = function() { _r3.apply(this, arguments); renderExtras(); }; }
+try { renderQuiz(); } catch(e) {}
 
 /* ---------- Background picker (saved on this device) ---------- */
 let bgChoice = "auto";
