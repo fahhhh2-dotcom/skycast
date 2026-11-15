@@ -2707,7 +2707,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115035000";   // kept equal to version.json on every publish
+const BUILD = "20261115035500";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3152,7 +3152,7 @@ const PLUS_PROVIDER = "cashapp";
 const CASHAPP_LINK = "https://cash.app/$SkyCastWeather/5";   // opens Cash App with $5 filled in
 const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
-const PLUS_ACCOUNT_HASHES = ["a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f"];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
+const PLUS_ACCOUNT_HASHES = [];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
 const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
   "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
   "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
