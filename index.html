@@ -1026,6 +1026,9 @@
   <div class="sh-h">Siri mode</div>
   <button class="sh-btn" id="siriBtn">🎙️ Set up Siri mode</button>
   <div class="sh-note">Ask Siri for SkyCast's forecast hands-free, using the same National Weather Service forecast SkyCast shows.</div>
+  <div class="sh-h">Widgets</div>
+  <button class="sh-btn" id="widgetBtn">🧩 Add a SkyCast widget</button>
+  <div class="sh-note">Put SkyCast's temperature and forecast right on your home screen.</div>
   <div class="sh-h">Share</div>
   <button class="sh-btn" id="shareCardBtn">📸 Share today's weather</button>
   <button class="sh-btn" id="shareAppBtn">📲 Share SkyCast</button>
@@ -1117,6 +1120,26 @@
   <div class="c14wrap" id="chart14"></div>
   <div id="list14"></div>
   <div class="sh-note" id="note14">Days 1–7: National Weather Service. Days 8–14: long-range outlook from Open-Meteo, which is less certain the further out it goes.</div>
+</div></div>
+<div class="sheet" id="widgetView"><div class="sheet-in">
+  <div class="sh-top"><b>🧩 Widgets</b><button class="mini-btn" id="widgetClose">Done</button></div>
+  <div class="sh-note" style="font-size:.85rem;color:var(--soft)">Phones don't let websites make widgets on their own, so SkyCast uses a free helper app. Your widget shows the temperature and forecast for <b style="color:var(--text)" id="widgetCity">your city</b>, and tapping it opens SkyCast.</div>
+  <div class="sh-h">iPhone or iPad: live weather widget</div>
+  <ol class="siri-steps">
+    <li>Get the free app <b>Scriptable</b> from the App Store.</li>
+    <li>Tap <b>Copy widget code</b> below.</li>
+    <li>Open Scriptable, tap <b>+</b>, paste the code, and name the script <b>SkyCast</b> at the top. Tap <b>Done</b>.</li>
+    <li>Go to your home screen, press and hold an empty spot, tap <b>Edit</b>, then <b>Add Widget</b>. Pick <b>Scriptable</b> and choose the small or medium size.</li>
+    <li>Press and hold the new widget, tap <b>Edit Widget</b>, and set <b>Script</b> to <b>SkyCast</b>.</li>
+  </ol>
+  <button class="sh-btn" id="widgetCopy">📋 Copy widget code</button>
+  <div class="sh-note" id="widgetMsg"></div>
+  <div class="sh-h">Android: home screen icon</div>
+  <ol class="siri-steps">
+    <li>Open SkyCast in <b>Chrome</b>, tap the <b>⋮</b> menu, then <b>Add to home screen</b> (or <b>Install app</b>).</li>
+    <li>SkyCast opens like an app from your home screen. Android doesn't allow live weather widgets for websites yet.</li>
+  </ol>
+  <div class="sh-note">The widget is for the city you're looking at right now. To change it, pick a new city in SkyCast, copy the widget code again, and paste it over the old code in Scriptable. The widget refreshes on its own every so often, and its data comes from the National Weather Service.</div>
 </div></div>
 <div class="sheet" id="siriView"><div class="sheet-in">
   <div class="sh-top"><b>🎙️ Siri mode</b><button class="mini-btn" id="siriClose">Done</button></div>
@@ -1376,7 +1399,7 @@ async function fetchNWS(lat, lon) {
     uv_index: null,
     observed: !!obs, station: obs && obs.station ? obs.station.split("/").pop() : null
   };
-  return { current, hourly, daily, timezone: tz, forecastUrl: P.forecast, office: P.cwa || P.gridId, locName: loc ? { name: loc.city, admin1: loc.state } : null };
+  return { current, hourly, daily, timezone: tz, forecastUrl: P.forecast, hourlyUrl: P.forecastHourly, office: P.cwa || P.gridId, locName: loc ? { name: loc.city, admin1: loc.state } : null };
 }
 
 /* ---------- What forecasters are saying (NWS Area Forecast Discussion) ---------- */
@@ -3002,6 +3025,67 @@ $("siriTest").onclick = () => {
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text); u.lang = lang === "es" ? "es-US" : "en-US"; u.rate = 1;
   speechSynthesis.speak(u);
+};
+
+/* ---------- Widgets (a Scriptable script for an iPhone home screen widget, using the NWS forecast SkyCast uses) ---------- */
+function widgetCityName() { return place.current && place.name === "Current location" ? ((data && data.locName && data.locName.name) || "My location") : place.name; }
+function widgetCode() {
+  if (!data || !data.forecastUrl) return "";
+  const hourly = data.hourlyUrl || (data.forecastUrl + "/hourly");
+  return `// SkyCast widget for Scriptable. Weather data: National Weather Service.
+const CITY = ${JSON.stringify(widgetCityName())};
+const DAILY = ${JSON.stringify(data.forecastUrl)};
+const HOURLY = ${JSON.stringify(hourly)};
+const UNIT = ${JSON.stringify(unit === "C" ? "C" : "F")};
+
+async function get(url) { const r = new Request(url); r.headers = { "User-Agent": "SkyCast widget", "Accept": "application/geo+json" }; return await r.loadJSON(); }
+function icon(t, day) { t = (t || "").toLowerCase();
+  if (t.includes("thunder")) return "⛈️"; if (t.includes("snow") || t.includes("flurr")) return "🌨️";
+  if (t.includes("sleet") || t.includes("freezing")) return "🧊"; if (t.includes("rain") || t.includes("shower") || t.includes("drizzle")) return "🌧️";
+  if (t.includes("fog")) return "🌫️"; if (t.includes("wind")) return "💨"; if (t.includes("partly") || t.includes("mostly sunny") || t.includes("mostly clear")) return day ? "⛅" : "☁️";
+  if (t.includes("cloud") || t.includes("overcast")) return "☁️"; return day ? "☀️" : "🌙"; }
+function temp(f) { return UNIT === "C" ? Math.round((f - 32) * 5 / 9) : Math.round(f); }
+
+const w = new ListWidget();
+const g = new LinearGradient(); g.colors = [new Color("#2f6fe0"), new Color("#0b1a3a")]; g.locations = [0, 1]; w.backgroundGradient = g;
+w.setPadding(14, 14, 14, 14); w.url = "https://skycastweather.com/";
+w.refreshAfterDate = new Date(Date.now() + 30 * 60 * 1000);
+try {
+  const now = (await get(HOURLY)).properties.periods[0];
+  const next = (await get(DAILY)).properties.periods.slice(0, 2);
+  const top = w.addText("SkyCast · " + CITY); top.font = Font.semiboldSystemFont(11); top.textColor = new Color("#ffd36b"); top.lineLimit = 1;
+  w.addSpacer(4);
+  const row = w.addStack(); row.centerAlignContent();
+  const ic = row.addText(icon(now.shortForecast, now.isDaytime)); ic.font = Font.systemFont(30);
+  row.addSpacer(6);
+  const t = row.addText(temp(now.temperature) + "°"); t.font = Font.boldSystemFont(36); t.textColor = Color.white();
+  const cond = w.addText(now.shortForecast); cond.font = Font.mediumSystemFont(12); cond.textColor = Color.white(); cond.lineLimit = 2;
+  w.addSpacer();
+  for (const p of next) { const l = w.addText(p.name + ": " + temp(p.temperature) + "° " + p.shortForecast); l.font = Font.systemFont(10); l.textColor = new Color("#cfe0ff"); l.lineLimit = 1; }
+} catch (e) {
+  const t = w.addText("SkyCast"); t.font = Font.boldSystemFont(16); t.textColor = Color.white();
+  const m = w.addText("Can't load the weather right now."); m.font = Font.systemFont(11); m.textColor = new Color("#cfe0ff");
+}
+Script.setWidget(w);
+if (config.runsInApp) await w.presentMedium();
+Script.complete();
+`;
+}
+function openWidgets() {
+  $("sheet").classList.remove("open");
+  $("widgetView").classList.add("open");
+  $("widgetCity").textContent = widgetCityName() || "your city";
+  $("widgetMsg").textContent = data && data.forecastUrl ? "" : "Open the Weather tab first so SkyCast can make your widget code.";
+}
+$("widgetBtn").onclick = openWidgets;
+$("widgetClose").onclick = () => $("widgetView").classList.remove("open");
+$("widgetView").onclick = e => { if (e.target.id === "widgetView") $("widgetView").classList.remove("open"); };
+$("widgetCopy").onclick = async () => {
+  const code = widgetCode();
+  if (!code) { $("widgetMsg").textContent = "Open the Weather tab first so SkyCast can make your widget code."; return; }
+  try { await navigator.clipboard.writeText(code); $("widgetCopy").textContent = "✅ Copied"; $("widgetMsg").textContent = "Now open Scriptable, tap +, and paste."; }
+  catch (e) { $("widgetMsg").textContent = "Couldn't copy. Try again in Safari."; }
+  setTimeout(() => $("widgetCopy").textContent = "📋 Copy widget code", 2500);
 };
 
 /* ---------- Account (Firebase: works on every device you sign in on) ---------- */
