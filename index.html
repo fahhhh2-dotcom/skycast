@@ -710,15 +710,6 @@
   .quiz-why { font-size:.84rem; color:var(--soft); margin-top:10px; line-height:1.45; }
   .fact { margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-size:.86rem; color:var(--soft); line-height:1.5; }
   .fact b { color:var(--text); }
-  .trip-f { display:grid; grid-template-columns: 1fr 1fr auto; gap:8px; }
-  @media (max-width:500px) { .trip-f { grid-template-columns: 1fr; } }
-  .trip-f input { min-width:0; padding:11px 13px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-size:16px; outline:none; }
-  .trip-f button { border:0; border-radius:12px; padding:10px 18px; background:var(--text); color:#0b1424; font:inherit; font-weight:800; cursor:pointer; }
-  html.light .trip-f button { background:#0e1d38; color:#fff; }
-  .trip-r { display:grid; grid-template-columns: 22px 1fr auto auto; gap:10px; align-items:center; padding:9px 0; border-top:1px solid var(--line); font-size:.88rem; }
-  .trip-r:first-child { border-top:0; margin-top:8px; }
-  .trip-r .dot { width:12px; height:12px; border-radius:50%; background:var(--accent); margin:auto; }
-  .trip-r small { color:var(--soft); }
   .cwk { grid-column: 1 / -1; font-size:.74rem; color:var(--soft); margin-top:-2px; }
   .cwk b { color:var(--text); }
   .rpt { font-size:18px; line-height:20px; text-align:center; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
@@ -898,17 +889,14 @@
       <div class="ph"><h3>Conditions</h3><span id="condTime"></span></div>
       <div class="tiles" id="tiles"></div>
     </section>
-    <section class="panel o-x" id="xOutside" style="display:none"><div class="ph"><h3>🏃 Best time to go outside</h3><span>Next 12 hours</span></div><div id="outsideBody"></div></section>
+    <section class="panel o-x" id="xOutside" style="display:none"><div class="ph"><h3>🏃 Best time to go outside <span class="plus-pill">PLUS</span></h3><span>Next 12 hours</span></div><div id="outsideBody"></div></section>
     <div class="xgrid o-x">
-      <section class="panel" id="xSnow" style="display:none"><div class="ph"><h3>❄️ Snow day chance</h3><span>Tomorrow</span></div><div id="snowBody"></div></section>
-      <section class="panel" id="xAir" style="display:none"><div class="ph"><h3>🌫️ Air quality</h3><span id="airTime"></span></div><div id="airBody"></div></section>
-      <section class="panel" id="xStars" style="display:none"><div class="ph"><h3>🌌 Stargazing tonight</h3><span></span></div><div id="starsBody"></div></section>
-      <section class="panel" id="xDay" style="display:none"><div class="ph"><h3>📅 On this day</h3><span id="dayDate"></span></div><div id="dayBody"></div></section>
+      <section class="panel" id="xSnow" style="display:none"><div class="ph"><h3>❄️ Snow day chance <span class="plus-pill">PLUS</span></h3><span>Tomorrow</span></div><div id="snowBody"></div></section>
+      <section class="panel" id="xAir" style="display:none"><div class="ph"><h3>🌫️ Air quality <span class="plus-pill">PLUS</span></h3><span id="airTime"></span></div><div id="airBody"></div></section>
+      <section class="panel" id="xStars" style="display:none"><div class="ph"><h3>🌌 Stargazing tonight <span class="plus-pill">PLUS</span></h3><span></span></div><div id="starsBody"></div></section>
+      <section class="panel" id="xDay" style="display:none"><div class="ph"><h3>📅 On this day <span class="plus-pill">PLUS</span></h3><span id="dayDate"></span></div><div id="dayBody"></div></section>
     </div>
     <section class="panel o-x" id="xQuiz"><div class="ph"><h3>🧠 Weather quiz</h3><span id="quizStreak"></span></div><div id="quizBody"></div><div class="fact" id="factBody"></div></section>
-    <section class="panel o-x" id="xTrip"><div class="ph"><h3>🚗 Road trip weather</h3><span>Weather along the way, right now</span></div>
-      <form id="tripForm" class="trip-f"><input id="tripFrom" type="search" placeholder="From (city, state)" autocomplete="off"><input id="tripTo" type="search" placeholder="To (city, state)" autocomplete="off"><button type="submit">Go</button></form>
-      <div id="tripBody"></div></section>
   </div>
 
   <div class="col col-r">
@@ -2707,7 +2695,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115035500";   // kept equal to version.json on every publish
+const BUILD = "20261115191232";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3260,6 +3248,11 @@ const PLUS_PORTAL = "";   // optional: your Stripe customer portal link, so memb
 const PLUS_FEATURES = [
   ["📈", "Hour-by-hour for all 7 days", "Every hour of the week, not just the next 24."],
   ["📊", "Detail charts", "Feels-like, wind gusts and humidity, hour by hour."],
+  ["🏃", "Best time to go outside", "Hour-by-hour scores for walking, biking and sports."],
+  ["❄️", "Snow day chance", "How likely school is to close tomorrow."],
+  ["🌫️", "Air quality", "Today's air quality rating with health tips."],
+  ["🌌", "Stargazing tonight", "Clouds, moon and a rating for tonight's sky."],
+  ["📅", "On this day", "Record highs and lows for today's date."],
   ["🎨", "Plus backgrounds", "Animated rain, snow and starry-night backgrounds."],
   ["⏰", "Morning briefing", "A summary of your day the first time you open SkyCast each morning."],
   ["🏅", "Supporter badge", "A Plus badge on your account."],
@@ -3436,6 +3429,7 @@ function renderPlusPanels() {
   $("plusTeaser").style.display = !on && PLUS_LINK ? "" : "none";
   if (on && data) { try { renderPlusHours(); } catch(e) { console.warn(e); } try { renderPlusCharts(); } catch(e) { console.warn(e); } }
   if (data) { try { renderBrief(); } catch(e) { console.warn(e); } }
+  if (typeof renderExtras === "function") renderExtras();
 }
 $("plusTeaser").onclick = () => $("plusView").classList.add("open");
 { const _render = render; render = function() { _render.apply(this, arguments); renderPlusPanels(); }; }
@@ -3865,32 +3859,6 @@ function weekendLine(d) {
   return a || b ? `<div class="cwk">${[a, b].filter(Boolean).join(" &nbsp;·&nbsp; ")}</div>` : "";
 }
 
-/* --- Road trip weather (straight-line route, current conditions every ~1/5 of the way) --- */
-async function geocodeUS(q) {
-  const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=jsonv2&addressdetails=1&countrycodes=us&limit=1&accept-language=en`);
-  const j = await r.json(); if (!j[0]) return null;
-  const a = j[0].address || {}; return { name: a.city || a.town || a.village || a.county || j[0].name, st: STATES[a.state] || a.state || "", lat: +j[0].lat, lon: +j[0].lon };
-}
-$("tripForm").onsubmit = async e => {
-  e.preventDefault();
-  const fq = $("tripFrom").value.trim() || place.name + (place.admin1 ? ", " + place.admin1 : ""), tq = $("tripTo").value.trim();
-  if (!tq) { $("tripBody").innerHTML = `<div class="xsub">Type where you're going.</div>`; return; }
-  $("tripBody").innerHTML = `<div class="xsub">Checking the weather along the way…</div>`;
-  try {
-    const A = await geocodeUS(fq); await new Promise(r => setTimeout(r, 1100)); const B = await geocodeUS(tq);
-    if (!A || !B) { $("tripBody").innerHTML = `<div class="xsub">Couldn't find ${!A ? esc(fq) : esc(tq)}. Try "City, ST".</div>`; return; }
-    const N = 5, pts = Array.from({ length: N + 1 }, (_, k) => [A.lat + (B.lat - A.lat) * k / N, A.lon + (B.lon - A.lon) * k / N]);
-    const j = await (await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pts.map(p => p[0].toFixed(3)).join(",")}&longitude=${pts.map(p => p[1].toFixed(3)).join(",")}&current=temperature_2m,weather_code,wind_speed_10m,precipitation&timezone=auto`)).json();
-    const list = Array.isArray(j) ? j : [j];
-    const R = 3958.8, toR = x => x * Math.PI / 180, dist = (a, b) => 2 * R * Math.asin(Math.sqrt(Math.sin(toR(b[0] - a[0]) / 2) ** 2 + Math.cos(toR(a[0])) * Math.cos(toR(b[0])) * Math.sin(toR(b[1] - a[1]) / 2) ** 2));
-    const total = dist(pts[0], pts[N]);
-    const bad = list.some(o => o.current && o.current.weather_code >= 51);
-    $("tripBody").innerHTML = list.map((o, k) => { const c = o.current || {}, ic = info(c.weather_code).icon, label = k === 0 ? `${esc(A.name)}${A.st ? ", " + esc(A.st) : ""}` : k === N ? `${esc(B.name)}${B.st ? ", " + esc(B.st) : ""}` : (unit === "F" ? Math.round(total * k / N) + " mi" : Math.round(total * k / N * 1.609) + " km") + " along";
-      return `<div class="trip-r"><span class="dot" style="${k === 0 || k === N ? "" : "opacity:.5;width:8px;height:8px"}"></span><span>${label}<br><small>${info(c.weather_code).text}</small></span><span style="font-size:1.3rem">${ic}</span><b>${c.temperature_2m != null ? cvtT(c.temperature_2m) + "°" : "—"}</b></div>`; }).join("") +
-      `<div class="xsub">${bad ? "⚠️ Rain or snow somewhere along the way right now. Drive carefully!" : "✅ No rain or snow along the way right now."} About ${unit === "F" ? Math.round(total) + " miles" : Math.round(total * 1.609) + " km"} in a straight line; real roads are longer. Conditions are for right now, not when you'll get there.</div>`;
-  } catch(err) { $("tripBody").innerHTML = `<div class="xsub">Road trip weather couldn't load right now. Try again in a moment.</div>`; }
-};
-
 /* --- Map: storm reports (NWS Local Storm Reports via Iowa Environmental Mesonet) --- */
 const RPT = [[/tornado/i, "🌪️", "Tornado"], [/funnel/i, "🌪️", "Funnel cloud"], [/hail/i, "🧊", "Hail"], [/wnd|wind|gust/i, "💨", "Damaging wind"], [/flood/i, "🌊", "Flooding"], [/snow|blizzard/i, "❄️", "Snow"], [/ice|sleet|freezing/i, "🧊", "Ice"]];
 async function showReports() {
@@ -3950,10 +3918,13 @@ function tempOnMove() { if (mapMode !== "tempmap") return; clearTimeout(tempTime
 
 /* --- run the weather-tab extras whenever the forecast draws --- */
 function renderExtras() {
-  [renderOutside, renderSnowDay, renderStars, renderQuiz].forEach(fn => { try { fn(); } catch(e) { console.warn(e); } });
+  try { renderQuiz(); } catch(e) { console.warn(e); }
+  const on = isPlus();
+  ["xOutside", "xSnow", "xAir", "xStars", "xDay"].forEach(id => { if (!on) $(id).style.display = "none"; });
+  if (!on || !data) return;   // these are SkyCast Plus features
+  [renderOutside, renderSnowDay, renderStars].forEach(fn => { try { fn(); } catch(e) { console.warn(e); } });
   renderAir().catch(() => {}); renderOnThisDay().catch(() => {});
 }
-{ const _r3 = render; render = function() { _r3.apply(this, arguments); renderExtras(); }; }
 try { renderQuiz(); } catch(e) {}
 
 /* ---------- Background picker (saved on this device) ---------- */
