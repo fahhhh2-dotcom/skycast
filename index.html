@@ -2627,7 +2627,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115021706";   // kept equal to version.json on every publish
+const BUILD = "20261115022904";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -2997,6 +2997,7 @@ fbReady.then(F => F.au.onAuthStateChanged(F.auth, async u => {
     saveAccount({ uid: u.uid, email: u.email || "", provider: google ? "google" : "email", name: account.name || (u.displayName || "").split(" ")[0] });
     try { localStorage.setItem("skycast_session", "1"); } catch(e) {}
     if (await pullCloud(u.uid)) { location.reload(); return; }
+    checkPlusAccount();
     if (window.onSignedIn) window.onSignedIn();
   } else {
     syncUid = null;
@@ -3066,6 +3067,7 @@ paintAccount();
    To switch back to Stripe, set PLUS_PROVIDER to "stripe". */
 const PLUS_PROVIDER = "bmc";
 const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
+const PLUS_ACCOUNT_HASHES = ["a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f"];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
 const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144"];   // SHA-256 of the current Plus code(s) with dashes/spaces removed, so the code itself isn't in the page
 const STRIPE_LINK = "https://buy.stripe.com/test_28E7sNcmzebh1XcacU93y00";   // Stripe sandbox (test) link, kept for later
 const PLUS_LINK = PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
@@ -3125,7 +3127,13 @@ var plusActive = false, plusTest = false, PLUS_TESTMODE = false;
 try { plusActive = localStorage.getItem("skycast_plus") === "1"; plusTest = localStorage.getItem("skycast_plus_test") === "1"; } catch(e) {}
 PLUS_TESTMODE = /buy\.stripe\.com\/test_/.test(PLUS_LINK);
 function plusCodeOK() { try { return PLUS_CODE_HASHES.includes(localStorage.getItem("skycast_plus_code") || ""); } catch(e) { return false; } }
-function isPlus() { return !!(plusActive || (PLUS_TESTMODE && plusTest) || plusCodeOK()); }   // a function declaration so earlier code can call it safely
+var plusAccountOK = false;
+async function checkPlusAccount() {
+  let ok = false;
+  try { if (signedIn() && account.email) ok = PLUS_ACCOUNT_HASHES.includes(await sha256(account.email.trim().toLowerCase())); } catch(e) {}
+  if (ok !== plusAccountOK) { plusAccountOK = ok; try { paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); } catch(e) {} }
+}
+function isPlus() { return !!(plusActive || (PLUS_TESTMODE && plusTest) || plusCodeOK() || plusAccountOK); }   // a function declaration so earlier code can call it safely
 (() => {
   const u = new URL(location.href);
   if (u.searchParams.get("plus") === "thanks") {
@@ -3146,7 +3154,8 @@ function setPlus(on) {
   try { localStorage.setItem("skycast_plus", on ? "1" : "0"); } catch(e) {}
   if (was !== isPlus()) { paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); }
 }
-fbReady.then(F => F.au.onAuthStateChanged(F.auth, u => { if (u) checkPlus(u.uid); else setPlus(false); })).catch(() => {});
+fbReady.then(F => F.au.onAuthStateChanged(F.auth, u => { if (u) checkPlus(u.uid); else setPlus(false); checkPlusAccount(); })).catch(() => {});
+setTimeout(checkPlusAccount, 0);
 paintPlus(); paintAccount();
 
 /* ---------- Plus: hour by hour for all 7 days ---------- */
