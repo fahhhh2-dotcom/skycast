@@ -363,9 +363,9 @@
   }
   .tools .warn.on { background:#2f9e4f; }
   .fsb { top:410px; font-size:1.35rem; }
-  .shearpt { display:grid; place-items:center; }
-  .shearpt i { display:block; font-style:normal; font-size:15px; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8); }
-  .shearpt b { font-size:10px; font-weight:800; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.9); margin-top:1px; }
+  .jetpt { display:grid; place-items:center; }
+  .jetpt i { display:block; font-style:normal; font-size:15px; line-height:1; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8); }
+  .jetpt b { font-size:10px; font-weight:800; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.9); margin-top:1px; }
   .legtab { position:absolute; left:0; top:30%; z-index:650; writing-mode:vertical-rl; transform:rotate(180deg); padding:16px 9px; border-radius:12px 0 0 12px; font:inherit; font-weight:800; font-size:.95rem; letter-spacing:.5px; cursor:pointer; }
   .legpanel { display:none; position:absolute; left:10px; top:70px; z-index:670; width:min(330px, calc(100% - 90px)); max-height:calc(100% - 290px); overflow:auto; background:rgba(255,255,255,.97); color:#0e1d38; border-radius:18px; padding:14px 16px; box-shadow:0 12px 30px rgba(0,0,0,.28); --text:#0e1d38; --soft:rgba(14,29,56,.7); --faint:rgba(14,29,56,.55); --line:rgba(14,29,56,.12); --panel2:rgba(14,29,56,.05); }
   .legpanel.open { display:block; }
@@ -917,7 +917,7 @@
         <button data-layer="outlook" aria-label="Storm outlook" title="Storm outlook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M13 13l-2 4h3l-2 4"/></svg></button>
         <button data-layer="storms" aria-label="Hurricanes" title="Hurricanes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><path d="M12 3c-5 0-8 3-8 6 3-2 5-1.5 6 .5M12 21c5 0 8-3 8-6-3 2-5 1.5-6-.5"/></svg></button>
         <button data-layer="winter" aria-label="Winter storms" title="Winter storms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 6.5l14.2 11M4.9 17.5l14.2-11M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></svg></button>
-        <button data-layer="shear" aria-label="Wind shear" title="Wind shear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg></button>
+        <button data-layer="jet" aria-label="Jet stream" title="Jet stream"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c3-3 6-3 9 0s6 3 9 0M2 15c3-3 6-3 9 0s6 3 9 0"/><path d="M18 6l3 3-3 3"/></svg></button>
         <button id="warnBtn" class="warn" aria-label="Warnings" title="Warnings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg></button>
       </div>
       <button class="toolbtn fsb" id="fsBtn" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg></button>
@@ -1041,7 +1041,7 @@
 </div>
 <div class="sheet" id="plusView"><div class="sheet-in">
   <div class="sh-top"><b>⭐ SkyCast Plus</b><button class="mini-btn" id="plusClose">Done</button></div>
-  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, wind shear, storm outlooks and the 14-day forecast are free for everyone. Plus adds extras for <b style="color:var(--text)">$1 a month</b>, and you can cancel anytime.</p>
+  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus adds extras for <b style="color:var(--text)">$1 a month</b>, and you can cancel anytime.</p>
   <ul class="plus-list" data-plus-list></ul>
   <div class="sh-note" data-plus-note></div>
   <button class="sh-btn plus-buy" data-plus-buy>Subscribe for $1/month</button>
@@ -1859,7 +1859,7 @@ function initMap() {
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
   map.on("click", mapAlertPopup);
-  map.on("moveend", () => shearOnMove());
+  map.on("moveend", () => jetOnMove());
   map.on("zoomstart", () => $("radar").classList.add("zooming"));
   map.on("zoomend", () => setTimeout(() => $("radar").classList.remove("zooming"), 60));
   setTimeout(startTornadoes, 0);
@@ -1867,7 +1867,7 @@ function initMap() {
   renderModels();
   loadRadar();
   loadGrid(true);
-  let w = "1"; try { w = localStorage.getItem("skycast_warn") ?? "1"; } catch(e) {}
+  let w = "0"; try { if (!localStorage.getItem("skycast_warn_v2")) { localStorage.setItem("skycast_warn_v2", "1"); localStorage.setItem("skycast_warn", "0"); } w = localStorage.getItem("skycast_warn") ?? "0"; } catch(e) {}
   if (w === "1" && inUS()) toggleWarnings(true);
 }
 function moveMap() {
@@ -2401,7 +2401,7 @@ function setMapMode(m) {
   clearOverlay();
   const radarUI = m === "radar";
   ["#play", "#speedBtn", "#track", "#rangeChips"].forEach(sel => { const el = document.querySelector(sel); if (el) el.style.display = radarUI ? "" : "none"; });
-  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", shear: "🌬️ Wind shear", winter: "❄️ Winter storms" };
+  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", jet: "💨 Jet stream", winter: "❄️ Winter storms" };
   $("layerPill").classList.toggle("show", !radarUI);
   $("layerPill").innerHTML = radarUI ? "" : `${names[m]}<button aria-label="Back to radar" onclick="setMapMode('radar')">✕</button>`;
   $("subopts").innerHTML = ""; $("futureNote").textContent = "";
@@ -2412,7 +2412,7 @@ function setMapMode(m) {
   if (m === "totals") showTotals();
   if (m === "outlook") showOutlook();
   if (m === "storms") showStorms();
-  if (m === "shear") showShear();
+  if (m === "jet") showJet();
   if (m === "winter") showWinter();
 }
 function badge(top, main, cls) { $("badge").className = "badge " + (cls || "future"); $("badge").innerHTML = `<small>${top}</small>${main}`; }
@@ -2471,49 +2471,44 @@ async function showOutlook() {
   if (feats.length) { try { map.fitBounds(overlay.getBounds(), { maxZoom: 6, padding: [20, 20] }); } catch(e) {} }
 }
 
-/* ---- Wind shear: change in wind between the ground and about 18,000 ft (0–6 km bulk shear), from Open-Meteo model data ---- */
-const SHEAR = [[0, "#5b6b8c"], [20, "#3cb4c8"], [30, "#4fc95a"], [40, "#f0dc3c"], [50, "#ff8c28"], [60, "#e6283c"], [75, "#c832c8"]];
-const shearColor = kt => { let c = SHEAR[0][1]; for (const [v, col] of SHEAR) if (kt >= v) c = col; return c; };
-let shearTimer = null, shearReq = 0;
-async function showShear() {
-  badge("WIND SHEAR", "Right now", "live");
-  $("rtime").innerHTML = "<b>0–6 km wind shear</b> · how much the wind changes from the ground to about 18,000 ft";
-  $("legendBox").innerHTML = `<span class="lg wide"><i style="background:linear-gradient(90deg,#5b6b8c,#3cb4c8,#4fc95a,#f0dc3c,#ff8c28,#e6283c,#c832c8)"></i>0 → 75+ knots</span><span class="lg">Arrows point the way the shear is going</span>`;
-  $("radarNote").textContent = "Strong shear (about 40 knots or more, yellow to red) helps storms organize and rotate, which can lead to supercells and tornadoes when storms form. Shear alone doesn't mean storms will happen. Model data from Open-Meteo, updated hourly.";
-  await drawShear();
+/* ---- Jet stream: winds about 34,000 ft up (250 hPa), from Open-Meteo model data ---- */
+const JET = [[0, "#4b5a78"], [50, "#3c8cc8"], [70, "#3cc8b4"], [90, "#7bd65a"], [110, "#f0dc3c"], [130, "#ff8c28"], [150, "#e6283c"], [180, "#c832c8"]];
+const jetColor = kt => { let c = JET[0][1]; for (const [v, col] of JET) if (kt >= v) c = col; return c; };
+let jetTimer = null, jetReq = 0;
+async function showJet() {
+  badge("JET STREAM", "Right now", "live");
+  $("rtime").innerHTML = "<b>Jet stream</b> · winds about 34,000 ft up, where planes fly";
+  $("legendBox").innerHTML = `<span class="lg wide"><i style="background:linear-gradient(90deg,${JET.map(x => x[1]).join(",")})"></i>${unit === "F" ? "Calm → 200+ mph" : "Calm → 330+ km/h"}</span><span class="lg">Arrows show which way it blows</span>`;
+  $("radarNote").textContent = "The jet stream is a river of fast wind high in the sky. It steers storms and separates cold air (usually north of it) from warm air (south of it). The fastest parts (yellow to purple) often help storms grow. Model data from Open-Meteo, updated hourly.";
+  await drawJet();
 }
-async function drawShear() {
-  if (!map || mapMode !== "shear") return;
-  const req = ++shearReq, b = map.getBounds().pad(0.05);
-  const COLSN = 9, ROWSN = 8, lat0 = b.getSouth(), lat1 = b.getNorth(), lon0 = b.getWest(), lon1 = b.getEast();
+async function drawJet() {
+  if (!map || mapMode !== "jet") return;
+  const req = ++jetReq, b = map.getBounds().pad(0.05);
+  const COLSN = 10, ROWSN = 9, lat0 = Math.max(-84, b.getSouth()), lat1 = Math.min(84, b.getNorth()), lon0 = Math.max(-179.9, b.getWest()), lon1 = Math.min(179.9, b.getEast());
   const dLat = (lat1 - lat0) / ROWSN, dLon = (lon1 - lon0) / COLSN, pts = [];
   for (let r = 0; r < ROWSN; r++) for (let c = 0; c < COLSN; c++) pts.push([lat0 + (r + .5) * dLat, lon0 + (c + .5) * dLon]);
-  const ok = pts.filter(([la, lo]) => la > -85 && la < 85 && lo > -180 && lo < 180);
-  if (!ok.length) return;
-  const url = "https://api.open-meteo.com/v1/forecast?latitude=" + ok.map(p => p[0].toFixed(2)).join(",") + "&longitude=" + ok.map(p => p[1].toFixed(2)).join(",") +
-    "&hourly=wind_speed_10m,wind_direction_10m,wind_speed_500hPa,wind_direction_500hPa&wind_speed_unit=kn&forecast_hours=1&timezone=GMT";
+  const url = "https://api.open-meteo.com/v1/forecast?latitude=" + pts.map(p => p[0].toFixed(2)).join(",") + "&longitude=" + pts.map(p => p[1].toFixed(2)).join(",") +
+    "&hourly=wind_speed_250hPa,wind_direction_250hPa&wind_speed_unit=kn&forecast_hours=1&timezone=GMT";
   let res;
   try { const r = await fetch(url); if (!r.ok) throw new Error(); res = await r.json(); }
-  catch (e) { if (req === shearReq) $("rtime").innerHTML = "<b>Wind shear couldn't load right now.</b> Try again in a little while."; return; }
-  if (req !== shearReq || mapMode !== "shear") return;
+  catch (e) { if (req === jetReq) $("rtime").innerHTML = "<b>The jet stream couldn't load right now.</b> Try again in a little while."; return; }
+  if (req !== jetReq || mapMode !== "jet") return;
   const list = Array.isArray(res) ? res : [res];
   const g = L.layerGroup();
-  const uv = (s, d) => [-s * Math.sin(d * Math.PI / 180), -s * Math.cos(d * Math.PI / 180)];
   list.forEach((o, k) => {
     const h = o && o.hourly; if (!h) return;
-    const s0 = h.wind_speed_10m[0], d0 = h.wind_direction_10m[0], s5 = h.wind_speed_500hPa[0], d5 = h.wind_direction_500hPa[0];
-    if ([s0, d0, s5, d5].some(v => v == null)) return;
-    const [u0, v0] = uv(s0, d0), [u5, v5] = uv(s5, d5), du = u5 - u0, dv = v5 - v0;
-    const kt = Math.round(Math.hypot(du, dv)), heading = (Math.atan2(du, dv) * 180 / Math.PI + 360) % 360;
-    const [la, lo] = ok[k], col = shearColor(kt);
-    g.addLayer(L.rectangle([[la - dLat / 2, lo - dLon / 2], [la + dLat / 2, lo + dLon / 2]], { stroke: false, fillColor: col, fillOpacity: .42, interactive: false }));
-    g.addLayer(L.marker([la, lo], { interactive: false, icon: L.divIcon({ className: "shearpt", iconSize: [44, 34],
-      html: `<i style="transform:rotate(${heading}deg)">⬆</i><b>${kt} kt</b>` }) }));
+    const kt = h.wind_speed_250hPa[0], dir = h.wind_direction_250hPa[0];
+    if (kt == null || dir == null) return;
+    const [la, lo] = pts[k], col = jetColor(kt), shown = unit === "F" ? Math.round(kt * 1.15078) + " mph" : Math.round(kt * 1.852) + " km/h";
+    g.addLayer(L.rectangle([[la - dLat / 2, lo - dLon / 2], [la + dLat / 2, lo + dLon / 2]], { stroke: false, fillColor: col, fillOpacity: kt >= 70 ? .5 : .25, interactive: false }));
+    g.addLayer(L.marker([la, lo], { interactive: false, icon: L.divIcon({ className: "jetpt", iconSize: [54, 34],
+      html: `<i style="transform:rotate(${(dir + 180) % 360}deg)">⬆</i><b>${shown}</b>` }) }));
   });
   clearOverlay(); overlay = g.addTo(map);
-  $("rtime").innerHTML = "<b>0–6 km wind shear</b> · how much the wind changes from the ground to about 18,000 ft";
+  $("rtime").innerHTML = "<b>Jet stream</b> · winds about 34,000 ft up, where planes fly";
 }
-function shearOnMove() { if (mapMode !== "shear") return; clearTimeout(shearTimer); shearTimer = setTimeout(drawShear, 700); }
+function jetOnMove() { if (mapMode !== "jet") return; clearTimeout(jetTimer); jetTimer = setTimeout(drawJet, 700); }
 
 async function showStorms() {
   badge("HURRICANES", "Active storms");
@@ -2644,7 +2639,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115023201";   // kept equal to version.json on every publish
+const BUILD = "20261115023419";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
