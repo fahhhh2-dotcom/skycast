@@ -1056,6 +1056,7 @@
       <button class="onb-swap" id="onbForgot" type="button" hidden style="color:var(--soft);margin-top:4px">Forgot password?</button>
       <button class="onb-swap" id="onbSwap" type="button">Already have an account? Sign in</button>
       <div class="sh-note">Your account works on any phone or computer you sign in on.</div>
+      <button class="onb-skip" id="onbSkipAcct" type="button">Skip for now</button>
     </section>
     <section class="onb-step" data-step="1">
       <div class="onb-ic">🔔</div>
@@ -1152,7 +1153,7 @@
 </footer>
 
 <script>
-const FIRST_VISIT = (() => { try { return !localStorage.getItem("skycast_onboarded") || !localStorage.getItem("skycast_session"); } catch(e) { return false; } })();
+const FIRST_VISIT = (() => { try { return !localStorage.getItem("skycast_onboarded") || (!localStorage.getItem("skycast_session") && !localStorage.getItem("skycast_skip_signin")); } catch(e) { return false; } })();
 const WMO = {
   0:["Clear sky","☀️","🌙"],1:["Mostly clear","🌤️","🌙"],2:["Partly cloudy","⛅","☁️"],3:["Overcast","☁️","☁️"],
   45:["Fog","🌫️","🌫️"],48:["Freezing fog","🌫️","🌫️"],
@@ -2698,7 +2699,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115025117";   // kept equal to version.json on every publish
+const BUILD = "20261115025303";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3403,9 +3404,13 @@ setTimeout(() => {   // runs once the whole script has loaded
       "auth/too-many-requests": "Too many tries. Wait a minute and try again.",
       "auth/network-request-failed": "No internet connection. Check it and try again.",
       "auth/popup-closed-by-user": "", "auth/cancelled-popup-request": "",
-      "auth/unauthorized-domain": "Sign-in isn't allowed on this website address yet."
+      "auth/unauthorized-domain": "Sign-in isn't allowed on this website address yet.",
+      "auth/operation-not-allowed": "Email sign-up isn't turned on yet. Use Google, or tap Skip for now.",
+      "auth/admin-restricted-operation": "Email sign-up isn't turned on yet. Use Google, or tap Skip for now.",
+      "auth/missing-password": "Type a password",
+      "auth/internal-error": "Sign-in had a hiccup. Wait a few seconds and try again."
     };
-    return e && e.code in m ? m[e.code] : "Something went wrong. Try again.";
+    return e && e.code in m ? m[e.code] : "Something went wrong (" + ((e && e.code) || "unknown") + "). Try again.";
   };
   const getFB = async () => { try { return await fbReady; } catch(e) { err("Sign-in isn't loading. Check your internet and try again."); return null; } };
   // called once Firebase confirms you're signed in (and your saved settings are loaded)
@@ -3416,6 +3421,7 @@ setTimeout(() => {   // runs once the whole script has loaded
     if (onboarded) { o.hidden = true; toast("Signed in as " + account.email); } else go(1);
   };
   $("onbSwap").onclick = () => { mode = mode === "up" ? "in" : "up"; paintMode(); };
+  $("onbSkipAcct").onclick = () => { try { localStorage.setItem("skycast_skip_signin", "1"); } catch(e) {} busy(false); err(""); let ob = false; try { ob = !!localStorage.getItem("skycast_onboarded"); } catch(e) {} if (ob) o.hidden = true; else go(1); };
   $("onbAuth").onsubmit = async e => {
     e.preventDefault();
     const email = $("onbEmail").value.trim(), pw = $("onbPw").value;
@@ -3428,6 +3434,7 @@ setTimeout(() => {   // runs once the whole script has loaded
       if (mode === "up") await F.au.createUserWithEmailAndPassword(F.auth, email, pw);
       else await F.au.signInWithEmailAndPassword(F.auth, email, pw);
       err("Signing you in…", true);
+      setTimeout(() => { if (!o.hidden && step === 0) { busy(false); try { localStorage.setItem("skycast_session", "1"); } catch(e2) {} if (!account.email) saveAccount({ email }); paintAccount(); window.onSignedIn(); } }, 4000);
     } catch(ex) { busy(false); err(nice(ex)); }
   };
   $("onbForgot").onclick = async () => {
