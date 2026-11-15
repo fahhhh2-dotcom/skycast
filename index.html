@@ -798,19 +798,20 @@
   html body .bar { background: transparent !important; border-bottom: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
     padding: calc(env(safe-area-inset-top) + 8px) 10px 6px; pointer-events: none; }
   .bar > .bar-in { pointer-events: auto; position: relative; isolation: isolate; border-radius: 26px;
-    background: linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.08) 55%, rgba(255,255,255,.12));
-    -webkit-backdrop-filter: blur(22px) saturate(185%) brightness(1.05); backdrop-filter: blur(22px) saturate(185%) brightness(1.05);
-    border: 1px solid rgba(255,255,255,.38);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.65), inset 0 -1px 0 rgba(255,255,255,.14), inset 0 0 18px rgba(255,255,255,.08), 0 10px 30px rgba(5,20,60,.28); }
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), var(--top);
+    -webkit-backdrop-filter: blur(22px) saturate(140%); backdrop-filter: blur(22px) saturate(140%);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(255,255,255,.08), 0 10px 26px rgba(5,20,60,.22); }
+  @supports (background: color-mix(in srgb, red, blue)) { .bar > .bar-in { background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), color-mix(in srgb, var(--top) 72%, transparent); } }
   .bar > .bar-in::before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:-1;
-    background: radial-gradient(120% 70% at 20% -10%, rgba(255,255,255,.35), transparent 55%), radial-gradient(80% 60% at 100% 120%, rgba(255,255,255,.12), transparent 60%); }
+    background: radial-gradient(120% 70% at 20% -10%, rgba(255,255,255,.14), transparent 55%); }
   @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) { .bar > .bar-in { background: rgba(30,70,150,.88); } }
-  .bar .tabs { background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.22); border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.25); }
+  .bar .tabs { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.25); }
   .bar .tabs a { border-radius: 14px; color: rgba(255,255,255,.85); }
-  .bar .tabs a.on, html.light .bar .tabs a.on { color:#fff; background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.18));
+  .bar .tabs a.on, html.light .bar .tabs a.on { color:#fff; background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.12));
     box-shadow: inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 0 rgba(255,255,255,.2), 0 4px 12px rgba(5,20,60,.22); text-shadow: 0 1px 2px rgba(0,0,0,.18); }
-  .bar .search input { border-radius: 18px; border: 1px solid rgba(255,255,255,.26); background-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.22); }
-  .bar .seg, .bar .iconbtn { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.26); box-shadow: inset 0 1px 0 rgba(255,255,255,.3); }
+  .bar .search input { border-radius: 18px; border: 1px solid rgba(255,255,255,.18); background-color: rgba(255,255,255,.07); box-shadow: inset 0 1px 0 rgba(255,255,255,.14); }
+  .bar .seg, .bar .iconbtn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.18); box-shadow: inset 0 1px 0 rgba(255,255,255,.2); }
   .bar .seg { border-radius: 16px; }
   .bar .iconbtn { border-radius: 50%; }
   .bar .seg button.on, html.light .bar .seg button.on { color:#fff; background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.18)); box-shadow: inset 0 1px 0 rgba(255,255,255,.7); }
@@ -2797,7 +2798,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115235758";   // kept equal to version.json on every publish
+const BUILD = "20261115235856";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
