@@ -328,11 +328,13 @@
   /* ===== Radar page: full-screen map style ===== */
   html.onradar .search, html.onradar .cities, html.onradar #toast, html.onradar footer { display:none; }
   html.onradar, html.onradar body { overflow:hidden; height:100%; }
-  .radarpanel { position:fixed; left:0; right:0; top:var(--barh, 64px); bottom:0; z-index:5; background:#dfe7ef; }
+  .radarpanel { position:fixed; left:0; right:0; top:var(--barh, 64px); bottom:0; z-index:5; background:#fff; }
   .radarpanel.fs { top:0; z-index:2600; }
   .radarpanel .mapwrap { position:absolute; inset:0; }
-  .radarpanel #radar { position:absolute; inset:0; height:auto; min-height:0; border-radius:0; background:#dfe7ef; }
-  .maptint { background:rgba(255,255,255,.08) !important; }
+  .radarpanel #radar { position:absolute; inset:0; height:auto; min-height:0; border-radius:0; background:#fff; }
+  .maptint { background:transparent !important; }
+  /* white map: land white, water light gray, roads and labels soft gray, so weather colors stand out */
+  .basemap { filter: grayscale(1) contrast(.45) brightness(1.45); }
   .leaflet-control-attribution { background:rgba(255,255,255,.75) !important; color:#334 !important; }
   .leaflet-control-attribution a { color:#225 !important; }
   .glass { background:rgba(36,40,48,.88); color:#fff; }
@@ -1854,7 +1856,7 @@ function initMap() {
   if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
   map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 10, fadeAnimation: false, markerZoomAnimation: false,
     zoomSnap: 0.5, wheelPxPerZoomLevel: 90, tap: false, inertia: true, inertiaDeceleration: 2500 }).setView([place.latitude, place.longitude], 7);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 10, attribution: "© OpenStreetMap", keepBuffer: 3, updateWhenIdle: true }).addTo(map);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 10, attribution: "© OpenStreetMap", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
   map.createPane("tint"); map.getPane("tint").style.zIndex = 250; map.getPane("tint").style.pointerEvents = "none";
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
@@ -2639,7 +2641,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115023419";   // kept equal to version.json on every publish
+const BUILD = "20261115023712";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
