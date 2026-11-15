@@ -333,8 +333,8 @@
   .radarpanel .mapwrap { position:absolute; inset:0; }
   .radarpanel #radar { position:absolute; inset:0; height:auto; min-height:0; border-radius:0; background:#fff; }
   .maptint { background:transparent !important; }
-  /* white map: land white, water light gray, roads and labels soft gray, so weather colors stand out */
-  .basemap { filter: grayscale(1) contrast(.45) brightness(1.45); }
+  /* white map with only place names */
+  .basemap { filter: none; }
   .leaflet-control-attribution { background:rgba(255,255,255,.75) !important; color:#334 !important; }
   .leaflet-control-attribution a { color:#225 !important; }
   .glass { background:rgba(36,40,48,.88); color:#fff; }
@@ -1099,7 +1099,7 @@
 <footer>
   Forecasts, observations &amp; warnings: <a href="https://www.weather.gov/" target="_blank" rel="noopener">National Weather Service</a> ·
   Radar: NWS NEXRAD &amp; NOAA HRRR via <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a> ·
-  14-day outlook: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Search &amp; map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
+  14-day outlook: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Map labels © <a href="https://carto.com/attributions">CARTO</a> · Search &amp; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
 </footer>
 
 <script>
@@ -1856,7 +1856,8 @@ function initMap() {
   if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
   map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 10, fadeAnimation: false, markerZoomAnimation: false,
     zoomSnap: 0.5, wheelPxPerZoomLevel: 90, tap: false, inertia: true, inertiaDeceleration: 2500 }).setView([place.latitude, place.longitude], 7);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 10, attribution: "© OpenStreetMap", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
+  // plain white map with only place names on it (CARTO "labels only" tiles on a white background)
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", { subdomains: "abcd", maxZoom: 10, attribution: "© OpenStreetMap contributors © CARTO", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
   map.createPane("tint"); map.getPane("tint").style.zIndex = 250; map.getPane("tint").style.pointerEvents = "none";
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
@@ -2641,7 +2642,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115023712";   // kept equal to version.json on every publish
+const BUILD = "20261115023844";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });

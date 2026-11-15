@@ -2,7 +2,7 @@
 // - keeps the app itself (page, icons, map library, fonts) saved so it opens without internet
 // - always tries the network first for the page, so updates show up right away
 // - weather data is saved by the page itself (localStorage), not here
-const CACHE = "skycast-v28";
+const CACHE = "skycast-v29";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
 
