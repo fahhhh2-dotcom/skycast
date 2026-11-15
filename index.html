@@ -1099,7 +1099,7 @@
 <footer>
   Forecasts, observations &amp; warnings: <a href="https://www.weather.gov/" target="_blank" rel="noopener">National Weather Service</a> ·
   Radar: NWS NEXRAD &amp; NOAA HRRR via <a href="https://mesonet.agron.iastate.edu/" target="_blank" rel="noopener">Iowa Environmental Mesonet</a> ·
-  14-day outlook: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Map labels © <a href="https://carto.com/attributions">CARTO</a> · Search &amp; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
+  14-day outlook: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> · Map labels © <a href="https://www.esri.com/">Esri</a> · Search &amp; map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · US locations only
 </footer>
 
 <script>
@@ -1856,8 +1856,8 @@ function initMap() {
   if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
   map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 10, fadeAnimation: false, markerZoomAnimation: false,
     zoomSnap: 0.5, wheelPxPerZoomLevel: 90, tap: false, inertia: true, inertiaDeceleration: 2500 }).setView([place.latitude, place.longitude], 7);
-  // plain white map with only place names on it (CARTO "labels only" tiles on a white background)
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", { subdomains: "abcd", maxZoom: 10, attribution: "© OpenStreetMap contributors © CARTO", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
+  // plain white map with only place names on it (Esri "Light Gray Canvas Reference" = the labels layer, no key needed, on a white background)
+  L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}", { maxZoom: 10, maxNativeZoom: 13, attribution: "Labels © Esri", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
   map.createPane("tint"); map.getPane("tint").style.zIndex = 250; map.getPane("tint").style.pointerEvents = "none";
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
@@ -2642,7 +2642,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115023844";   // kept equal to version.json on every publish
+const BUILD = "20261115024028";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
