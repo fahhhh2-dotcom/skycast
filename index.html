@@ -82,7 +82,7 @@
   @media (max-width: 959px) {
     .col { display:contents; }
     .hero { order:1; } #alerts { order:2; } #tips { order:3; } .o-hourly { order:4; } .o-days { order:5; }
-    .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; }
+    .o-storm { order:6; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; }
   }
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:20px; min-width:0; }
   .ph { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
@@ -669,6 +669,16 @@
   html.light .pc-row button { background:#0e1d38; color:#fff; }
   .onb .pc-row button { background:#fff; color:#0b1424; }
   .plus-codemsg { font-size:.8rem; color:#ffb4b4; margin-top:6px; min-height:0; }
+  /* ===== Storm outlook card ===== */
+  .st-sec { padding:10px 0; border-top:1px solid var(--line); }
+  .st-sec:first-child { border-top:0; padding-top:0; }
+  .st-h { display:flex; align-items:center; gap:8px; font-weight:800; font-size:.95rem; }
+  .st-h .pill { margin-left:auto; font-size:.72rem; font-weight:800; padding:4px 10px; border-radius:999px; color:#0b1424; white-space:nowrap; }
+  .st-p { font-size:.86rem; color:var(--soft); line-height:1.45; margin-top:4px; }
+  .st-days { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .st-days span { font-size:.78rem; padding:6px 10px; border-radius:12px; background:var(--panel2); border:1px solid var(--line); }
+  .st-days b { color:var(--text); }
+  .st-map { margin-top:8px; border:1px solid var(--line); background:transparent; color:var(--text); font:inherit; font-weight:700; font-size:.8rem; padding:7px 12px; border-radius:999px; cursor:pointer; }
   /* ===== Custom backgrounds (Settings → Background) ===== */
   html[data-bg] body::before { background: var(--bgx); }
   html[data-bg="ocean"]    { --bgx: radial-gradient(1200px 700px at 15% -10%, #12b5c9, transparent 70%), linear-gradient(180deg, #073b55, #031420 90%); }
@@ -852,6 +862,10 @@
       <div id="days"></div>
       <button class="see14" id="see14Btn">See 14 days ›</button>
     </section>
+    <section class="panel o-storm" id="stormPanel" style="display:none">
+      <div class="ph"><h3>Storm outlook</h3><span>Next 3–7 days</span></div>
+      <div id="stormBody"></div>
+    </section>
     <a class="panel radar-teaser" href="#radar">
       <div style="display:flex;align-items:center;gap:14px"><div class="rt-ic">🗺️</div><div><b>Radar</b><span>Live and future radar, satellite, rain totals, storm outlook, hurricanes and warnings</span></div></div>
       <div class="go">Open ›</div>
@@ -902,6 +916,7 @@
         <button data-layer="totals" aria-label="Rain totals" title="Rain totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/></svg></button>
         <button data-layer="outlook" aria-label="Storm outlook" title="Storm outlook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 16a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M13 13l-2 4h3l-2 4"/></svg></button>
         <button data-layer="storms" aria-label="Hurricanes" title="Hurricanes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><path d="M12 3c-5 0-8 3-8 6 3-2 5-1.5 6 .5M12 21c5 0 8-3 8-6-3 2-5 1.5-6-.5"/></svg></button>
+        <button data-layer="winter" aria-label="Winter storms" title="Winter storms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 6.5l14.2 11M4.9 17.5l14.2-11M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></svg></button>
         <button data-layer="shear" aria-label="Wind shear" title="Wind shear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg></button>
         <button id="warnBtn" class="warn" aria-label="Warnings" title="Warnings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg></button>
       </div>
@@ -1251,7 +1266,7 @@ async function fetchNWS(lat, lon) {
     return m;
   };
   const T = byDate(grid.temperature), AT = byDate(grid.apparentTemperature), QPF = byDate(grid.quantitativePrecipitation, true),
-        SN = byDate(grid.snowfallAmount, true), WS = byDate(grid.windSpeed), WG = byDate(grid.windGust),
+        SN = byDate(grid.snowfallAmount, true), ICE = byDate(grid.iceAccumulation, true), WS = byDate(grid.windSpeed), WG = byDate(grid.windGust),
         WD = expand(grid.windDirection), POP = byDate(grid.probabilityOfPrecipitation);
   const today = localStr(Date.now(), tz).slice(0, 10);
   const dates = Object.keys(T).filter(d => d >= today).sort().slice(0, 7);
@@ -1261,7 +1276,7 @@ async function fetchNWS(lat, lon) {
 
   const daily = { time: dates, weather_code: [], temperature_2m_max: [], temperature_2m_min: [], apparent_temperature_max: [], apparent_temperature_min: [],
     precipitation_probability_max: [], precipitation_sum: [], snowfall_sum: [], wind_speed_10m_max: [], wind_gusts_10m_max: [],
-    wind_direction_10m_dominant: [], uv_index_max: [], sunrise: [], sunset: [], daylight_duration: [], detail: [] };
+    wind_direction_10m_dominant: [], uv_index_max: [], sunrise: [], sunset: [], daylight_duration: [], detail: [], ice_sum: [] };
   dates.forEach(d => {
     const dayP = periods.find(p => p.startTime.slice(0, 10) === d && p.isDaytime);
     const nightP = periods.find(p => p.startTime.slice(0, 10) === d && !p.isDaytime);
@@ -1275,6 +1290,7 @@ async function fetchNWS(lat, lon) {
     daily.precipitation_probability_max.push(Math.round(popMax ?? 0));
     daily.precipitation_sum.push(sum(QPF[d]));
     daily.snowfall_sum.push(sum(SN[d]) / 10);
+    daily.ice_sum.push(sum(ICE[d]));   // mm of ice
     const ws = WS[d] || [];
     const top = ws.reduce((b, x) => (!b || x.v > b.v ? x : b), null);
     daily.wind_speed_10m_max.push(top ? top.v : 0);
@@ -2385,7 +2401,7 @@ function setMapMode(m) {
   clearOverlay();
   const radarUI = m === "radar";
   ["#play", "#speedBtn", "#track", "#rangeChips"].forEach(sel => { const el = document.querySelector(sel); if (el) el.style.display = radarUI ? "" : "none"; });
-  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", shear: "🌬️ Wind shear" };
+  const names = { sat: "🛰️ Satellite", totals: "💧 Rain totals", outlook: "⛈️ Storm outlook", storms: "🌀 Hurricanes", shear: "🌬️ Wind shear", winter: "❄️ Winter storms" };
   $("layerPill").classList.toggle("show", !radarUI);
   $("layerPill").innerHTML = radarUI ? "" : `${names[m]}<button aria-label="Back to radar" onclick="setMapMode('radar')">✕</button>`;
   $("subopts").innerHTML = ""; $("futureNote").textContent = "";
@@ -2397,6 +2413,7 @@ function setMapMode(m) {
   if (m === "outlook") showOutlook();
   if (m === "storms") showStorms();
   if (m === "shear") showShear();
+  if (m === "winter") showWinter();
 }
 function badge(top, main, cls) { $("badge").className = "badge " + (cls || "future"); $("badge").innerHTML = `<small>${top}</small>${main}`; }
 
@@ -2627,7 +2644,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115022904";   // kept equal to version.json on every publish
+const BUILD = "20261115023201";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3406,6 +3423,102 @@ setTimeout(() => {   // runs once the whole script has loaded
   window.showOnb = () => { go(0); paintMode(); $("sheet").classList.remove("open"); o.hidden = false; };
   if (FIRST_VISIT) { if (signedIn()) go(1); o.hidden = false; }
 }, 0);
+
+/* ---------- Storm outlook: winter storms (NWS forecast + WPC Winter Storm Severity Index) and severe storms (SPC outlook) ---------- */
+const WSSI = {
+  "WINTER WEATHER AREA": { c: "#d2dfe7", n: "Winter weather", d: "Some snow or ice, mostly small impacts" },
+  MINOR: { c: "#faf5a3", n: "Minor impacts", d: "Roads may be slick; use caution" },
+  MODERATE: { c: "#f7962f", n: "Moderate impacts", d: "Hazardous travel likely; some closures possible" },
+  MAJOR: { c: "#e61f26", n: "Major impacts", d: "Dangerous or impossible travel; widespread closures" },
+  EXTREME: { c: "#7853a1", n: "Extreme impacts", d: "Extreme danger; travel impossible, long-lasting impacts" }
+};
+const WSSI_ORDER = Object.keys(WSSI), RISK_ORDER = ["TSTM", "MRGL", "SLGT", "ENH", "MDT", "HIGH"];
+const NOAA_MS = "https://mapservices.weather.noaa.gov/vector/rest/services/outlooks/";
+async function pointQuery(service, layer, field) {
+  const u = `${NOAA_MS}${service}/MapServer/${layer}/query?geometry=${place.longitude.toFixed(4)},${place.latitude.toFixed(4)}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=false&f=json`;
+  const j = await (await fetch(u)).json();
+  return (j.features || []).map(f => String(prop(f.attributes || {}, field) || "").toUpperCase()).filter(Boolean);
+}
+const worst = (list, order) => list.reduce((b, x) => order.indexOf(x) > order.indexOf(b) ? x : b, null);
+let stormFor = "", stormData = null;
+async function renderStorm() {
+  if (!data || !inUS()) { $("stormPanel").style.display = "none"; return; }
+  const key = place.latitude.toFixed(2) + "," + place.longitude.toFixed(2) + "|" + Math.floor(Date.now() / 1800000);
+  drawStorm();
+  if (stormFor === key) return;
+  stormFor = key;
+  const days = [1, 2, 3];
+  const [wssi, spc] = await Promise.all([
+    Promise.all(days.map(d => pointQuery("wpc_wssi", d, "impact").then(l => worst(l, WSSI_ORDER)).catch(() => undefined))),
+    Promise.all(days.map(d => pointQuery("SPC_wx_outlks", OUTLOOK_LAYERS[d], "label").then(l => worst(l, RISK_ORDER)).catch(() => undefined)))
+  ]);
+  stormData = { wssi, spc };
+  drawStorm();
+}
+function drawStorm() {
+  const d = data.daily, es = lang === "es";
+  const dayName = i => i === 0 ? (es ? "Hoy" : "Today") : i === 1 ? (es ? "Mañana" : "Tomorrow") : new Date(d.time[i] + "T12:00").toLocaleDateString(LOC(), { weekday: "short" });
+  const snowTxt = cm => unit === "F" ? (cm / 2.54 < 0.5 ? "under ½ in" : (Math.round(cm / 2.54 * 2) / 2) + " in") : (cm < 1 ? "under 1 cm" : Math.round(cm) + " cm");
+  const iceTxt = mm => unit === "F" ? (mm / 25.4 < 0.05 ? "a glaze" : (mm / 25.4).toFixed(2) + " in") : (mm < 1 ? "a glaze" : mm.toFixed(1) + " mm");
+  // winter
+  const winterAlerts = alerts.filter(a => /winter|snow|ice|blizzard|freezing|sleet|wind chill/i.test(a.event) && (!(a.ends || a.expires) || Date.parse(a.ends || a.expires) > Date.now()));
+  const snowDays = d.time.map((t, i) => ({ i, sn: d.snowfall_sum[i] || 0, ice: (d.ice_sum || [])[i] || 0 })).filter(x => x.sn >= 0.3 || x.ice >= 0.25);
+  const w = stormData && stormData.wssi, wBest = w ? worst(w.filter(Boolean), WSSI_ORDER) : null, wDay = w ? w.indexOf(wBest) : -1;
+  let winter = "";
+  if (winterAlerts.length || snowDays.length || wBest) {
+    const pill = wBest ? `<span class="pill" style="background:${WSSI[wBest].c}">${WSSI[wBest].n} · ${dayName(wDay)}</span>` : "";
+    winter = `<div class="st-sec"><div class="st-h">❄️ ${es ? "Tormenta de invierno" : "Winter storm"}${pill}</div>
+      ${winterAlerts.length ? `<div class="st-p"><b style="color:var(--text)">⚠️ ${winterAlerts.map(a => esc(a.event)).join(", ")}</b> ${es ? "vigente para tu zona." : "in effect for your area."}</div>` : ""}
+      ${wBest ? `<div class="st-p">${WSSI[wBest].d}.</div>` : ""}
+      ${snowDays.length ? `<div class="st-days">${snowDays.map(x => `<span>${dayName(x.i)}: <b>${x.sn >= 0.3 ? "❄️ " + snowTxt(x.sn) : ""}${x.sn >= 0.3 && x.ice >= 0.25 ? " · " : ""}${x.ice >= 0.25 ? "🧊 " + iceTxt(x.ice) : ""}</b></span>`).join("")}</div>` : ""}
+      <button class="st-map" data-go="winter">${es ? "Ver en el mapa" : "See winter storms on the map"} ›</button></div>`;
+  } else {
+    winter = `<div class="st-sec"><div class="st-h">❄️ ${es ? "Tormenta de invierno" : "Winter storm"}</div><div class="st-p">${es ? "No se espera nieve ni hielo en los próximos 7 días." : "No snow or ice expected in the next 7 days."}</div><button class="st-map" data-go="winter">${es ? "Ver en el mapa" : "See winter storms on the map"} ›</button></div>`;
+  }
+  // severe
+  const sp = stormData && stormData.spc;
+  const stormDays = d.time.slice(0, 7).map((t, i) => ({ i, code: d.weather_code[i], p: d.precipitation_probability_max[i] || 0 })).filter(x => x.code >= 95);
+  let severe;
+  if (sp && sp.some(x => x && x !== "TSTM")) {
+    const best = worst(sp.filter(Boolean), RISK_ORDER), bi = sp.indexOf(best);
+    severe = `<div class="st-sec"><div class="st-h">⛈️ ${es ? "Tormentas severas" : "Severe storms"}<span class="pill" style="background:${RISK[best].c}">${RISK[best].n} · ${dayName(bi)}</span></div>
+      <div class="st-p">${RISK[best].d}.</div>
+      <div class="st-days">${sp.map((x, i) => `<span>${dayName(i)}: <b>${x ? RISK[x].n.replace(/^\d · /, "") : (es ? "Ninguno" : "None")}</b></span>`).join("")}</div>
+      <button class="st-map" data-go="outlook">${es ? "Ver en el mapa" : "See storm outlook on the map"} ›</button></div>`;
+  } else {
+    const t = sp && sp.some(x => x === "TSTM") ? (es ? "Pueden haber tormentas, pero no se esperan severas en 3 días." : "Some thunderstorms possible, but nothing severe expected in the next 3 days.")
+      : stormDays.length ? (es ? "Pronóstico de tormentas: " : "Thunderstorms in the forecast: ") + stormDays.map(x => dayName(x.i)).join(", ") + "."
+      : sp ? (es ? "No se esperan tormentas severas en los próximos 3 días." : "No severe storms expected in the next 3 days.") : (es ? "Revisando el pronóstico de tormentas…" : "Checking the storm outlook…");
+    severe = `<div class="st-sec"><div class="st-h">⛈️ ${es ? "Tormentas severas" : "Severe storms"}</div><div class="st-p">${t}</div><button class="st-map" data-go="outlook">${es ? "Ver en el mapa" : "See storm outlook on the map"} ›</button></div>`;
+  }
+  $("stormBody").innerHTML = winter + severe;
+  $("stormPanel").style.display = "";
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const m = b.dataset.go; location.hash = "#radar"; setTimeout(() => { if (typeof setMapMode === "function" && map) setMapMode(m); }, 600); });
+}
+{ const _r2 = render; render = function() { _r2.apply(this, arguments); try { renderStorm(); } catch(e) { console.warn(e); } }; }
+
+/* ---- Winter storms map: WPC Winter Storm Severity Index (WSSI) ---- */
+async function showWinter() {
+  overlayOpt.winter = overlayOpt.winter || 1;
+  $("subopts").innerHTML = [1, 2, 3].map(d => `<button data-wday="${d}" class="${overlayOpt.winter === d ? "on" : ""}">${d === 1 ? "Today" : d === 2 ? "Tomorrow" : "Day 3"}</button>`).join("");
+  document.querySelectorAll("[data-wday]").forEach(b => b.onclick = () => { overlayOpt.winter = +b.dataset.wday; setMapMode("winter"); });
+  badge("WINTER STORMS", overlayOpt.winter === 1 ? "Today" : overlayOpt.winter === 2 ? "Tomorrow" : "Day 3");
+  $("rtime").innerHTML = "Loading the Winter Storm Severity Index…";
+  $("legendBox").innerHTML = Object.values(WSSI).map(r => `<span class="lg"><i style="background:${r.c};width:16px;height:12px"></i>${r.n}</span>`).join("");
+  $("radarNote").textContent = "From NOAA's Weather Prediction Center Winter Storm Severity Index. It shows how much snow, ice and blowing snow could disrupt daily life. Tap a colored area for details.";
+  const day = overlayOpt.winter;
+  let gj = null;
+  try { gj = await (await fetch(`${NOAA_MS}wpc_wssi/MapServer/${day}/query?where=1%3D1&outFields=impact&outSR=4326&f=geojson`)).json(); if (!gj.features) throw new Error(); } catch(e) { gj = null; }
+  if (mapMode !== "winter" || overlayOpt.winter !== day) return;
+  if (!gj) { $("rtime").textContent = "The winter storm map couldn't load right now. Try again in a few minutes."; return; }
+  const feats = gj.features.filter(f => WSSI[String(prop(f.properties, "impact") || "").toUpperCase()]);
+  overlay = L.geoJSON({ type: "FeatureCollection", features: feats }, {
+    style: f => { const k = String(prop(f.properties, "impact")).toUpperCase(); return { color: "#6e6e6e", weight: 0.6, fillColor: WSSI[k].c, fillOpacity: 0.5 }; },
+    onEachFeature: (f, l) => { const k = String(prop(f.properties, "impact")).toUpperCase(); l.bindPopup(`<b>${WSSI[k].n}</b><br>${WSSI[k].d}`); }
+  }).addTo(map);
+  $("rtime").innerHTML = feats.length ? `<b>Winter storm impacts on the map</b> · zoom out to see the whole country` : "<b>No winter storm impacts expected</b> in the US for this day.";
+  if (feats.length) { try { map.fitBounds(overlay.getBounds(), { maxZoom: 6, padding: [20, 20] }); } catch(e) {} }
+}
 
 /* ---------- Background picker (saved on this device) ---------- */
 let bgChoice = "auto";
