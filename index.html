@@ -334,7 +334,8 @@
   .radarpanel #radar { position:absolute; inset:0; height:auto; min-height:0; border-radius:0; background:#fff; }
   .maptint { background:transparent !important; }
   /* white map with only place names */
-  .basemap { filter: none; }
+  .basemap { filter: brightness(1.07) saturate(.6); }
+  .maplabels { filter: contrast(1.15); }
   .leaflet-control-attribution { background:rgba(255,255,255,.75) !important; color:#334 !important; }
   .leaflet-control-attribution a { color:#225 !important; }
   .glass { background:rgba(36,40,48,.88); color:#fff; }
@@ -1854,10 +1855,15 @@ const ROWS = 13, COLS = 15, D_LAT = 3.2, D_LON = 4.6, SCALE = 12;
 
 function initMap() {
   if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
-  map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 10, fadeAnimation: false, markerZoomAnimation: false,
+  map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 11, fadeAnimation: false, zoomAnimationThreshold: 4, markerZoomAnimation: false,
     zoomSnap: 0.5, wheelPxPerZoomLevel: 90, tap: false, inertia: true, inertiaDeceleration: 2500 }).setView([place.latitude, place.longitude], 7);
-  // plain white map with place names plus country, state and county lines (Esri "World Boundaries and Places", no key needed)
-  L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxZoom: 10, attribution: "Labels © Esri", keepBuffer: 3, updateWhenIdle: true, className: "basemap" }).addTo(map);
+  // clean near-white map (Esri Light Gray Canvas, no key needed): base with soft borders under the weather,
+  // and the place names in their own layer ABOVE the weather so cities stay readable through the rain
+  const ESRI = "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+  const baseOpts = { maxZoom: 11, maxNativeZoom: 13, keepBuffer: 6, updateWhenIdle: false, updateWhenZooming: false, crossOrigin: true };
+  L.tileLayer(ESRI + "World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { ...baseOpts, attribution: "Map © Esri", className: "basemap", zIndex: 1 }).addTo(map);
+  map.createPane("labels"); map.getPane("labels").style.zIndex = 450; map.getPane("labels").style.pointerEvents = "none";
+  L.tileLayer(ESRI + "World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}", { ...baseOpts, pane: "labels", detectRetina: true, className: "maplabels" }).addTo(map);
   map.createPane("tint"); map.getPane("tint").style.zIndex = 250; map.getPane("tint").style.pointerEvents = "none";
   map.getPane("tint").innerHTML = '<div class="maptint"></div>';
   labelGroup = L.layerGroup().addTo(map);
@@ -2057,7 +2063,7 @@ const RecolorTiles = !window.L ? null : L.TileLayer.extend({
 function ensureLayer(f) {
   let e = layers[f.key];
   if (e && e.url === f.url) return e;
-  const opts = { opacity: 0, zIndex: 10, maxZoom: 10, subdomains: "123", updateWhenIdle: true, updateWhenZooming: false, keepBuffer: 2, className: "radar-tiles" };
+  const opts = { opacity: 0, zIndex: 10, maxZoom: 11, maxNativeZoom: 10, subdomains: "123", updateWhenIdle: true, updateWhenZooming: false, keepBuffer: 4, className: "radar-tiles" };
   const layer = f.hrrr || !RecolorTiles ? L.tileLayer(f.url, opts) : new RecolorTiles(f.url, opts);
   const ne = { layer, url: f.url, ready: false, old: e ? (e.ready ? e.layer : e.old) : null };
   if (e && e.layer && e.layer !== ne.old) map.removeLayer(e.layer);
@@ -2642,7 +2648,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115024204";   // kept equal to version.json on every publish
+const BUILD = "20261115024412";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
