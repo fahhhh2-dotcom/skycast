@@ -614,12 +614,6 @@
   @keyframes bsGlow { 50% { opacity:.55; } }
   @keyframes bsDrop { 0% { transform: translateY(-6px); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(22px); opacity:0; } }
   @media (prefers-reduced-motion: reduce) { .bs-cloud, .bs-sun, .bs-rays { animation:none; } .bs-rain path { animation:none; opacity:1; } }
-  /* ===== Donate (Cash App) ===== */
-  .donate-top { flex:0 0 auto; display:inline-flex; align-items:center; gap:4px; height:38px; padding:0 13px; border-radius:14px; background:#00d64f; color:#fff; font-weight:800; font-size:.86rem; text-decoration:none; white-space:nowrap; }
-  .donate-top:hover { filter:brightness(1.06); }
-  .donate-row .acct-av { background:#00d64f; color:#fff; font-weight:800; }
-  @media (max-width:600px) { .bar-in > .donate-top { margin-left:auto; } .bar-in > .donate-top + .gear { margin-left:0; } }
-  @media (max-width:440px) { .donate-top .dt-word { display:none; } .donate-top { padding:0 12px; } }
   /* ===== SkyCast Plus ===== */
   .plus-list { list-style:none; text-align:left; display:grid; gap:10px; margin:6px 0 10px; }
   .plus-list li { display:flex; gap:12px; align-items:flex-start; font-size:.9rem; line-height:1.4; color:var(--soft); }
@@ -856,7 +850,6 @@
     <div class="results" id="results"></div>
   </div>
   <div class="seg"><button id="uF" class="on">°F</button><button id="uC">°C</button></div>
-  <a class="donate-top" href="https://cash.app/$SkyCastWeather" target="_blank" rel="noopener noreferrer" aria-label="Donate to SkyCast on Cash App">$<span class="dt-word"> Donate</span></a>
   <button class="iconbtn gear" id="gearBtn" aria-label="Settings">⚙️</button>
 </div></div>
 
@@ -888,7 +881,7 @@
       <div class="ph"><h3>Detail charts <span class="plus-pill">PLUS</span></h3><span>Next 48 hours</span></div>
       <div id="pcCharts"></div>
     </section>
-    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · $5 one time</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
+    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · Coming soon</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
     <section class="panel o-cond">
       <div class="ph"><h3>Conditions</h3><span id="condTime"></span></div>
       <div class="tiles" id="tiles"></div>
@@ -1029,8 +1022,7 @@
   </div>
   <div class="sh-note">A separate mode from warnings: heads-ups from the forecast about 3 hours before rain, snow, storms or a freeze. SkyCast checks every minute while it's open or in a background tab. It can't send alerts when it's fully closed.</div>
   <button class="acct-row owner-row" id="ownerBtn" hidden><span class="acct-av">👑</span><span><b>Owner dashboard</b><small>See how many people use SkyCast</small></span><span class="go">›</span></button>
-  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">$5 once · Plus forever</small></span><span class="go">›</span></button>
-  <a class="acct-row donate-row" href="https://cash.app/$SkyCastWeather" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><span class="acct-av">$</span><span><b>Support SkyCast</b><small>Donate on Cash App · $SkyCastWeather</small></span><span class="go">›</span></a>
+  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">Coming soon</small></span><span class="go">›</span></button>
   <div class="sh-h">Siri mode</div>
   <button class="sh-btn" id="siriBtn">🎙️ Set up Siri mode</button>
   <div class="sh-note">Ask Siri for SkyCast's forecast hands-free, using the same National Weather Service forecast SkyCast shows.</div>
@@ -1074,10 +1066,10 @@
     <section class="onb-step" data-step="2">
       <div class="onb-ic">⭐</div>
       <h2>Try SkyCast Plus?</h2>
-      <p>Everything you've seen stays free. Plus adds extras forever for a one-time <b style="color:#fff">$5</b>.</p>
+      <p>Everything you've seen stays free. Plus extras are coming soon.</p>
       <ul class="plus-list" data-plus-list></ul>
       <div class="sh-note" data-plus-note></div>
-      <button class="onb-go" data-plus-buy>💵 Get Plus forever · $5</button>
+      <button class="onb-go" data-plus-buy>⭐ Plus is coming soon</button>
       <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
       <button class="onb-skip" data-next>Maybe later</button>
     </section>
@@ -1094,10 +1086,10 @@
 </div>
 <div class="sheet" id="plusView"><div class="sheet-in">
   <div class="sh-top"><b>⭐ SkyCast Plus</b><button class="mini-btn" id="plusClose">Done</button></div>
-  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus adds extras for a one-time <b style="color:var(--text)">$5</b>, and it's yours forever. No subscription.</p>
+  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus extras are <b style="color:var(--text)">coming soon</b>.</p>
   <ul class="plus-list" data-plus-list></ul>
   <div class="sh-note" data-plus-note></div>
-  <button class="sh-btn plus-buy" data-plus-buy>💵 Get Plus forever · $5</button>
+  <button class="sh-btn plus-buy" data-plus-buy>⭐ Plus is coming soon</button>
   <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
 </div></div>
 <div class="sheet" id="ownerView"><div class="sheet-in">
@@ -3147,7 +3139,7 @@ paintAccount();
    3. To change the code, add the new code's fingerprint to PLUS_CODE_HASHES and remove the old one
       (people with an old code lose Plus until they enter the new one).
    To switch back to Stripe, set PLUS_PROVIDER to "stripe". */
-const PLUS_PROVIDER = "cashapp";
+const PLUS_PROVIDER = "soon";   // "soon" = Plus shows "Coming soon" and takes no payments (codes already given out still work). Set back to "cashapp" to sell Plus again.
 const CASHAPP_LINK = "https://cash.app/$SkyCastWeather/5";   // opens Cash App with $5 filled in
 const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
@@ -3255,7 +3247,7 @@ const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114
   "ccff58f3e168e033498ea438d40c115d7c9d3d9a20c68fb66132ca9a65401982",
   "18223dad716bb23e5e9b491d5db846c7127949de3e2fad295b1fe2aa5c759b73"];   // SHA-256 of the current Plus code(s) with dashes/spaces removed, so the code itself isn't in the page
 const STRIPE_LINK = "https://buy.stripe.com/test_28E7sNcmzebh1XcacU93y00";   // Stripe sandbox (test) link, kept for later
-const PLUS_LINK = PLUS_PROVIDER === "cashapp" ? CASHAPP_LINK : PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
+const PLUS_LINK = PLUS_PROVIDER === "soon" ? "" : PLUS_PROVIDER === "cashapp" ? CASHAPP_LINK : PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
 const PLUS_PORTAL = "";   // optional: your Stripe customer portal link, so members can cancel or update their card
 const PLUS_FEATURES = [
   ["📈", "Hour-by-hour for all 7 days", "Every hour of the week, not just the next 24."],
@@ -3274,6 +3266,14 @@ function paintPlus() {
   document.querySelectorAll("[data-plus-list]").forEach(ul => ul.innerHTML = PLUS_FEATURES.map(([i, t, d]) => `<li><span>${i}</span><div><b>${t}</b>${d}</div></li>`).join(""));
   const on = isPlus();
   const bmc = PLUS_PROVIDER === "bmc" || PLUS_PROVIDER === "cashapp";
+  if (PLUS_PROVIDER === "soon") {
+    document.querySelectorAll("[data-plus-buy]").forEach(b => { b.disabled = true; b.textContent = on ? "✓ You have Plus forever" : "⭐ Plus is coming soon"; });
+    document.querySelectorAll("[data-plus-code]").forEach(f => f.hidden = on);
+    document.querySelectorAll("[data-plus-note]").forEach(n => n.textContent = on ? "Thanks for supporting SkyCast! Everything below is unlocked."
+      : "Plus isn't available to buy yet. Coming soon! Already have a Plus code? Type it below.");
+    if ($("plusSub")) $("plusSub").textContent = on ? "You have Plus forever ✓" : "Coming soon";
+    return;
+  }
   if (PLUS_PROVIDER === "cashapp") {
     document.querySelectorAll("[data-plus-buy]").forEach(b => { b.disabled = on; b.textContent = on ? "✓ You have Plus forever" : "💵 Get Plus forever · $5 on Cash App"; });
     document.querySelectorAll("[data-plus-code]").forEach(f => f.hidden = on);
@@ -3291,6 +3291,7 @@ function paintPlus() {
   if ($("plusSub")) $("plusSub").textContent = on ? "You're a member ✓" : "See what's included";
 }
 function buyPlus() {
+  if (PLUS_PROVIDER === "soon") return;   // nothing to buy yet
   if (PLUS_PROVIDER === "cashapp") { if (!isPlus()) window.open(CASHAPP_LINK, "_blank", "noopener"); return; }   // new tab so SkyCast stays open for the code
   if (PLUS_PROVIDER === "bmc") { if (BMC_LINK) window.open(BMC_LINK, "_blank", "noopener"); return; }   // opens in a new tab so SkyCast stays open for the code
   if (isPlus()) { if (PLUS_PORTAL) location.href = PLUS_PORTAL; return; }
@@ -3307,7 +3308,7 @@ document.querySelectorAll("[data-plus-code]").forEach(f => f.addEventListener("s
   const inp = f.querySelector("input"), msg = f.querySelector(".plus-codemsg"), code = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");   // dashes and spaces don't matter
   if (!code) return;
   let h = ""; try { h = await sha256(code); } catch(err) { msg.textContent = "This browser can't check codes. Try Safari or Chrome."; return; }
-  if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
+  if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "soon" ? "That code didn't work. Check the code and try again." : PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
   try { localStorage.setItem("skycast_plus_code", h); } catch(err) {}
   inp.value = ""; msg.textContent = "";
   paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels();
