@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get SkyCast</title>
+<meta name="description" content="Get SkyCast: free live weather, future radar and storm alerts on your phone.">
+<meta property="og:title" content="Get SkyCast Weather">
+<meta property="og:description" content="Free live weather, future radar and storm alerts. Add it to your home screen like an app.">
+<meta property="og:url" content="https://fahhhh2-dotcom.github.io/The-Daliy-Bark/weather/install.html">
+<meta property="og:image" content="https://fahhhh2-dotcom.github.io/The-Daliy-Bark/weather/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system, system-ui, sans-serif; color:#fff; min-height:100vh; background:linear-gradient(160deg,#3d8bfd,#0d2c63 65%,#050a16); display:flex; justify-content:center; padding:40px 20px; }
+  .wrap { max-width:440px; width:100%; text-align:center; }
+  img.logo { width:96px; height:96px; border-radius:22px; box-shadow:0 12px 30px rgba(0,0,0,.35); }
+  h1 { font-size:2.4rem; letter-spacing:-1px; margin-top:14px; }
+  h1 b { color:#ffbf5e; }
+  .sub { opacity:.8; margin-top:4px; }
+  .card { margin-top:26px; background:rgba(10,18,36,.45); border:1px solid rgba(255,255,255,.15); border-radius:22px; padding:22px; text-align:left; }
+  .btn { display:block; text-align:center; text-decoration:none; font-weight:800; font-size:1.05rem; padding:15px; border-radius:14px; background:#ffd36b; color:#0b1424; border:0; width:100%; cursor:pointer; }
+  .btn.alt { background:rgba(255,255,255,.12); color:#fff; margin-top:10px; }
+  ol { margin:16px 0 0 20px; line-height:1.6; font-size:.95rem; opacity:.9; }
+  .note { font-size:.8rem; opacity:.6; margin-top:12px; line-height:1.45; }
+  .hide { display:none; }
+</style>
+</head>
+<body><div class="wrap">
+  <img class="logo" src="apple-touch-icon.png" alt="">
+  <h1>Sky<b>Cast</b></h1>
+  <div class="sub">Live weather, radar &amp; warnings</div>
+
+  <div class="card" id="ios">
+    <a class="btn" href="https://www.icloud.com/shortcuts/2f0246ec546c4ac091a4e43300abc110">Get the SkyCast Shortcut</a>
+    <div class="note" style="margin:8px 0 18px">Tap it, then tap <b>Add Shortcut</b>. Search “weather” on your iPhone to open SkyCast.</div>
+    <div style="font-weight:800;margin-bottom:8px">Or add it as a full-screen app:</div>
+    <div id="notSafari" class="note hide" style="opacity:.9;margin:0 0 14px">First open this page in <b>Safari</b>. Adding to the Home Screen only works from Safari.</div>
+    <ol style="margin-top:0">
+      <li>Tap <b>Open SkyCast</b> below.</li>
+      <li>Tap the <b>Share</b> button <span style="display:inline-block;border:1.5px solid #fff;border-radius:4px;padding:0 4px;font-size:.8rem">↑</span> at the bottom of Safari.</li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
+      <li>Tap <b>Add</b>. SkyCast is now an app on your Home Screen.</li>
+    </ol>
+    <a class="btn alt" style="margin-top:16px" href="./">Open SkyCast</a>
+    <div class="note">No downloads and no settings changes. It just saves SkyCast like an app.</div>
+  </div>
+
+  <div class="card hide" id="android">
+    <button class="btn" id="installBtn">Install SkyCast</button>
+    <ol id="androidSteps">
+      <li>In Chrome, tap the <b>⋮</b> menu.</li>
+      <li>Tap <b>Add to Home screen</b> or <b>Install app</b>.</li>
+    </ol>
+    <a class="btn alt" href="./">Open SkyCast</a>
+  </div>
+
+  <div class="card hide" id="desktop">
+    <a class="btn" href="./">Open SkyCast</a>
+    <div class="note" style="text-align:center">Scan this page's QR code with your phone to add SkyCast to its home screen.</div>
+  </div>
+</div>
+<script>
+  const ua = navigator.userAgent;
+  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const android = /Android/.test(ua);
+  if (!ios) document.getElementById("ios").classList.add("hide");
+  if (ios && /CriOS|FxiOS|EdgiOS|GSA/.test(ua)) document.getElementById("notSafari").classList.remove("hide");
+  if (android) document.getElementById("android").classList.remove("hide");
+  if (!ios && !android) document.getElementById("desktop").classList.remove("hide");
+  let deferred = null;
+  const btn = document.getElementById("installBtn");
+  btn.style.display = "none";
+  addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; btn.style.display = ""; });
+  btn.onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; btn.style.display = "none"; };
+</script>
+</body>
+</html>
