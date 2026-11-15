@@ -9,8 +9,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="SkyCast Weather">
 <meta property="og:description" content="Free live weather, future radar and storm alerts. Install it on your phone like an app.">
-<meta property="og:url" content="https://fahhhh2-dotcom.github.io/The-Daliy-Bark/weather/">
-<meta property="og:image" content="https://fahhhh2-dotcom.github.io/The-Daliy-Bark/weather/og-image.png">
+<meta property="og:url" content="https://skycastweather.com/">
+<meta property="og:image" content="https://skycastweather.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="manifest" href="manifest.json">
@@ -2627,7 +2627,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261114234720";   // kept equal to version.json on every publish
+const BUILD = "20261115021706";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -2725,7 +2725,7 @@ function showView() {
 addEventListener("hashchange", showView);
 
 /* ---------- Settings: language, theme, text size ---------- */
-const SITE_URL = "https://fahhhh2-dotcom.github.io/The-Daliy-Bark/weather/";
+const SITE_URL = "https://skycastweather.com/";
 const ES = {
   // longer phrases first is handled automatically
   "Search a US city, then press Search": "Busca una ciudad de EE. UU.",
