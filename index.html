@@ -714,6 +714,10 @@
   .cwk b { color:var(--text); }
   .rpt { font-size:18px; line-height:20px; text-align:center; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
   .tmpt { font-size:11px; font-weight:800; color:#0b1424; text-align:center; line-height:16px; text-shadow:0 0 3px rgba(255,255,255,.9); }
+  .own-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin:6px 0 4px; }
+  .own-grid div { padding:14px; border-radius:16px; background:var(--panel2); border:1px solid var(--line); font-size:.8rem; color:var(--soft); }
+  .own-grid b { display:block; font-size:1.7rem; color:var(--text); margin-bottom:2px; }
+  .owner-row .acct-av { background: linear-gradient(135deg, #ffe08a, #c9a6ff); }
   /* ===== Custom backgrounds (Settings → Background) ===== */
   html[data-bg] body::before { background: var(--bgx); }
   html[data-bg="ocean"]    { --bgx: radial-gradient(1200px 700px at 15% -10%, #12b5c9, transparent 70%), linear-gradient(180deg, #073b55, #031420 90%); }
@@ -1024,6 +1028,7 @@
     <button data-notif="freeze"><i></i>🥶 Freezing temperatures tonight</button>
   </div>
   <div class="sh-note">A separate mode from warnings: heads-ups from the forecast about 3 hours before rain, snow, storms or a freeze. SkyCast checks every minute while it's open or in a background tab. It can't send alerts when it's fully closed.</div>
+  <button class="acct-row owner-row" id="ownerBtn" hidden><span class="acct-av">👑</span><span><b>Owner dashboard</b><small>See how many people use SkyCast</small></span><span class="go">›</span></button>
   <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">$5 once · Plus forever</small></span><span class="go">›</span></button>
   <a class="acct-row donate-row" href="https://cash.app/$SkyCastWeather" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><span class="acct-av">$</span><span><b>Support SkyCast</b><small>Donate on Cash App · $SkyCastWeather</small></span><span class="go">›</span></a>
   <div class="sh-h">Siri mode</div>
@@ -1094,6 +1099,12 @@
   <div class="sh-note" data-plus-note></div>
   <button class="sh-btn plus-buy" data-plus-buy>💵 Get Plus forever · $5</button>
   <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
+</div></div>
+<div class="sheet" id="ownerView"><div class="sheet-in">
+  <div class="sh-top"><b>👑 Owner dashboard</b><button class="mini-btn" id="ownerClose">Done</button></div>
+  <div class="own-grid" id="ownerStats"></div>
+  <button class="sh-btn" id="ownerRefresh">🔄 Refresh numbers</button>
+  <div class="sh-note" id="ownerNote">Devices are counted once each (no names or personal info). Accounts are people who signed up.</div>
 </div></div>
 <div class="sheet" id="acctView"><div class="sheet-in">
   <div class="sh-top"><b>Account</b><button class="mini-btn" id="acctClose">Done</button></div>
@@ -2695,7 +2706,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115191232";   // kept equal to version.json on every publish
+const BUILD = "20261115194638";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3140,7 +3151,8 @@ const PLUS_PROVIDER = "cashapp";
 const CASHAPP_LINK = "https://cash.app/$SkyCastWeather/5";   // opens Cash App with $5 filled in
 const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
-const PLUS_ACCOUNT_HASHES = [];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
+const OWNER_HASH = "a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f";   // SHA-256 of the owner's email: the owner always has Plus and sees the Owner dashboard
+const PLUS_ACCOUNT_HASHES = [OWNER_HASH];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
 const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
   "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
   "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
@@ -3319,7 +3331,11 @@ async function checkPlusAccount() {
   let ok = false;
   try { if (signedIn() && account.email) ok = PLUS_ACCOUNT_HASHES.includes(await sha256(account.email.trim().toLowerCase())); } catch(e) {}
   if (ok !== plusAccountOK) { plusAccountOK = ok; try { paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); } catch(e) {} }
+  let own = false;
+  try { if (signedIn() && account.email) own = (await sha256(account.email.trim().toLowerCase())) === OWNER_HASH; } catch(e) {}
+  isOwnerUser = own; if ($("ownerBtn")) $("ownerBtn").hidden = !own;
 }
+var isOwnerUser = false;
 function isPlus() { return !!(plusActive || (PLUS_TESTMODE && plusTest) || plusCodeOK() || plusAccountOK); }   // a function declaration so earlier code can call it safely
 (() => {
   const u = new URL(location.href);
@@ -3926,6 +3942,44 @@ function renderExtras() {
   renderAir().catch(() => {}); renderOnThisDay().catch(() => {});
 }
 try { renderQuiz(); } catch(e) {}
+
+/* ---------- Usage counting (anonymous) + Owner dashboard ----------
+   Each device gets a random id and writes devices/{id} = { first, last, plus, acct } at most once a day. No names or emails.
+   Only the owner (checked by Firestore rules on the server) can read the totals. */
+async function pingDevice() {
+  let id = "", lastPing = 0;
+  try { id = localStorage.getItem("skycast_device") || ""; if (!id) { id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/-/g, ""); localStorage.setItem("skycast_device", id); } lastPing = +localStorage.getItem("skycast_device_ping") || 0; } catch(e) { return; }
+  if (Date.now() - lastPing < 20 * 3600000) return;
+  try {
+    const F = await fbReady, ref = F.fs.doc(F.db, "devices", id), now = Date.now();
+    const snap = await F.fs.getDoc(ref).catch(() => null);
+    await F.fs.setDoc(ref, { first: snap && snap.exists() ? (snap.data().first || now) : now, last: now, plus: !!isPlus(), acct: !!signedIn() });
+    try { localStorage.setItem("skycast_device_ping", String(now)); } catch(e) {}
+  } catch(e) { /* rules not set up yet, or offline */ }
+}
+setTimeout(pingDevice, 5000);
+async function loadOwnerStats() {
+  const box = $("ownerStats");
+  box.innerHTML = `<div><b>…</b>Loading</div>`;
+  try {
+    const F = await fbReady, fs = F.fs, dev = fs.collection(F.db, "devices"), now = Date.now();
+    const count = q => fs.getCountFromServer(q).then(r => r.data().count);
+    const [total, week, today, plus, accts] = await Promise.all([
+      count(dev), count(fs.query(dev, fs.where("last", ">=", now - 7 * 86400000))), count(fs.query(dev, fs.where("last", ">=", now - 86400000))),
+      count(fs.query(dev, fs.where("plus", "==", true))), count(fs.collection(F.db, "users"))
+    ]);
+    const newWeek = await count(fs.query(dev, fs.where("first", ">=", now - 7 * 86400000)));
+    box.innerHTML = [["📱", total, "Devices total"], ["🆕", newWeek, "New this week"], ["🔥", today, "Used today"], ["📅", week, "Used this week"], ["👤", accts, "Accounts signed up"], ["⭐", plus, "Devices with Plus"]]
+      .map(([i, n, t]) => `<div><b>${n}</b>${i} ${t}</div>`).join("");
+    $("ownerNote").textContent = "Updated " + new Date().toLocaleTimeString(LOC(), { hour: "numeric", minute: "2-digit" }) + ". Devices are counted once each (no names or personal info). Accounts are people who signed up.";
+  } catch(e) {
+    box.innerHTML = `<div style="grid-column:1/-1"><b>🔒</b>The numbers are locked. The owner rules need to be added in Firebase (Firestore → Rules), and you need to be signed in with Google as the owner.</div>`;
+  }
+}
+$("ownerBtn").onclick = () => { $("sheet").classList.remove("open"); $("ownerView").classList.add("open"); loadOwnerStats(); };
+$("ownerRefresh").onclick = loadOwnerStats;
+$("ownerClose").onclick = () => $("ownerView").classList.remove("open");
+$("ownerView").onclick = e => { if (e.target.id === "ownerView") $("ownerView").classList.remove("open"); };
 
 /* ---------- Background picker (saved on this device) ---------- */
 let bgChoice = "auto";
