@@ -1,6 +1,16 @@
 {
-  "updated": "2026-11-14T06:45:00-06:00",
+  "updated": "2026-11-15T06:40:50-06:00",
   "articles": [
+    {
+      "id": "foxweather-2026-11-14-super-el-nino-west-snow",
+      "published": "2026-11-14T14:19:00-05:00",
+      "tag": "Snow",
+      "icon": "❄️",
+      "title": "Super El Niño could mean a snowier winter for the Mountain West",
+      "summary": "After record-low snowpack last winter, NOAA and European outlooks favor above-average snow from November to March for the Sierra Nevada, Great Basin, Wasatch and central Rockies. The Cascades may come in below average. That mountain snow is a key water source for the Colorado River and the Southwest.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/super-el-nino-increase-snow-mountain-west-winter"
+    },
     {
       "id": "wtvf-2026-11-14-nashville-frost",
       "published": "2026-11-14T06:39:26-05:00",
@@ -12,34 +22,14 @@
       "url": "https://www.newschannel5.com/weather/november-14-2026-dry-chilly-weekend-with-frost-and-freezing-conditions"
     },
     {
-      "id": "abcnews-2026-11-13-west-storms",
-      "published": "2026-11-13T06:28:00-05:00",
-      "tag": "Storm",
-      "icon": "🌊",
-      "title": "Storm train hits the West with Sierra snow, strong winds and huge surf",
-      "summary": "A string of storms is moving across the West, with up to 2 feet of snow possible on the highest Sierra Nevada peaks near Lake Tahoe and Mammoth Lakes. A high surf warning from Monterey to Crescent City calls for waves as high as 35 feet on Saturday, and another storm could arrive Wednesday.",
-      "source": "ABC News",
-      "url": "https://abcnews.com/US/storms-bring-heavy-snow-powerful-winds-dangerous-surf/story?id=138104059"
-    },
-    {
-      "id": "weathercom-2026-11-12-super-el-nino",
-      "published": "2026-11-12T15:30:00-05:00",
-      "tag": "Climate",
-      "icon": "🔬",
-      "title": "This El Niño may soon become the strongest on record",
-      "summary": "Pacific waters in NOAA's key monitoring zone were 2.5°C above average in mid-November, and NOAA puts the odds of a historic event at about 60%. Its effects have already shown up, including the fewest Atlantic hurricanes since 1925. A warm North, wet South pattern is expected through at least February.",
-      "source": "The Weather Channel",
-      "url": "https://weather.com/2026/11/12/forecast/national/super-el-nino-nearing-a-record-us-weather-pattern"
-    },
-    {
-      "id": "foxweather-2026-11-13-noreaster",
-      "published": "2026-11-13T06:30:00-05:00",
-      "tag": "Storm",
-      "icon": "🌨️",
-      "title": "Nor'easter soaks the I-95 corridor as the season's first snow falls up north",
-      "summary": "A nor'easter brought heavy rain and wind to the East Coast on Friday. The heaviest snow was expected Friday afternoon into Saturday morning in upstate New York, southern Vermont and New Hampshire, with 1 to 3 inches possible in the Adirondacks and the Green and White Mountains. Lake-effect rain and snow were set to follow around the Great Lakes.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/northeast-faces-messy-friday-as-noreaster-ushers-in-rain-wind-and-snow"
+      "id": "actionnews5-2026-11-13-midsouth-drought",
+      "published": "2026-11-13T16:28:00-06:00",
+      "tag": "Local",
+      "icon": "🏜️",
+      "title": "Mid-South drought eases in spots but keeps spreading in eastern Arkansas",
+      "summary": "Memphis has picked up 3.41 inches of rain this month, more than August through October combined, yet it is still about an inch below normal for November. Most of West Tennessee and north Mississippi improved to moderate or severe drought, while eastern Arkansas keeps getting worse. Little rain is expected until a front around Thanksgiving week.",
+      "source": "Action News 5",
+      "url": "https://www.actionnews5.com/2026/11/13/breakdown-drought-improvements-not-everyone/"
     },
     {
       "id": "gizmodo-2026-11-13-polar-vortex",
@@ -52,6 +42,36 @@
       "url": "https://gizmodo.com/unpredecented-polar-vortex-event-arctic-blast-2000839635"
     },
     {
+      "id": "accuweather-2026-11-13-texas-weekend-rain",
+      "published": "2026-11-13T13:11:00-06:00",
+      "tag": "Rain",
+      "icon": "🌧️",
+      "title": "Weekend storm brings a long-awaited soaking to Texas",
+      "summary": "The storm that brought rain and mountain snow to California is crossing Texas and Oklahoma into early next week. Dallas has had just 0.19 inch of rain since Oct. 5, so the downpours should mostly help. Houston, Austin and San Antonio also get storms, and flash flooding is possible in central and coastal Texas.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-forecasts/downpours-to-drench-texas-including-dallas-and-houston-this-weekend/1958501"
+    },
+    {
+      "id": "foxweather-2026-11-13-noreaster",
+      "published": "2026-11-13T06:30:00-05:00",
+      "tag": "Storm",
+      "icon": "🌨️",
+      "title": "Nor'easter soaks the I-95 corridor as the season's first snow falls up north",
+      "summary": "A nor'easter brought heavy rain and wind to the East Coast on Friday. The heaviest snow was expected Friday afternoon into Saturday morning in upstate New York, southern Vermont and New Hampshire, with 1 to 3 inches possible in the Adirondacks and the Green and White Mountains. Lake-effect rain and snow were set to follow around the Great Lakes.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/northeast-faces-messy-friday-as-noreaster-ushers-in-rain-wind-and-snow"
+    },
+    {
+      "id": "abcnews-2026-11-13-west-storms",
+      "published": "2026-11-13T06:28:00-05:00",
+      "tag": "Storm",
+      "icon": "🌊",
+      "title": "Storm train hits the West with Sierra snow, strong winds and huge surf",
+      "summary": "A string of storms is moving across the West, with up to 2 feet of snow possible on the highest Sierra Nevada peaks near Lake Tahoe and Mammoth Lakes. A high surf warning from Monterey to Crescent City calls for waves as high as 35 feet on Saturday, and another storm could arrive Wednesday.",
+      "source": "ABC News",
+      "url": "https://abcnews.com/US/storms-bring-heavy-snow-powerful-winds-dangerous-surf/story?id=138104059"
+    },
+    {
       "id": "nbcboston-2026-11-13-noreaster",
       "published": "2026-11-13T05:48:00-05:00",
       "tag": "Local",
@@ -60,6 +80,16 @@
       "summary": "Greater Boston saw mainly a cold rain from Friday's nor'easter, with north-northeast winds gusting to around 30 mph. Some higher spots in New England picked up a few inches of snow before the storm pulled away.",
       "source": "NBC Boston",
       "url": "https://www.nbcboston.com/news/local/weather-boston-noreaster-rain-snow-radar/4048824/"
+    },
+    {
+      "id": "weathercom-2026-11-12-super-el-nino",
+      "published": "2026-11-12T15:30:00-05:00",
+      "tag": "Climate",
+      "icon": "🔬",
+      "title": "This El Niño may soon become the strongest on record",
+      "summary": "Pacific waters in NOAA's key monitoring zone were 2.5°C above average in mid-November, and NOAA puts the odds of a historic event at about 60%. Its effects have already shown up, including the fewest Atlantic hurricanes since 1925. A warm North, wet South pattern is expected through at least February.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/12/forecast/national/super-el-nino-nearing-a-record-us-weather-pattern"
     }
   ]
 }
