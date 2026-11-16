@@ -244,7 +244,9 @@
   .badge small { display:block; font-size:.62rem; letter-spacing:1.4px; font-weight:800; }
   .badge.live small { color:#4dff94; }
   .badge.future small { color:var(--accent); }
-  .radar-tiles { transition: opacity var(--fade, .35s) ease; }
+  .radar-tiles { transition: opacity var(--fade, .35s) cubic-bezier(.4,0,.2,1); will-change: opacity; }
+  .radar-tiles canvas, .radar-tiles img { image-rendering: auto; }
+  #radar .leaflet-tile-container { will-change: transform; }
   #radar.zooming .radar-tiles { transition: none; }
   #radar { touch-action: none; }
   .speeds { display:flex; align-items:center; gap:6px; margin-top:10px; }
@@ -858,6 +860,22 @@
   .own-chart svg { width: 100%; height: auto; display:block; }
   .own-chart .lg2 { display:flex; gap:14px; font-size:.75rem; color: var(--soft); margin-top:6px; }
   .own-chart .lg2 span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; background: var(--c); }
+
+  /* ===== Radar buttons: one size, lined up, glass style to match the top bar ===== */
+  .radarpanel .locpill, .radarpanel .tools, .radarpanel .toolbtn, .radarpanel .legtab, .radarpanel .layerpill {
+    background: rgba(24,30,42,.66); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.18); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 6px 18px rgba(0,0,0,.22); }
+  .radarpanel .toolbtn, .radarpanel .toolbtn.fsb { width:46px; height:46px; border-radius:15px; }
+  .radarpanel .toolbtn svg { width:22px; height:22px; }
+  .radarpanel .locpill { height:46px; padding:0 16px; gap:8px; border-radius:15px; font-size:.98rem; max-width: calc(100% - 136px); }
+  .radarpanel .tools { width:46px; box-sizing:border-box; padding:3px; gap:2px; top:66px; border-radius:15px; align-items:center; }
+  .radarpanel.fs .tools { top: calc(66px + env(safe-area-inset-top)); }
+  .radarpanel .tools button { width:38px; height:38px; border-radius:12px; }
+  .radarpanel .tools button svg { width:21px; height:21px; }
+  .radarpanel .tools button.on { background: rgba(255,255,255,.24); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .radarpanel .legtab { padding:12px 7px; font-size:.8rem; border-radius:12px 0 0 12px; border-left:0; }
+  .radarpanel .torpill { top:66px; max-width: calc(100% - 136px); }
+  .radarpanel.fs .torpill { top: calc(66px + env(safe-area-inset-top)); }
 </style>
 </head>
 <body class="t-day">
@@ -2007,12 +2025,12 @@ const ROWS = 13, COLS = 15, D_LAT = 3.2, D_LON = 4.6, SCALE = 12;
 function initMap() {
   if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
   map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 11, fadeAnimation: false, zoomAnimationThreshold: 4, markerZoomAnimation: false,
-    zoomSnap: 0.5, wheelPxPerZoomLevel: 90, tap: false, inertia: true, inertiaDeceleration: 2500 }).setView([place.latitude, place.longitude], 7);
+    zoomSnap: 0.25, zoomDelta: 0.5, wheelPxPerZoomLevel: 120, wheelDebounceTime: 20, tap: false, inertia: true, inertiaDeceleration: 2000, inertiaMaxSpeed: 2400, easeLinearity: 0.2, bounceAtZoomLimits: false }).setView([place.latitude, place.longitude], 7);
   // clean near-white map (Esri Light Gray Canvas, no key needed): base with soft borders under the weather,
   // and the place names in their own layer ABOVE the weather so cities stay readable through the rain
   const ESRI = "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/";
   const baseOpts = { maxZoom: 11, maxNativeZoom: 13, keepBuffer: 6, updateWhenIdle: false, updateWhenZooming: false, crossOrigin: true };
-  L.tileLayer(ESRI + "World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { ...baseOpts, attribution: "Map © Esri", className: "basemap", zIndex: 1 }).addTo(map);
+  L.tileLayer(ESRI + "World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { ...baseOpts, detectRetina: (devicePixelRatio || 1) > 1.5, attribution: "Map © Esri", className: "basemap", zIndex: 1 }).addTo(map);
   map.createPane("labels"); map.getPane("labels").style.zIndex = 450; map.getPane("labels").style.pointerEvents = "none";
   L.tileLayer(ESRI + "World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}", { ...baseOpts, pane: "labels", detectRetina: true, className: "maplabels" }).addTo(map);
   map.createPane("tint"); map.getPane("tint").style.zIndex = 250; map.getPane("tint").style.pointerEvents = "none";
@@ -2186,35 +2204,52 @@ function rampFor(r, g, b) {
   recolorCache.set(key, v);
   return v;
 }
+// Recolored radar pictures are kept (as small compressed images) so replaying the loop doesn't redo the work: smoother animation.
+const recolored = new Map(), RECOLOR_MAX = 900;
+function keepRecolored(key, canvas) {
+  if (!canvas.toBlob || recolored.has(key)) return;
+  canvas.toBlob(b => {
+    if (!b) return;
+    recolored.set(key, URL.createObjectURL(b));
+    while (recolored.size > RECOLOR_MAX) { const [k, u] = recolored.entries().next().value; URL.revokeObjectURL(u); recolored.delete(k); }
+  });
+}
 const RecolorTiles = !window.L ? null : L.TileLayer.extend({
   createTile(coords, done) {
     const tile = document.createElement("canvas"), size = this.getTileSize();
     tile.width = size.x; tile.height = size.y;
+    const src = this.getTileUrl(coords), cached = recolored.get(src);
     const img = new Image();
     img.crossOrigin = "anonymous";
+    img.decoding = "async";
     img.onload = () => {
       const ctx = tile.getContext("2d");
       ctx.drawImage(img, 0, 0, size.x, size.y);
+      if (cached) { recolored.delete(src); recolored.set(src, cached); done(null, tile); return; }   // already recolored earlier
       try {
-        const im = ctx.getImageData(0, 0, size.x, size.y), px = im.data;
-        for (let k = 0; k < px.length; k += 4) {
-          if (px[k + 3] < 10) continue;
-          const c = rampFor(px[k], px[k + 1], px[k + 2]);
+        const im = ctx.getImageData(0, 0, size.x, size.y), px = im.data, u32 = new Uint32Array(px.buffer);
+        let lastIn = -1, lastOut = 0;
+        for (let i = 0; i < u32.length; i++) {
+          const v = u32[i]; if ((v >>> 24) < 10) continue;
+          if (v === lastIn) { u32[i] = lastOut; continue; }   // radar has big patches of the same color
+          const k = i * 4, c = rampFor(px[k], px[k + 1], px[k + 2]);
           px[k] = c[0]; px[k + 1] = c[1]; px[k + 2] = c[2];
+          lastIn = v; lastOut = u32[i];
         }
         ctx.putImageData(im, 0, 0);
+        keepRecolored(src, tile);
       } catch(e) { /* if the server doesn't allow recoloring, show the original colors */ }
       done(null, tile);
     };
     img.onerror = () => done(new Error("tile"), tile);
-    img.src = this.getTileUrl(coords);
+    img.src = cached || src;
     return tile;
   }
 });
 function ensureLayer(f) {
   let e = layers[f.key];
   if (e && e.url === f.url) return e;
-  const opts = { opacity: 0, zIndex: 10, maxZoom: 11, maxNativeZoom: 10, subdomains: "123", updateWhenIdle: true, updateWhenZooming: false, keepBuffer: 4, className: "radar-tiles" };
+  const opts = { opacity: 0, zIndex: 10, maxZoom: 11, maxNativeZoom: 10, subdomains: "123", updateWhenIdle: true, updateWhenZooming: false, keepBuffer: 6, className: "radar-tiles" };
   const layer = f.hrrr || !RecolorTiles ? L.tileLayer(f.url, opts) : new RecolorTiles(f.url, opts);
   const ne = { layer, url: f.url, ready: false, old: e ? (e.ready ? e.layer : e.old) : null };
   if (e && e.layer && e.layer !== ne.old) map.removeLayer(e.layer);
@@ -2238,7 +2273,8 @@ const shownLayer = e => e ? (e.ready ? e.layer : e.old) : null;
 // Only the current frame, the one before it and the next 3 stay on the map. The rest come back instantly from the browser's cache.
 function pruneLayers() {
   const keep = new Set();
-  for (let k = -1; k <= 3; k++) { const f = frames[(frameIdx + k + frames.length) % frames.length]; if (f) keep.add(f.key); }
+  const ahead = playTimer ? 6 : 3;
+  for (let k = -1; k <= ahead; k++) { const f = frames[(frameIdx + k + frames.length) % frames.length]; if (f) keep.add(f.key); }
   if (visibleKey) keep.add(visibleKey);
   Object.keys(layers).forEach(k => { if (!keep.has(k)) { dropEntry(layers[k]); delete layers[k]; } });
 }
@@ -2275,7 +2311,8 @@ function showFrame(i) {
     Object.values(layers).forEach(x => [x.layer, x.old].forEach(l => { if (l && l !== e.layer) l.setOpacity(0); }));
     e.layer.setOpacity(0.8); visibleKey = f.key;
   }
-  for (let k = 1; k <= 3; k++) { const nx = frames[(frameIdx + k) % frames.length]; if (nx) ensureLayer(nx); }   // get the next frames ready
+  const ahead = playTimer ? 6 : 3;
+  for (let k = 1; k <= ahead; k++) { const nx = frames[(frameIdx + k) % frames.length]; if (nx) ensureLayer(nx); }   // get the next frames ready
   pruneLayers();
   $("slider").value = frameIdx;
   delete $("rtime").dataset.loading;
@@ -2405,13 +2442,14 @@ $("speedBtn").onclick = () => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEE
 function stopPlay() { clearInterval(playTimer); playTimer = null; $("play").textContent = "▶"; }
 $("play").onclick = () => {
   if (playTimer) { stopPlay(); return; }
-  for (let k = 0; k <= 3; k++) { const f = frames[(frameIdx + k) % frames.length]; if (f) ensureLayer(f); }
+  for (let k = 0; k <= 6; k++) { const f = frames[(frameIdx + k) % frames.length]; if (f) ensureLayer(f); }
   if (frameIdx >= frames.length - 1) showFrame(0);
   $("play").textContent = "❚❚";
   $("rtime").dataset.loading = "1"; updateProgress();
   let waited = 0;
   hold = 0;
   playTimer = setInterval(() => {
+    if (!frames.length) return;
     if (hold > 0) { hold -= 1; return; }
     const ni = (frameIdx + 1) % frames.length, nf = frames[ni];
     if (!shownLayer(layers[nf.key]) && waited < 4 * speed) { waited += 1; return; }   // wait (up to ~2 s) for the next frame to load
@@ -2801,7 +2839,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261115235951";   // kept equal to version.json on every publish
+const BUILD = "20261116000529";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
