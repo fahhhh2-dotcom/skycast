@@ -23,8 +23,6 @@
 <link rel="preconnect" href="https://api.weather.gov">
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <style>
   :root {
     --bg1:#1d4e9e; --bg2:#0b1f45; --accent:#ffd36b;
@@ -884,6 +882,44 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 26px rgba(5,20,60,.18); }
   html.mix .sheet-in, html.mix .results { background: var(--top2); }
   @supports (color: color-mix(in srgb, red, blue)) { html.mix .sheet-in, html.mix .results { background: color-mix(in srgb, var(--top2) 92%, #000); } }
+
+  /* ===== Animated weather icons ===== */
+  [data-wx] { display:inline-block; animation-iteration-count:infinite; will-change:transform; }
+  svg text[data-wx] { transform-box:fill-box; transform-origin:center; }
+  [data-wx="sun"]    { animation: wxSpin 22s linear infinite; }
+  [data-wx="partly"] { animation: wxBob 4.5s ease-in-out infinite; }
+  [data-wx="cloud"]  { animation: wxDrift 6s ease-in-out infinite; }
+  [data-wx="rain"]   { animation: wxRain 1.8s ease-in-out infinite; }
+  [data-wx="snow"]   { animation: wxSway 3.4s ease-in-out infinite; }
+  [data-wx="storm"]  { animation: wxFlash 4s ease-in-out infinite; }
+  [data-wx="fog"]    { animation: wxFog 4.5s ease-in-out infinite; }
+  [data-wx="moon"]   { animation: wxRock 6s ease-in-out infinite; }
+  @keyframes wxSpin { to { transform: rotate(360deg); } }
+  @keyframes wxBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes wxDrift { 0%,100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+  @keyframes wxRain { 0%,100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+  @keyframes wxSway { 0%,100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+  @keyframes wxFlash { 0%,86%,92%,100% { filter:none; transform: none; } 88% { filter: brightness(1.9); transform: scale(1.06); } 90% { filter:none; } 91% { filter: brightness(1.6); } }
+  @keyframes wxFog { 0%,100% { opacity:.65; transform: translateX(-1px); } 50% { opacity:1; transform: translateX(1px); } }
+  @keyframes wxRock { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+  html.noanim [data-wx] { animation:none !important; }
+  @media (prefers-reduced-motion: reduce) { [data-wx] { animation:none !important; } }
+
+  /* ===== Customize cards (Plus) ===== */
+  .cardtoggles { display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin:6px 0 4px; }
+  .cardtoggles button { display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:12px; border:1px solid var(--line); background: var(--panel2); color: var(--text); font:inherit; font-size:.82rem; font-weight:600; text-align:left; cursor:pointer; }
+  .cardtoggles button i { flex:0 0 auto; width:30px; height:18px; border-radius:9px; background: rgba(255,255,255,.2); position:relative; transition: background .2s; }
+  .cardtoggles button i::after { content:""; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:#fff; transition: transform .2s; }
+  .cardtoggles button.on i { background:#4fd27b; } .cardtoggles button.on i::after { transform: translateX(12px); }
+  .cardtoggles button:disabled { opacity:.5; cursor:default; }
+
+  /* ===== Holiday travel forecast ===== */
+  .trow { display:grid; grid-template-columns: 1fr auto auto; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line); }
+  .trow:first-child { border-top:0; padding-top:2px; }
+  .trow .tn { font-weight:700; } .trow .tn small { display:block; font-weight:500; color: var(--soft); font-size:.78rem; }
+  .trow .ti { font-size:1.5rem; } .trow .tt { text-align:right; font-weight:700; } .trow .tt small { display:block; font-weight:500; color: var(--soft); font-size:.78rem; }
+  .tflag { grid-column: 1 / -1; margin-top:-2px; font-size:.8rem; font-weight:700; color:#ffd36b; }
+  .tnote { margin-top:8px; font-size:.78rem; color: var(--soft); }
 </style>
 </head>
 <body class="t-day">
@@ -973,6 +1009,7 @@
 
     <section class="panel" id="tips"></section>
     <section class="panel o-brief" id="brief" style="display:none"></section>
+    <section class="panel o-x" id="travelPanel" style="display:none"><div class="ph"><h3 id="travelTitle">🦃 Holiday travel forecast</h3><span id="travelDate"></span></div><div id="travelBody"></div></section>
     <section class="panel o-hourly">
       <div class="ph"><h3>Next 24 hours</h3><span>Temperature & chance of rain</span></div>
       <div class="hscroll" id="hourly"></div>
@@ -1131,6 +1168,10 @@
   <div class="sh-h">Siri mode</div>
   <button class="sh-btn" id="siriBtn">🎙️ Set up Siri mode</button>
   <div class="sh-note">Ask Siri for SkyCast's forecast hands-free, using the same National Weather Service forecast SkyCast shows.</div>
+  <div class="sh-h">Customize your cards <span class="plus-pill">PLUS</span></div>
+  <div class="cardtoggles" id="cardToggles"></div>
+  <div class="sh-note" id="cardNote"></div>
+  <div class="sh-row"><span>Animated weather icons</span><div class="seg"><button data-anim="on">On</button><button data-anim="off">Off</button></div></div>
   <div class="sh-h">Widgets</div>
   <button class="sh-btn" id="widgetBtn">🧩 Add a SkyCast widget</button>
   <div class="sh-note">Put SkyCast's temperature and forecast right on your home screen.</div>
@@ -2030,8 +2071,26 @@ async function loadHRRR() {
 const inUS = () => place.latitude > 18 && place.latitude < 72 && place.longitude > -170 && place.longitude < -60;
 const ROWS = 13, COLS = 15, D_LAT = 3.2, D_LON = 4.6, SCALE = 12;
 
+const LEAFLET = "https://unpkg.com/leaflet@1.9.4/dist/leaflet";
+let leafletP = null;
+function loadLeaflet() {   // load the map library in the background (not while the forecast is loading)
+  if (window.L) return Promise.resolve();
+  if (leafletP) return leafletP;
+  leafletP = new Promise((ok, bad) => {
+    const css = document.createElement("link"); css.rel = "stylesheet"; css.href = LEAFLET + ".css"; css.crossOrigin = ""; document.head.appendChild(css);
+    const js = document.createElement("script"); js.src = LEAFLET + ".js"; js.crossOrigin = ""; js.onload = ok; js.onerror = () => { leafletP = null; bad(); }; document.head.appendChild(js);
+  });
+  return leafletP;
+}
 function initMap() {
-  if (!window.L) { $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load.</div>'; return; }
+  if (!window.L) {
+    if (initMap.waiting) return; initMap.waiting = true;
+    $("radar").innerHTML = '<div class="msg"><div class="spinner"></div>Loading radar…</div>';
+    loadLeaflet().then(() => { initMap.waiting = false; $("radar").innerHTML = ""; initMap(); })
+      .catch(() => { initMap.waiting = false; $("radar").innerHTML = '<div class="msg">Radar map couldn\'t load. Check your connection and try again.</div>'; });
+    return;
+  }
+  makeLeafletClasses();
   map = L.map("radar", { zoomControl: !matchMedia("(pointer: coarse)").matches, attributionControl: true, minZoom: 3, maxZoom: 11, fadeAnimation: false, zoomAnimationThreshold: 4, markerZoomAnimation: false,
     zoomSnap: 0.25, zoomDelta: 0.5, wheelPxPerZoomLevel: 120, wheelDebounceTime: 20, tap: false, inertia: true, inertiaDeceleration: 2000, inertiaMaxSpeed: 2400, easeLinearity: 0.2, bounceAtZoomLimits: false }).setView([place.latitude, place.longitude], 7);
   // clean near-white map (Esri Light Gray Canvas, no key needed): base with soft borders under the weather,
@@ -2222,7 +2281,10 @@ function keepRecolored(key, canvas) {
     while (recolored.size > RECOLOR_MAX) { const [k, u] = recolored.entries().next().value; URL.revokeObjectURL(u); recolored.delete(k); }
   });
 }
-const RecolorTiles = !window.L ? null : L.TileLayer.extend({
+let RecolorTiles = null, GreenWarnTiles = null;
+function makeLeafletClasses() {   // the map library loads only when the Radar tab is opened
+  if (!window.L || RecolorTiles) return;
+  RecolorTiles = L.TileLayer.extend({
   createTile(coords, done) {
     const tile = document.createElement("canvas"), size = this.getTileSize();
     tile.width = size.x; tile.height = size.y;
@@ -2254,6 +2316,8 @@ const RecolorTiles = !window.L ? null : L.TileLayer.extend({
     return tile;
   }
 });
+  makeWarnTiles();
+}
 function ensureLayer(f) {
   let e = layers[f.key];
   if (e && e.url === f.url) return e;
@@ -2387,7 +2451,9 @@ function setRadarLayer(l) {
 }
 /* Warnings: National Weather Service warning areas (counties and storm polygons), redrawn on the phone
    as green areas with dark outlines. */
-const GreenWarnTiles = (window.L && L.TileLayer && L.TileLayer.WMS && L.TileLayer.WMS.extend) ? L.TileLayer.WMS.extend({
+function makeWarnTiles() {
+  if (!(window.L && L.TileLayer && L.TileLayer.WMS && L.TileLayer.WMS.extend)) return;
+  GreenWarnTiles = L.TileLayer.WMS.extend({
   createTile(coords, done) {
     const tile = document.createElement("canvas"), size = this.getTileSize();
     tile.width = size.x; tile.height = size.y;
@@ -2423,7 +2489,8 @@ const GreenWarnTiles = (window.L && L.TileLayer && L.TileLayer.WMS && L.TileLaye
     img.src = this.getTileUrl(coords);
     return tile;
   }
-}) : null;
+});
+}
 function toggleWarnings(on) {
   if (on && !inUS()) { $("futureNote").textContent = "Storm warnings are only available for US cities."; on = false; }
   if (on && !warnLayer) {
@@ -2847,7 +2914,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261116001550";   // kept equal to version.json on every publish
+const BUILD = "20261116002752";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -4651,6 +4718,93 @@ async function loadOwnerChart() {
   box.hidden = false;
 }
 
+
+/* ---------- Animated weather icons ---------- */
+let animIcons = true;
+try { animIcons = localStorage.getItem("skycast_anim") !== "off"; } catch(e) {}
+const WX_KIND = [[/☀/, "sun"], [/🌤|⛅/, "partly"], [/⛈|🌩/, "storm"], [/🌧|🌦/, "rain"], [/❄|🌨/, "snow"], [/🌫/, "fog"], [/🌙/, "moon"], [/☁/, "cloud"]];
+function animateIcons() {
+  document.documentElement.classList.toggle("noanim", !animIcons);
+  let n = 0;
+  document.querySelectorAll('.cond-ic, .day .di, .di, .dh .ic, .mh .i, .ci, .ti, #hourly svg text[font-size="20"]').forEach(el => {
+    if (el.dataset.wx) return;
+    const t = el.textContent.trim(); if (!t || t.length > 4) return;
+    const k = WX_KIND.find(([re]) => re.test(t)); if (!k) return;
+    el.dataset.wx = k[1]; el.style.animationDelay = (-((n++ * 0.61) % 4)).toFixed(2) + "s";   // so they don't all move in sync
+  });
+}
+{ let q = 0; new MutationObserver(() => { if (!q) q = requestAnimationFrame(() => { q = 0; animateIcons(); }); }).observe(document.body, { childList: true, subtree: true }); }
+function paintAnimBtns() { document.querySelectorAll("[data-anim]").forEach(b => b.classList.toggle("on", (b.dataset.anim === "on") === animIcons)); }
+document.querySelectorAll("[data-anim]").forEach(b => b.onclick = () => { animIcons = b.dataset.anim === "on"; try { localStorage.setItem("skycast_anim", animIcons ? "on" : "off"); } catch(e) {} paintAnimBtns(); animateIcons(); });
+paintAnimBtns(); setTimeout(animateIcons, 0);
+
+/* ---------- Customize cards: SkyCast Plus members can hide the cards they don't use ---------- */
+const CARDS = [["Today's tips", "#tips"], ["Next 24 hours", ".o-hourly"], ["Conditions", ".o-cond"], ["Holiday travel", "#travelPanel"],
+  ["Snow Day Predictor", "#xSnow"], ["Weather quiz", "#xQuiz"], ["Storm outlook", "#stormPanel"], ["Radar preview", ".radar-teaser"],
+  ["Weather news", ".news-teaser"], ["Forecasters' notes", "#afdPanel"], ["Your cities", "#comparePanel"], ["Alerts card", ".notify"]];
+let hiddenCards = [];
+try { hiddenCards = JSON.parse(localStorage.getItem("skycast_hidden") || "[]"); } catch(e) {}
+function applyHidden() {
+  let st = $("hideStyle"); if (!st) { st = document.createElement("style"); st.id = "hideStyle"; document.head.appendChild(st); }
+  const on = isPlus();
+  st.textContent = on && hiddenCards.length ? hiddenCards.map(sel => `#viewW ${sel}`).join(",") + "{display:none !important}" : "";
+  $("cardToggles").innerHTML = CARDS.map(([name, sel]) => `<button data-card="${sel}" class="${hiddenCards.includes(sel) ? "" : "on"}"${on ? "" : " disabled"}><i></i>${name}</button>`).join("");
+  $("cardNote").textContent = on ? "Turn off the cards you don't want to see. Your choice is saved on this device." : "With SkyCast Plus you can hide any of these cards. Plus is coming soon.";
+  $("cardToggles").querySelectorAll("[data-card]").forEach(b => b.onclick = () => {
+    if (!isPlus()) return;
+    const sel = b.dataset.card;
+    hiddenCards = hiddenCards.includes(sel) ? hiddenCards.filter(x => x !== sel) : [...hiddenCards, sel];
+    try { localStorage.setItem("skycast_hidden", JSON.stringify(hiddenCards)); } catch(e) {}
+    applyHidden();
+  });
+}
+applyHidden();
+{ const _pp = paintPlus; paintPlus = function() { _pp.apply(this, arguments); try { applyHidden(); } catch(e) {} }; }
+$("gearBtn").addEventListener("click", () => setTimeout(applyHidden, 0));
+
+/* ---------- Holiday travel forecast (your city + saved cities, from the 16-day outlook) ---------- */
+function lastMonMay(y) { const x = new Date(y, 4, 31); while (x.getDay() !== 1) x.setDate(x.getDate() - 1); return x; }
+function nthWeekday(y, m, wd, n) { const d = new Date(y, m, 1); d.setDate(1 + ((wd - d.getDay() + 7) % 7) + (n - 1) * 7); return d; }
+function nextHoliday() {
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const list = [];
+  for (const y of [now.getFullYear(), now.getFullYear() + 1]) {
+    list.push(["🦃", "Thanksgiving", nthWeekday(y, 10, 4, 4)], ["🎄", "Christmas", new Date(y, 11, 25)], ["🎆", "New Year's Eve", new Date(y, 11, 31)],
+      ["🎇", "Fourth of July", new Date(y, 6, 4)], ["🇺🇸", "Memorial Day", lastMonMay(y)],
+      ["🏖️", "Labor Day", nthWeekday(y, 8, 1, 1)]);
+  }
+  return list.filter(h => h[2] >= now && h[2] - now <= 14 * 86400000).sort((a, b) => a[2] - b[2])[0] || null;
+}
+let travelFor = "", travelAt = 0;
+async function renderTravel() {
+  const h = nextHoliday(), panel = $("travelPanel");
+  if (!h) { panel.style.display = "none"; return; }
+  const [emo, name, day] = h, ds = day.getFullYear() + "-" + String(day.getMonth() + 1).padStart(2, "0") + "-" + String(day.getDate()).padStart(2, "0");
+  const spots = [{ name: place.current && place.name === "Current location" ? ((data && data.locName && data.locName.name) || "Your location") : place.name, admin1: place.admin1, latitude: place.latitude, longitude: place.longitude, you: true }]
+    .concat(saved.filter(p => keyOf(p) !== keyOf(place))).slice(0, 8);
+  const sig = ds + spots.map(keyOf).join("|") + unit;
+  if (sig === travelFor && Date.now() - travelAt < 3600000) return;
+  $("travelTitle").textContent = `${emo} ${name} travel forecast`;
+  $("travelDate").textContent = day.toLocaleDateString(LOC(), { weekday: "short", month: "short", day: "numeric" });
+  panel.style.display = "";
+  try {
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=${spots.map(p => p.latitude.toFixed(3)).join(",")}&longitude=${spots.map(p => p.longitude.toFixed(3)).join(",")}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,snowfall_sum,wind_gusts_10m_max&forecast_days=16&timezone=auto`;
+    const r = await fetch(u); if (!r.ok) throw new Error("om");
+    let j = await r.json(); if (!Array.isArray(j)) j = [j];
+    const daysAway = Math.round((day - new Date().setHours(0, 0, 0, 0)) / 86400000);
+    $("travelBody").innerHTML = spots.map((p, i) => {
+      const d = j[i] && j[i].daily; const k = d ? d.time.indexOf(ds) : -1;
+      if (k < 0) return `<div class="trow"><div class="tn">${esc(p.name)}</div><div class="ti"></div><div class="tt">—</div></div>`;
+      const code = d.weather_code[k], pop = d.precipitation_probability_max[k] ?? 0, snow = d.snowfall_sum[k] || 0, gust = d.wind_gusts_10m_max[k] || 0;
+      const flag = snow >= 1 ? "❄️ Snow could slow travel" : [66, 67, 56, 57].includes(code) ? "🧊 Freezing rain could make roads icy" : code >= 95 ? "⛈️ Storms possible" : pop >= 60 ? "🌧️ Rain likely: leave extra time" : gust >= 60 ? "💨 Strong wind gusts" : "";
+      return `<div class="trow"><div class="tn">${esc(p.name)}${p.you ? " <small>Your city</small>" : p.admin1 ? `<small>${esc(p.admin1)}</small>` : ""}</div><div class="ti">${info(code).icon}</div>
+        <div class="tt">${cvtT(d.temperature_2m_max[k])}° / ${cvtT(d.temperature_2m_min[k])}°<small>${pop}% rain</small></div>${flag ? `<div class="tflag">${flag}</div>` : ""}</div>`;
+    }).join("") + `<div class="tnote">${daysAway > 7 ? `${name} is ${daysAway} days away, so this can still change. ` : ""}${saved.length ? "Includes your saved cities." : "Save cities (like family's) to see them here too."}</div>`;
+    travelFor = sig; travelAt = Date.now();
+  } catch(e) { $("travelBody").innerHTML = `<div class="tnote">The travel forecast couldn't load right now. Try again later.</div>`; }
+}
+{ const _r2 = render; render = function() { _r2.apply(this, arguments); renderTravel().catch(() => {}); }; }
+
 $("uF").onclick = () => setUnit("F");
 $("uC").onclick = () => setUnit("C");
 setUnit(unit);
@@ -4663,6 +4817,7 @@ document.querySelectorAll("[data-layer]").forEach(b => b.classList.toggle("on", 
 renderLegend();
 load();
 showView();
+setTimeout(() => { const go = () => loadLeaflet().catch(() => {}); "requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 4000 }) : go(); }, 3500);
 
 // forecast every minute; radar every 5 minutes (future radar reloads every 30)
 setInterval(() => load(true), 60000);
