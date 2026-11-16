@@ -876,6 +876,14 @@
   .radarpanel .legtab { padding:12px 7px; font-size:.8rem; border-radius:12px 0 0 12px; border-left:0; }
   .radarpanel .torpill { top:66px; max-width: calc(100% - 136px); }
   .radarpanel.fs .torpill { top: calc(66px + env(safe-area-inset-top)); }
+
+  /* ===== Mix theme: cards are the background's own color (not black or white) ===== */
+  html.mix body { --panel: rgba(255,255,255,.13); --panel2: rgba(255,255,255,.10); --line: rgba(255,255,255,.24);
+    --text:#fff; --soft: rgba(255,255,255,.8); --faint: rgba(255,255,255,.6); }
+  html.mix .panel { -webkit-backdrop-filter: blur(14px) saturate(150%); backdrop-filter: blur(14px) saturate(150%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 26px rgba(5,20,60,.18); }
+  html.mix .sheet-in, html.mix .results { background: var(--top2); }
+  @supports (color: color-mix(in srgb, red, blue)) { html.mix .sheet-in, html.mix .results { background: color-mix(in srgb, var(--top2) 92%, #000); } }
 </style>
 </head>
 <body class="t-day">
@@ -1083,7 +1091,7 @@
   <div class="sh-row"><span>Language</span><div class="seg"><button data-pref="lang:en">English</button><button data-pref="lang:es">Español</button></div></div>
   <div class="sh-note">Weather Service forecasts, discussions and warnings stay in English.</div>
   <div class="sh-row"><span>Units</span><div class="seg"><button data-unit="F">°F</button><button data-unit="C">°C</button></div></div>
-  <div class="sh-row"><span>Theme</span><div class="seg"><button data-pref="theme:dark">Dark</button><button data-pref="theme:light">Light</button><button data-pref="theme:auto">Auto</button></div></div>
+  <div class="sh-row"><span>Theme</span><div class="seg"><button data-pref="theme:dark">Dark</button><button data-pref="theme:light">Light</button><button data-pref="theme:mix">Mix</button><button data-pref="theme:auto">Auto</button></div></div>
   <div class="sh-row"><span>Text size</span><div class="seg"><button data-pref="textSize:normal">Normal</button><button data-pref="textSize:large">Large</button></div></div>
   <div class="sh-h">Background</div>
   <div class="bgs" id="bgs">
@@ -2839,7 +2847,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261116000529";   // kept equal to version.json on every publish
+const BUILD = "20261116001550";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3017,6 +3025,7 @@ function savePrefs() { try { localStorage.setItem("skycast_prefs", JSON.stringif
 function applyPrefs(rerender) {
   const light = theme === "light" || (theme === "auto" && matchMedia("(prefers-color-scheme: light)").matches);
   document.documentElement.classList.toggle("light", light);
+  document.documentElement.classList.toggle("mix", theme === "mix");   // Mix: cards take on the background color instead of black or white
   document.documentElement.classList.toggle("large", textSize === "large");
   document.documentElement.lang = lang;
   $("q").placeholder = lang === "es" ? ES["Search a US city, then press Search"] : "Search a US city, then press Search";
