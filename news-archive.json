@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "id": "gizmodo-2026-11-13-polar-vortex",
+      "published": "2026-11-13T15:25:00-05:00",
+      "tag": "Cold",
+      "icon": "🥶",
+      "title": "Record-early polar vortex disruption could bring more cold around Thanksgiving",
+      "summary": "The earliest polar vortex disruption on record pushed Arctic air into the eastern U.S. this week, helping this week's nor'easter drop snow in higher areas. Forecast models hint at another round of cold, and possibly snow, in the East around Thanksgiving weekend.",
+      "source": "Gizmodo",
+      "url": "https://gizmodo.com/unpredecented-polar-vortex-event-arctic-blast-2000839635"
+    },
+    {
+      "id": "accuweather-2026-11-13-texas-weekend-rain",
+      "published": "2026-11-13T13:11:00-06:00",
+      "tag": "Rain",
+      "icon": "🌧️",
+      "title": "Weekend storm brings a long-awaited soaking to Texas",
+      "summary": "The storm that brought rain and mountain snow to California is crossing Texas and Oklahoma into early next week. Dallas has had just 0.19 inch of rain since Oct. 5, so the downpours should mostly help. Houston, Austin and San Antonio also get storms, and flash flooding is possible in central and coastal Texas.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-forecasts/downpours-to-drench-texas-including-dallas-and-houston-this-weekend/1958501"
+    },
+    {
+      "id": "foxweather-2026-11-13-noreaster",
+      "published": "2026-11-13T06:30:00-05:00",
+      "tag": "Storm",
+      "icon": "🌨️",
+      "title": "Nor'easter soaks the I-95 corridor as the season's first snow falls up north",
+      "summary": "A nor'easter brought heavy rain and wind to the East Coast on Friday. The heaviest snow was expected Friday afternoon into Saturday morning in upstate New York, southern Vermont and New Hampshire, with 1 to 3 inches possible in the Adirondacks and the Green and White Mountains. Lake-effect rain and snow were set to follow around the Great Lakes.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/northeast-faces-messy-friday-as-noreaster-ushers-in-rain-wind-and-snow"
+    },
+    {
       "id": "abcnews-2026-11-13-west-storms",
       "published": "2026-11-13T06:28:00-05:00",
       "tag": "Storm",
