@@ -468,6 +468,20 @@
   .story .st-src b { color:var(--text); font-weight:700; }
   .news-upd { font-size:.78rem; color:var(--faint); font-weight:700; margin-top:8px; }
   .news-upd:empty { display:none; }
+  .nh-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  #newsListen { font-size:.85rem; padding:7px 14px; color:var(--text); background:var(--panel); }
+  .nchips { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:14px 0 -6px; padding-bottom:2px; }
+  .nchips::-webkit-scrollbar { display:none; }
+  .nchips:empty { display:none; }
+  .nchips button { flex:0 0 auto; border:1px solid var(--line); background:var(--panel); color:var(--text); font:inherit; font-weight:700; font-size:.82rem; padding:7px 14px; border-radius:999px; cursor:pointer; white-space:nowrap; }
+  .nchips button.on { background:var(--text); color:#0b1424; border-color:var(--text); }
+  html.light .nchips button.on { background:#0e1d38; color:#fff; border-color:#0e1d38; }
+  .story .st-near { margin-left:auto; background:var(--accent); color:#0b1424; border-radius:999px; padding:2px 9px; font-size:.68rem; letter-spacing:.4px; }
+  .story .st-act { display:flex; gap:14px; align-items:center; }
+  .story .st-share { color:var(--soft); cursor:pointer; padding:2px 0; }
+  .story .st-share:hover { color:var(--text); }
+  .tabs a.dot::after { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#ff4d5a; margin-left:5px; vertical-align:2px; }
+  .ntest { background:none; border:0; color:var(--soft); font:inherit; font-size:.78rem; font-weight:700; text-decoration:underline; cursor:pointer; padding:6px 0 0; display:none; }
   .arch { margin-top:26px; background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:4px 16px; }
   .arch summary { cursor:pointer; list-style:none; padding:14px 0; font-weight:800; font-size:.95rem; display:flex; justify-content:space-between; align-items:center; }
   .arch summary::-webkit-details-marker { display:none; }
@@ -1076,6 +1090,7 @@
     <section class="panel notify">
       <div class="nt"><b>🔔 Weather warnings</b><span id="notifyText">Get a notification when there's a warning for your city.</span></div>
       <button class="nbtn" id="notifyBtn">Allow notifications</button>
+      <button class="ntest" id="pushTest" type="button">Send a test alert</button>
       <button class="mini-btn" id="extraBtn" style="width:100%;padding:9px;font-size:.82rem">🔔 Extra alerts mode: rain, snow, storms, freeze ›</button>
     </section>
   </div>
@@ -1084,8 +1099,9 @@
 
 <div class="view" id="viewN">
   <main class="newswrap">
-    <div class="news-head"><h2>Weather news</h2><span>The 9 latest real weather stories, summed up in plain words. Tap one to read the full article.</span></div>
+    <div class="news-head"><div class="nh-row"><h2>Weather news</h2><button class="mini-btn nws-raw" id="newsListen" type="button" style="display:none">🔊 Listen</button></div><span>The 9 latest real weather stories, summed up in plain words. Tap one to read the full article.</span></div>
     <div id="newsUpd" class="news-upd nws-raw"></div>
+    <div id="newsChips" class="nchips nws-raw"></div>
     <div id="newsList"><div class="msg"><div class="spinner"></div>Loading news…</div></div>
     <div id="newsArch" class="nws-raw"></div>
   </main>
@@ -2850,6 +2866,7 @@ async function loadAlerts() {
   showAlerts();
   saveWeather();
   notifyNew();
+  setTimeout(() => syncPush(), 0);
 }
 function showAlerts() {
   const live = alerts.filter(a => !(a.ends || a.expires) || Date.parse(a.ends || a.expires) > Date.now());
@@ -2886,7 +2903,10 @@ function notifyState() {
   }
   if (Notification.permission === "granted") {
     btn.textContent = "✓ Notifications on"; btn.classList.add("on");
-    txt.textContent = `You'll get a notification when a new warning is issued for ${place.name}. Keep SkyCast open, or in a background tab, so it can check every minute.`;
+    txt.textContent = pushOn
+      ? `You'll get a notification when a new warning is issued for ${place.name}, even when SkyCast is closed.`
+      : `You'll get a notification when a new warning is issued for ${place.name}. Keep SkyCast open, or in a background tab, so it can check every minute.`;
+    $("pushTest").style.display = pushOn ? "inline-block" : "none";
   } else if (Notification.permission === "denied") {
     btn.textContent = "Blocked"; btn.classList.add("on");
     txt.textContent = "Notifications are blocked for this site. Turn them on in your browser's site settings.";
@@ -2900,6 +2920,7 @@ $("notifyBtn").onclick = async () => {
     await getSW();
     show("SkyCast notifications are on", `We'll alert you about weather warnings for ${place.name}.`, "skycast-welcome");
     notifyNew();
+    syncPush(true);
   }
 };
 async function show(title, body, tag) {
@@ -2921,13 +2942,68 @@ function notifyNew() {
   });
   try { localStorage.setItem("skycast_seen_alerts", JSON.stringify(seen.slice(-200))); } catch(e) {}
 }
+/* ---------- Alerts when SkyCast is closed (Web Push through the SkyCast alert server, see push.json) ---------- */
+let pushBase = null, pushOn = false;
+try { pushOn = localStorage.getItem("skycast_push_ok") === "1"; } catch(e) {}
+const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+async function pushServer() {
+  if (pushBase !== null) return pushBase;
+  try { const j = await (await fetch("push.json?t=" + Math.floor(Date.now() / 300000), { cache: "no-store" })).json(); pushBase = String(j.url || "").replace(/\/+$/, ""); }
+  catch(e) { pushBase = ""; }
+  return pushBase;
+}
+const b64uToU8 = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0));
+const postJSON = (url, body) => fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+function setPushOn(v) { pushOn = v; try { localStorage.setItem("skycast_push_ok", v ? "1" : "0"); } catch(e) {} notifyState(); }
+let pushBusy = false;
+async function syncPush(force) {
+  if (pushBusy) return; pushBusy = true;
+  try {
+    if (!pushSupported() || Notification.permission !== "granted") { if (pushOn) setPushOn(false); return; }
+    const base = await pushServer(); if (!base) return;
+    const reg = await getSW(); if (!reg || !reg.pushManager) return;
+    let sub = await reg.pushManager.getSubscription();
+    if (!notifPrefs.warn) {
+      if (sub) { postJSON(base + "/unsubscribe", { endpoint: sub.endpoint }).catch(() => {}); await sub.unsubscribe(); }
+      try { localStorage.removeItem("skycast_push_sig"); } catch(e) {}
+      setPushOn(false); return;
+    }
+    if (!inUS()) return;                                   // NWS warnings are US only; keep the last US city
+    const { key } = await (await fetch(base + "/vapid", { cache: "no-store" })).json();
+    let oldKey = ""; try { oldKey = localStorage.getItem("skycast_push_key") || ""; } catch(e) {}
+    if (sub && oldKey && oldKey !== key) { await sub.unsubscribe(); sub = null; }
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToU8(key) });
+    try { localStorage.setItem("skycast_push_key", key); } catch(e) {}
+    const name = place.current && place.name === "Current location" ? ((data && data.locName && data.locName.name) || "your location") : place.name;
+    const sig = [sub.endpoint, place.latitude.toFixed(2), place.longitude.toFixed(2), name, lang].join("|");
+    let last = {}; try { last = JSON.parse(localStorage.getItem("skycast_push_sig") || "{}"); } catch(e) {}
+    if (!force && pushOn && last.sig === sig && Date.now() - (last.t || 0) < 86400000) return;
+    let seen = []; try { seen = JSON.parse(localStorage.getItem("skycast_seen_alerts") || "[]"); } catch(e) {}
+    const r = await postJSON(base + "/subscribe", { sub: sub.toJSON(), lat: place.latitude, lon: place.longitude, name, lang, seen: seen.slice(-60) });
+    if (r.ok) { try { localStorage.setItem("skycast_push_sig", JSON.stringify({ sig, t: Date.now() })); } catch(e) {} }
+    setPushOn(r.ok);
+  } catch(e) {
+  } finally { pushBusy = false; }
+}
+$("pushTest").onclick = async () => {
+  const b = $("pushTest"), base = await pushServer(), reg = await getSW();
+  const sub = reg && reg.pushManager && await reg.pushManager.getSubscription();
+  if (!base || !sub) { toast(lang === "es" ? "Las alertas con la app cerrada aún no están listas." : "Closed-app alerts aren't set up yet."); return; }
+  b.textContent = lang === "es" ? "Enviando…" : "Sending…";
+  try {
+    const r = await postJSON(base + "/test", { endpoint: sub.endpoint });
+    b.textContent = r.ok ? (lang === "es" ? "✓ Enviada. Puede tardar unos segundos." : "✓ Sent. It can take a few seconds.") : (lang === "es" ? "No se pudo enviar. Intenta más tarde." : "Couldn't send. Try again later.");
+  } catch(e) { b.textContent = lang === "es" ? "No se pudo enviar." : "Couldn't send."; }
+  setTimeout(() => b.textContent = lang === "es" ? "Enviar una alerta de prueba" : "Send a test alert", 6000);
+};
 notifyState();
 getSW();   // service worker: keeps the app working offline and handles notifications
+setTimeout(() => syncPush(), 4000);   // keep the closed-app alert subscription current
 addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261116190814";   // kept equal to version.json on every publish
+const BUILD = "20261116192348";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -2982,7 +3058,7 @@ function renderCities() {
     persistSaved(); renderCities(); renderCompare(false);
   };
 }
-function goTo(p) { if ($("locName")) $("locName").textContent = p.name; place = { ...p }; selDay = null; save(); renderCities(); load(); moveMap(); notifyState(); }
+function goTo(p) { if ($("locName")) $("locName").textContent = p.name; place = { ...p }; selDay = null; save(); renderCities(); load(); moveMap(); notifyState(); try { if (newsAll.length) renderNews(newsAll); } catch(e) {} }
 async function nameFor(lat, lon) {
   try {
     const j = await getJSON(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`, 1);
@@ -3793,11 +3869,12 @@ setTimeout(() => {   // runs once the whole script has loaded
   o.querySelectorAll("[data-onb]").forEach(b => b.onclick = async () => {
     if (!canNotify) return;
     const k = b.dataset.onb, wasOn = b.classList.contains("on");
-    if (!wasOn && Notification.permission === "default") { const p = await Notification.requestPermission(); notifyState(); if (p === "granted") getSW(); }
+    if (!wasOn && Notification.permission === "default") { const p = await Notification.requestPermission(); notifyState(); if (p === "granted") { getSW(); syncPush(true); } }
     if (Notification.permission !== "granted") { $("onbNote").textContent = "Notifications are blocked for this site. You can allow them later in your browser settings."; paint(); return; }
     notifPrefs[k] = !wasOn;
     try { localStorage.setItem("skycast_notif", JSON.stringify(notifPrefs)); } catch(e) {}
     renderNotifToggles(); paint();
+    if (k === "warn") syncPush(true);
   });
   // ---- step 1: sign up / sign in (Firebase) ----
   let mode = account.email ? "in" : "up";
@@ -4409,6 +4486,7 @@ document.querySelectorAll("[data-notif]").forEach(b => b.onclick = async () => {
   if (notifPrefs[k] && "Notification" in window && Notification.permission === "default") {
     const p = await Notification.requestPermission(); notifyState(); if (p === "granted") getSW();
   }
+  if (k === "warn") syncPush(true);
   if (!("Notification" in window) || Notification.permission !== "granted") toast(lang === "es" ? "Primero permite las notificaciones." : "Allow notifications first so SkyCast can alert you.");
   checkWeatherNotifs();
 });
@@ -4554,32 +4632,121 @@ function ago(ms) {
   const h = Math.round(m / 60); if (h < 24) return h + (h === 1 ? " hour ago" : " hours ago");
   const d = Math.round(h / 24); return d + (d === 1 ? " day ago" : " days ago");
 }
+/* News extras: "Near you" badge, new-story dot, topic filters, share, listen */
+const US_STATES = { AL:"Alabama", AK:"Alaska", AZ:"Arizona", AR:"Arkansas", CA:"California", CO:"Colorado", CT:"Connecticut", DE:"Delaware", DC:"District of Columbia", FL:"Florida", GA:"Georgia", HI:"Hawaii", ID:"Idaho", IL:"Illinois", IN:"Indiana", IA:"Iowa", KS:"Kansas", KY:"Kentucky", LA:"Louisiana", ME:"Maine", MD:"Maryland", MA:"Massachusetts", MI:"Michigan", MN:"Minnesota", MS:"Mississippi", MO:"Missouri", MT:"Montana", NE:"Nebraska", NV:"Nevada", NH:"New Hampshire", NJ:"New Jersey", NM:"New Mexico", NY:"New York", NC:"North Carolina", ND:"North Dakota", OH:"Ohio", OK:"Oklahoma", OR:"Oregon", PA:"Pennsylvania", RI:"Rhode Island", SC:"South Carolina", SD:"South Dakota", TN:"Tennessee", TX:"Texas", UT:"Utah", VT:"Vermont", VA:"Virginia", WA:"Washington", WV:"West Virginia", WI:"Wisconsin", WY:"Wyoming", PR:"Puerto Rico" };
+function nearTerms() {
+  const t = new Set(), add = (city, st) => {
+    if (city && city.length >= 4 && city !== "Current location") t.add(city);
+    if (st) t.add(US_STATES[st] || st);
+  };
+  add(place.name, place.admin1);
+  if (data && data.locName) add(data.locName.name, data.locName.admin1);
+  (typeof saved !== "undefined" ? saved : []).forEach(p => p && add(p.name, p.admin1));
+  return [...t].filter(w => w.length >= 4);
+}
+function isNear(a, terms) {
+  const txt = (a.title || "") + " " + (a.summary || "");
+  return terms.some(w => new RegExp("(^|[^A-Za-z])" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "($|[^A-Za-z])").test(txt));
+}
+const TAG_ES = { All:"Todas", Storm:"Tormenta", Snow:"Nieve", Cold:"Frío", Heat:"Calor", Rain:"Lluvia", Flood:"Inundación", Hurricane:"Huracán", Tornado:"Tornado", Wind:"Viento", Fire:"Incendio", Forecast:"Pronóstico", Science:"Ciencia", Climate:"Clima", Local:"Local", "Near you":"Cerca de ti" };
+const tagL = t => lang === "es" ? (TAG_ES[t] || t) : t;
+let newsAll = [], newsShown = [], newsFilter = "All";
+function newsSeen() { try { return JSON.parse(localStorage.getItem("skycast_news_seen") || "null"); } catch(e) { return null; } }
+function updateNewsDot() {
+  const seen = newsSeen() || [], fresh = newsAll.some(a => !seen.includes(a.id));
+  if (location.hash === "#news" && newsAll.length) { markNewsSeen(); return; }
+  $("tabN").classList.toggle("dot", fresh);
+  $("tabN").setAttribute("aria-label", fresh ? (lang === "es" ? "Noticias, hay noticias nuevas" : "News, new stories") : (lang === "es" ? "Noticias" : "News"));
+}
+function markNewsSeen() {
+  if (!newsAll.length) return;
+  const seen = newsSeen() || [];
+  try { localStorage.setItem("skycast_news_seen", JSON.stringify([...new Set([...newsAll.map(a => a.id), ...seen])].slice(0, 200))); } catch(e) {}
+  $("tabN").classList.remove("dot"); $("tabN").setAttribute("aria-label", lang === "es" ? "Noticias" : "News");
+}
+function storyHTML(a, i, near) {
+  const ms = Date.parse(a.published);
+  return `<a class="story nws-raw" href="${esc(a.url)}" target="_blank" rel="noopener">
+      <div class="st-top"><span class="st-ic">${esc(a.icon || "📰")}</span>${esc(tagL(a.tag || "Weather"))}${near ? `<span class="st-near">📍 ${tagL("Near you")}</span>` : ""}</div>
+      <h3>${esc(a.title)}</h3><p>${esc(a.summary)}</p>
+      <div class="st-src"><span><b>${esc(a.source)}</b> · ${agoL(ms)}</span><span class="st-act"><span class="st-share" role="button" tabindex="0" data-i="${i}" aria-label="${lang === "es" ? "Compartir" : "Share"}">↗︎ ${lang === "es" ? "Compartir" : "Share"}</span><span>${lang === "es" ? "Leer" : "Read"} ›</span></span></div></a>`;
+}
 function renderNews(list) {
   const t = $("newsTeaser");
+  newsAll = list;
   if (!list.length) {
     $("newsList").innerHTML = '<div class="msg">No new weather stories right now. Check back tomorrow morning.</div>';
+    $("newsChips").innerHTML = ""; $("newsListen").style.display = "none";
     t.style.display = "none"; return;
   }
+  const terms = nearTerms(), nearIds = new Set(list.filter(a => isNear(a, terms)).map(a => a.id));
+  const tags = [...new Set(list.map(a => a.tag || "Weather"))];
+  if (newsFilter !== "All" && newsFilter !== "Near you" && !tags.includes(newsFilter)) newsFilter = "All";
+  if (newsFilter === "Near you" && !nearIds.size) newsFilter = "All";
+  const chips = ["All", ...(nearIds.size ? ["Near you"] : []), ...tags];
+  $("newsChips").innerHTML = chips.length > 2 ? chips.map(c => `<button type="button" data-f="${esc(c)}" class="${c === newsFilter ? "on" : ""}" aria-pressed="${c === newsFilter}">${c === "Near you" ? "📍 " : ""}${esc(tagL(c))}</button>`).join("") : "";
+  const shown = list.filter(a => newsFilter === "All" || (newsFilter === "Near you" ? nearIds.has(a.id) : (a.tag || "Weather") === newsFilter));
+  const near = shown.filter(a => nearIds.has(a.id)), rest = shown.filter(a => !nearIds.has(a.id));
+  newsShown = [...near, ...rest];
   const dayName = ms => {
     const d = new Date(ms), today = new Date(), y = new Date(Date.now() - 86400000);
     if (d.toDateString() === today.toDateString()) return lang === "es" ? "Hoy" : "Today";
     if (d.toDateString() === y.toDateString()) return lang === "es" ? "Ayer" : "Yesterday";
     return d.toLocaleDateString(LOC(), { weekday: "long", month: "short", day: "numeric" });
   };
-  let html = "", lastDay = "";
-  list.forEach(a => {
-    const ms = Date.parse(a.published), day = dayName(ms);
-    if (day !== lastDay) { html += `<div class="news-day">${esc(day)}</div>`; lastDay = day; }
-    html += `<a class="story nws-raw" href="${esc(a.url)}" target="_blank" rel="noopener">
-      <div class="st-top"><span class="st-ic">${esc(a.icon || "📰")}</span>${esc(a.tag || "Weather")}</div>
-      <h3>${esc(a.title)}</h3><p>${esc(a.summary)}</p>
-      <div class="st-src"><span><b>${esc(a.source)}</b> · ${ago(ms)}</span><span>Read ↗</span></div></a>`;
+  let html = "", lastDay = "", i = 0;
+  if (near.length) html += `<div class="news-day nws-raw">📍 ${tagL("Near you")}</div>` + near.map(a => storyHTML(a, i++, true)).join("");
+  rest.forEach(a => {
+    const day = dayName(Date.parse(a.published));
+    if (day !== lastDay || (near.length && i === near.length)) { html += `<div class="news-day nws-raw">${esc(day)}</div>`; lastDay = day; }
+    html += storyHTML(a, i++, false);
   });
   $("newsList").innerHTML = html;
-  const top = list[0];
-  t.innerHTML = `<span class="nt-ic">${esc(top.icon || "📰")}</span><span><small>Weather news</small><b>${esc(top.title)}</b></span><span class="go">›</span>`;
+  $("newsListen").style.display = "speechSynthesis" in window ? "" : "none";
+  const top = list.find(a => nearIds.has(a.id)) || list[0];
+  t.innerHTML = `<span class="nt-ic">${esc(top.icon || "📰")}</span><span><small>${nearIds.has(top.id) ? "📍 " + tagL("Near you") : "Weather news"}</small><b>${esc(top.title)}</b></span><span class="go">›</span>`;
   t.style.display = "";
+  updateNewsDot();
 }
+$("newsChips").addEventListener("click", e => {
+  const b = e.target.closest("button[data-f]"); if (!b) return;
+  newsFilter = b.dataset.f; stopListening(); renderNews(newsAll);
+});
+async function shareStory(a) {
+  const d = { title: a.title, text: a.title + " (" + a.source + ")", url: a.url };
+  try { if (navigator.share) { await navigator.share(d); return; } } catch(e) { if (e && e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(a.url); toast(lang === "es" ? "Enlace copiado." : "Link copied."); }
+  catch(e) { prompt(lang === "es" ? "Copia este enlace:" : "Copy this link:", a.url); }
+}
+const onShare = e => {
+  const s = e.target.closest(".st-share"); if (!s) return false;
+  e.preventDefault(); e.stopPropagation();
+  const a = newsShown[+s.dataset.i]; if (a) shareStory(a);
+  return true;
+};
+$("newsList").addEventListener("click", onShare);
+$("newsList").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".st-share")) onShare(e); });
+let listening = false;
+function stopListening() {
+  if (listening && "speechSynthesis" in window) speechSynthesis.cancel();
+  listening = false; $("newsListen").textContent = lang === "es" ? "🔊 Escuchar" : "🔊 Listen";
+}
+$("newsListen").onclick = () => {
+  if (!("speechSynthesis" in window)) return;
+  if (listening) { stopListening(); return; }
+  const list = newsShown.length ? newsShown : newsAll; if (!list.length) return;
+  speechSynthesis.cancel();
+  listening = true; $("newsListen").textContent = lang === "es" ? "⏹ Detener" : "⏹ Stop";
+  const parts = [lang === "es" ? "Noticias del clima de SkyCast." : "Here's the weather news from SkyCast."];
+  list.forEach((a, k) => parts.push((k ? "Next. " : "") + a.title + ". " + a.summary + " From " + a.source + "."));
+  parts.forEach((p, k) => {
+    const u = new SpeechSynthesisUtterance(p);
+    u.lang = k === 0 && lang === "es" ? "es-US" : "en-US"; u.rate = 1;
+    if (k === parts.length - 1) u.onend = () => { if (listening) stopListening(); };
+    speechSynthesis.speak(u);
+  });
+};
+addEventListener("hashchange", () => { if (location.hash !== "#news") stopListening(); else markNewsSeen(); });
 setTimeout(() => loadNews(), 1500);
 setInterval(() => loadNews(), 30 * 60000);
 

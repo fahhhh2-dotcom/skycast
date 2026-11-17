@@ -2,7 +2,7 @@
 // - keeps the app itself (page, icons, map library, fonts) saved so it opens without internet
 // - always tries the network first for the page, so updates show up right away
 // - weather data is saved by the page itself (localStorage), not here
-const CACHE = "skycast-v44";
+const CACHE = "skycast-v45";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
 
@@ -32,10 +32,21 @@ self.addEventListener("fetch", e => {
   );
 });
 
+// warnings sent by the SkyCast alert server, shown even when the app is closed
+self.addEventListener("push", e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch(err) { d = { body: e.data ? e.data.text() : "" }; }
+  e.waitUntil(self.registration.showNotification(d.title || "SkyCast", {
+    body: d.body || "", tag: d.tag || undefined, icon: "icon-192.png", badge: "icon-192.png",
+    data: { url: d.url || "./" }
+  }));
+});
+
 self.addEventListener("notificationclick", e => {
   e.notification.close();
-  e.waitUntil(self.clients.matchAll({ type: "window" }).then(list => {
+  const target = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
     for (const c of list) if ("focus" in c) return c.focus();
-    return self.clients.openWindow("./");
+    return self.clients.openWindow(target);
   }));
 });
