@@ -620,6 +620,7 @@
   .onb-swap { display:block; width:100%; margin-top:10px; border:0; background:none; color:#ffd36b; font:inherit; font-weight:700; font-size:.9rem; cursor:pointer; }
   .sh-btn.out { color:#ff8b7a; }
   /* ===== Account ===== */
+  .acct-row[hidden], .sheet#ownerView:not(.owner-ok) { display:none !important; }
   .acct-row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:12px 14px; margin-bottom:6px; border-radius:16px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; cursor:pointer; }
   .acct-row b { display:block; font-size:1rem; }
   .acct-row small { display:block; color:var(--soft); font-size:.8rem; font-weight:600; }
@@ -3003,7 +3004,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261116192348";   // kept equal to version.json on every publish
+const BUILD = "20261116192902";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3700,8 +3701,17 @@ async function checkPlusAccount() {
   try { if (signedIn() && account.email) ok = PLUS_ACCOUNT_HASHES.includes(await sha256(account.email.trim().toLowerCase())); } catch(e) {}
   if (ok !== plusAccountOK) { plusAccountOK = ok; try { paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); } catch(e) {} }
   let own = false;
-  try { if (signedIn() && account.email) own = (await sha256(account.email.trim().toLowerCase())) === OWNER_HASH; } catch(e) {}
-  isOwnerUser = own; if ($("ownerBtn")) $("ownerBtn").hidden = !own;
+  try {
+    // only the owner's real, verified sign-in counts (not just an email saved on this device)
+    if (signedIn() && account.email && (await sha256(account.email.trim().toLowerCase())) === OWNER_HASH) {
+      const F = await Promise.race([fbReady, new Promise(r => setTimeout(() => r(null), 8000))]);
+      const u = F && F.auth && F.auth.currentUser;
+      own = !!(u && u.emailVerified && (await sha256((u.email || "").trim().toLowerCase())) === OWNER_HASH);
+    }
+  } catch(e) {}
+  isOwnerUser = own;
+  if ($("ownerBtn")) $("ownerBtn").hidden = !own;
+  if ($("ownerView")) { $("ownerView").classList.toggle("owner-ok", own); if (!own) $("ownerView").classList.remove("open"); }
 }
 var isOwnerUser = false;
 function isPlus() { return !!(plusActive || (PLUS_TESTMODE && plusTest) || plusCodeOK() || plusAccountOK); }   // a function declaration so earlier code can call it safely
@@ -4334,6 +4344,7 @@ async function pingDevice() {
 }
 setTimeout(pingDevice, 5000);
 async function loadOwnerStats() {
+  if (!isOwnerUser) return;
   const box = $("ownerStats");
   box.innerHTML = `<div><b>…</b>Loading</div>`;
   try {
@@ -4352,7 +4363,7 @@ async function loadOwnerStats() {
     box.innerHTML = `<div style="grid-column:1/-1"><b>🔒</b>The numbers are locked. The owner rules need to be added in Firebase (Firestore → Rules), and you need to be signed in with Google as the owner.</div>`;
   }
 }
-$("ownerBtn").onclick = () => { $("sheet").classList.remove("open"); $("ownerView").classList.add("open"); loadOwnerStats(); };
+$("ownerBtn").onclick = () => { if (!isOwnerUser) return; $("sheet").classList.remove("open"); $("ownerView").classList.add("open"); loadOwnerStats(); };
 $("ownerRefresh").onclick = loadOwnerStats;
 $("ownerClose").onclick = () => $("ownerView").classList.remove("open");
 $("ownerView").onclick = e => { if (e.target.id === "ownerView") $("ownerView").classList.remove("open"); };
