@@ -1,0 +1,34 @@
+{
+  "articles": [
+    {
+      "id": "abcnews-2026-11-13-west-storms",
+      "published": "2026-11-13T06:28:00-05:00",
+      "tag": "Storm",
+      "icon": "🌊",
+      "title": "Storm train hits the West with Sierra snow, strong winds and huge surf",
+      "summary": "A string of storms is moving across the West, with up to 2 feet of snow possible on the highest Sierra Nevada peaks near Lake Tahoe and Mammoth Lakes. A high surf warning from Monterey to Crescent City calls for waves as high as 35 feet on Saturday, and another storm could arrive Wednesday.",
+      "source": "ABC News",
+      "url": "https://abcnews.com/US/storms-bring-heavy-snow-powerful-winds-dangerous-surf/story?id=138104059"
+    },
+    {
+      "id": "nbcboston-2026-11-13-noreaster",
+      "published": "2026-11-13T05:48:00-05:00",
+      "tag": "Local",
+      "icon": "🌧️",
+      "title": "Boston gets mostly cold rain as the nor'easter moves out",
+      "summary": "Greater Boston saw mainly a cold rain from Friday's nor'easter, with north-northeast winds gusting to around 30 mph. Some higher spots in New England picked up a few inches of snow before the storm pulled away.",
+      "source": "NBC Boston",
+      "url": "https://www.nbcboston.com/news/local/weather-boston-noreaster-rain-snow-radar/4048824/"
+    },
+    {
+      "id": "weathercom-2026-11-12-super-el-nino",
+      "published": "2026-11-12T15:30:00-05:00",
+      "tag": "Climate",
+      "icon": "🔬",
+      "title": "This El Niño may soon become the strongest on record",
+      "summary": "Pacific waters in NOAA's key monitoring zone were 2.5°C above average in mid-November, and NOAA puts the odds of a historic event at about 60%. Its effects have already shown up, including the fewest Atlantic hurricanes since 1925. A warm North, wet South pattern is expected through at least February.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/12/forecast/national/super-el-nino-nearing-a-record-us-weather-pattern"
+    }
+  ]
+}
