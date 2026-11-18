@@ -3035,7 +3035,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118172209";   // kept equal to version.json on every publish
+const BUILD = "20261118172900";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3555,8 +3555,7 @@ const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "https://buymeacoffee.com/skycastweather";   // e.g. https://buymeacoffee.com/yourname/membership
 const OWNER_HASH = "a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f";   // SHA-256 of the owner's email: the owner always has Plus and sees the Owner dashboard
 const PLUS_ACCOUNT_HASHES = [OWNER_HASH];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
-const PLUS_CODE_HASHES = ["5bc45e9a1e3ded64f75978bd450b960d7235d6f1cae367d070d7b0dea9ca9de6",   // public giveaway code (promo video). Delete this line to turn it off.
-  "7084d4ba53421daac339d353ef337d27bf8f357c39c6e8323505448c6dfbe291",   // Buy Me a Coffee members code
+const PLUS_CODE_HASHES = ["7084d4ba53421daac339d353ef337d27bf8f357c39c6e8323505448c6dfbe291",   // Buy Me a Coffee members code
   "0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
   "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
   "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
@@ -3658,6 +3657,10 @@ const PLUS_CODE_HASHES = ["5bc45e9a1e3ded64f75978bd450b960d7235d6f1cae367d070d7b
   "6b50357d60e3c508ed69fc83d152b421f1028a8b23ec2bb28c6f3f8dc4886275",
   "ccff58f3e168e033498ea438d40c115d7c9d3d9a20c68fb66132ca9a65401982",
   "18223dad716bb23e5e9b491d5db846c7127949de3e2fad295b1fe2aa5c759b73"];   // SHA-256 of the current Plus code(s) with dashes/spaces removed, so the code itself isn't in the page
+/* One-time giveaway codes: only the FIRST signed-in person who types one gets Plus.
+   The claim is saved in Firestore at giveaways/{code fingerprint}, and the Firestore rules
+   only allow creating that document once, so nobody else can use the code after that. */
+const ONE_TIME_CODE_HASHES = ["5bc45e9a1e3ded64f75978bd450b960d7235d6f1cae367d070d7b0dea9ca9de6"];   // SKY-GIFT giveaway code from the promo video
 const STRIPE_LINK = "https://buy.stripe.com/test_28E7sNcmzebh1XcacU93y00";   // Stripe sandbox (test) link, kept for later
 const PLUS_LINK = PLUS_PROVIDER === "soon" ? "" : PLUS_PROVIDER === "cashapp" ? CASHAPP_LINK : PLUS_PROVIDER === "bmc" ? BMC_LINK : STRIPE_LINK;
 const PLUS_PORTAL = "";   // optional: your Stripe customer portal link, so members can cancel or update their card
@@ -3720,7 +3723,20 @@ document.querySelectorAll("[data-plus-code]").forEach(f => f.addEventListener("s
   const inp = f.querySelector("input"), msg = f.querySelector(".plus-codemsg"), code = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, "");   // dashes and spaces don't matter
   if (!code) return;
   let h = ""; try { h = await sha256(code); } catch(err) { msg.textContent = "This browser can't check codes. Try Safari or Chrome."; return; }
-  if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "soon" ? "That code didn't work. Check the code and try again." : PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
+  if (ONE_TIME_CODE_HASHES.includes(h)) {
+    // one-time code: only the first signed-in person can claim it
+    const u0 = FB && FB.auth && FB.auth.currentUser;
+    if (!signedIn() || !u0) { msg.textContent = "This is a one-time giveaway code. Sign in first (⚙️ → Account), then type it again."; return; }
+    msg.textContent = "Checking the code…";
+    let F, ref, snap;
+    try { F = await fbReady; ref = F.fs.doc(F.db, "giveaways", h); snap = await F.fs.getDoc(ref); }
+    catch(err) { msg.textContent = "Couldn't check the code right now. Check your internet and try again."; return; }
+    if (snap.exists() && (snap.data() || {}).uid !== u0.uid) { msg.textContent = "Sorry, someone already used this code. Watch for the next giveaway!"; return; }
+    if (!snap.exists()) {
+      try { await F.fs.setDoc(ref, { uid: u0.uid, t: Date.now() }); }
+      catch(err) { msg.textContent = "Sorry, someone just used this code. Watch for the next giveaway!"; return; }
+    }
+  } else if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "soon" ? "That code didn't work. Check the code and try again." : PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
   try { localStorage.setItem("skycast_plus_code", h); } catch(err) {}
   inp.value = ""; msg.textContent = "";
   paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels();
@@ -3738,7 +3754,7 @@ paintPlus();
 var plusActive = false, plusTest = false, PLUS_TESTMODE = false;
 try { plusActive = localStorage.getItem("skycast_plus") === "1"; plusTest = localStorage.getItem("skycast_plus_test") === "1"; } catch(e) {}
 PLUS_TESTMODE = /buy\.stripe\.com\/test_/.test(PLUS_LINK);
-function plusCodeOK() { try { return PLUS_CODE_HASHES.includes(localStorage.getItem("skycast_plus_code") || ""); } catch(e) { return false; } }
+function plusCodeOK() { try { const c = localStorage.getItem("skycast_plus_code") || ""; return PLUS_CODE_HASHES.includes(c) || ONE_TIME_CODE_HASHES.includes(c); } catch(e) { return false; } }
 var plusAccountOK = false;
 async function checkPlusAccount() {
   let ok = false;
@@ -3779,7 +3795,15 @@ function setPlus(on) {
   try { localStorage.setItem("skycast_plus", on ? "1" : "0"); } catch(e) {}
   if (was !== isPlus()) { paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); }
 }
-fbReady.then(F => F.au.onAuthStateChanged(F.auth, u => { if (u) checkPlus(u.uid); else setPlus(false); checkPlusAccount(); })).catch(() => {});
+fbReady.then(F => F.au.onAuthStateChanged(F.auth, u => { if (u) { checkPlus(u.uid); checkGiveaway(F, u.uid); } else setPlus(false); checkPlusAccount(); })).catch(() => {});
+async function checkGiveaway(F, uid) {
+  if (plusCodeOK() || !ONE_TIME_CODE_HASHES.length) return;
+  try {
+    const snap = await F.fs.getDocs(F.fs.query(F.fs.collection(F.db, "giveaways"), F.fs.where("uid", "==", uid)));
+    const d = snap.docs.find(x => ONE_TIME_CODE_HASHES.includes(x.id));
+    if (d) { localStorage.setItem("skycast_plus_code", d.id); paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels(); }
+  } catch(e) {}
+}
 setTimeout(checkPlusAccount, 0);
 paintPlus(); paintAccount();
 
