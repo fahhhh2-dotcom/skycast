@@ -1072,7 +1072,7 @@
       <div class="ph"><h3>Detail charts <span class="plus-pill">PLUS</span></h3><span>Next 48 hours</span></div>
       <div id="pcCharts"></div>
     </section>
-    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · Coming soon</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
+    <button class="panel o-plus plus-teaser" id="plusTeaser" style="display:none"><span class="pt-ic">⭐</span><span><small>SkyCast Plus · $5/month</small><b>Hour-by-hour for all 7 days, detail charts, animated backgrounds and more</b></span><span class="go">›</span></button>
     <section class="panel o-cond">
       <div class="ph"><h3>Conditions</h3><span id="condTime"></span></div>
       <div class="tiles" id="tiles"></div>
@@ -1218,7 +1218,7 @@
   </div>
   <div class="sh-note">A separate mode from warnings: heads-ups from the forecast about 3 hours before rain, snow, storms or a freeze. SkyCast checks every minute while it's open or in a background tab. It can't send alerts when it's fully closed.</div>
   <button class="acct-row owner-row" id="ownerBtn" hidden><span class="acct-av">👑</span><span><b>Owner dashboard</b><small>See how many people use SkyCast</small></span><span class="go">›</span></button>
-  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">Coming soon</small></span><span class="go">›</span></button>
+  <button class="acct-row plus-row" id="plusBtn"><span class="acct-av">⭐</span><span><b>SkyCast Plus</b><small id="plusSub">$5/month · See what's included</small></span><span class="go">›</span></button>
   <div class="sh-h">Siri mode</div>
   <button class="sh-btn" id="siriBtn">🎙️ Set up Siri mode</button>
   <div class="sh-note">Ask Siri for SkyCast's forecast hands-free, using the same National Weather Service forecast SkyCast shows.</div>
@@ -1269,10 +1269,10 @@
     <section class="onb-step" data-step="2">
       <div class="onb-ic">⭐</div>
       <h2>Try SkyCast Plus?</h2>
-      <p>Everything you've seen stays free. Plus extras are coming soon.</p>
+      <p>Everything you've seen stays free. Want more? Join SkyCast Plus for $5 a month.</p>
       <ul class="plus-list" data-plus-list></ul>
       <div class="sh-note" data-plus-note></div>
-      <button class="onb-go" data-plus-buy>⭐ Plus is coming soon</button>
+      <button class="onb-go" data-plus-buy>☕ Join on Buy Me a Coffee · $5/month</button>
       <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
       <button class="onb-skip" data-next>Maybe later</button>
     </section>
@@ -1295,10 +1295,10 @@
 </div></div>
 <div class="sheet" id="plusView"><div class="sheet-in">
   <div class="sh-top"><b>⭐ SkyCast Plus</b><button class="mini-btn" id="plusClose">Done</button></div>
-  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus extras are <b style="color:var(--text)">coming soon</b>.</p>
+  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus extras are <b style="color:var(--text)">$5 a month</b> on Buy Me a Coffee.</p>
   <ul class="plus-list" data-plus-list></ul>
   <div class="sh-note" data-plus-note></div>
-  <button class="sh-btn plus-buy" data-plus-buy>⭐ Plus is coming soon</button>
+  <button class="sh-btn plus-buy" data-plus-buy>☕ Join on Buy Me a Coffee · $5/month</button>
   <form class="plus-code" data-plus-code hidden><div class="pc-row"><input type="text" placeholder="Have a Plus code?" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><button type="submit">Unlock</button></div><div class="plus-codemsg"></div></form>
 </div></div>
 <div class="sheet" id="ownerView"><div class="sheet-in">
@@ -3035,7 +3035,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118152341";   // kept equal to version.json on every publish
+const BUILD = "20261118162805";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3549,13 +3549,14 @@ paintAccount();
    3. To change the code, add the new code's fingerprint to PLUS_CODE_HASHES and remove the old one
       (people with an old code lose Plus until they enter the new one).
    To switch back to Stripe, set PLUS_PROVIDER to "stripe". */
-const PLUS_PROVIDER = "soon";   // "soon" = Plus shows "Coming soon" and takes no payments (codes already given out still work). Set back to "cashapp" to sell Plus again.
+const PLUS_PROVIDER = "bmc";   // "soon" = Plus shows "Coming soon" and takes no payments (codes already given out still work). Set back to "cashapp" to sell Plus again.
 const CASHAPP_LINK = "https://cash.app/$SkyCastWeather/5";   // opens Cash App with $5 filled in
 const CASHAPP_TAG = "$SkyCastWeather";
-const BMC_LINK = "";   // e.g. https://buymeacoffee.com/yourname/membership
+const BMC_LINK = "https://buymeacoffee.com/skycastweather";   // e.g. https://buymeacoffee.com/yourname/membership
 const OWNER_HASH = "a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f";   // SHA-256 of the owner's email: the owner always has Plus and sees the Owner dashboard
 const PLUS_ACCOUNT_HASHES = [OWNER_HASH];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
-const PLUS_CODE_HASHES = ["0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
+const PLUS_CODE_HASHES = ["7084d4ba53421daac339d353ef337d27bf8f357c39c6e8323505448c6dfbe291",   // Buy Me a Coffee members code
+  "0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
   "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
   "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
   "4c4346ce2edc04afc6d4a7808dadb736d7ee2c9990b8f7f805342a7aac031659",
@@ -3693,12 +3694,12 @@ function paintPlus() {
     return;
   }
   document.querySelectorAll("[data-plus-buy]").forEach(b => { b.disabled = on ? (bmc ? !BMC_LINK : !PLUS_PORTAL) : !PLUS_LINK;
-    b.textContent = on ? (bmc ? (BMC_LINK ? "Manage membership on Buy Me a Coffee" : "✓ You're a Plus member") : PLUS_PORTAL ? "Manage subscription" : "✓ You're a Plus member") : PLUS_LINK ? (bmc ? "☕ Join on Buy Me a Coffee" : "Subscribe for $1/month") : "Coming soon"; });
+    b.textContent = on ? (bmc ? (BMC_LINK ? "Manage membership on Buy Me a Coffee" : "✓ You're a Plus member") : PLUS_PORTAL ? "Manage subscription" : "✓ You're a Plus member") : PLUS_LINK ? (bmc ? "☕ Join on Buy Me a Coffee · $5/month" : "Subscribe for $1/month") : "Coming soon"; });
   document.querySelectorAll("[data-plus-code]").forEach(f => f.hidden = on || !bmc);
   document.querySelectorAll("[data-plus-note]").forEach(n => n.textContent = on ? ((typeof plusTest !== "undefined" && plusTest && !plusActive) ? "Test mode: Plus is on for this device so you can try it. Real members are checked through Stripe." : "Thanks for supporting SkyCast! Everything below is unlocked.")
-    : PLUS_PROVIDER === "bmc" ? (BMC_LINK ? "Join SkyCast Plus on Buy Me a Coffee. Your Plus code is in the members-only post there. Type it below to unlock Plus." : "Memberships aren't open yet. Already have a Plus code? Type it below.")
+    : PLUS_PROVIDER === "bmc" ? (BMC_LINK ? "Join SkyCast Plus on Buy Me a Coffee for $5 a month. After you join, your Plus code is in the members-only post there. Type it below to unlock Plus." : "Memberships aren't open yet. Already have a Plus code? Type it below.")
     : PLUS_LINK ? (signedIn() ? "Payments are handled securely by Stripe. Cancel anytime." : "Sign in first so your Plus membership follows your account.") : "Subscriptions aren't open yet. We'll let you know when Plus is ready.");
-  if ($("plusSub")) $("plusSub").textContent = on ? "You're a member ✓" : "See what's included";
+  if ($("plusSub")) $("plusSub").textContent = on ? "You're a member ✓" : (bmc && BMC_LINK ? "$5/month · See what's included" : "See what's included");
 }
 function buyPlus() {
   if (PLUS_PROVIDER === "soon") return;   // nothing to buy yet
