@@ -3035,7 +3035,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118162805";   // kept equal to version.json on every publish
+const BUILD = "20261118172209";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3555,7 +3555,8 @@ const CASHAPP_TAG = "$SkyCastWeather";
 const BMC_LINK = "https://buymeacoffee.com/skycastweather";   // e.g. https://buymeacoffee.com/yourname/membership
 const OWNER_HASH = "a2da3309b48b682bc523be6e57210cc732ba2224f9352bc080af57664f450d1f";   // SHA-256 of the owner's email: the owner always has Plus and sees the Owner dashboard
 const PLUS_ACCOUNT_HASHES = [OWNER_HASH];   // SHA-256 of lowercase emails of accounts that always have Plus (so the email isn't written in the page)
-const PLUS_CODE_HASHES = ["7084d4ba53421daac339d353ef337d27bf8f357c39c6e8323505448c6dfbe291",   // Buy Me a Coffee members code
+const PLUS_CODE_HASHES = ["5bc45e9a1e3ded64f75978bd450b960d7235d6f1cae367d070d7b0dea9ca9de6",   // public giveaway code (promo video). Delete this line to turn it off.
+  "7084d4ba53421daac339d353ef337d27bf8f357c39c6e8323505448c6dfbe291",   // Buy Me a Coffee members code
   "0a4de97f7a5128de8d3c4a74bb22df94b5db0a169c041c97bf114de883e38144",
   "ec3ace49a4bf2c14a431a59a0d596990500e34618d1541b5797d8688ebd08034",
   "f408a02f0914813d9d1a64970ee2a49ddf8b87e729111a335df91cbabeca62f6",
