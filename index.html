@@ -443,6 +443,12 @@
   .radarpanel .toolbtn, .radarpanel .tools { right: max(12px, env(safe-area-inset-right)); }
   .radarpanel .legtab { left: env(safe-area-inset-left); }
   .rsheet { left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); }
+  /* computers & tablets: the radar player floats centered at the bottom (the phone rule above was pushing it off the left edge) */
+  @media (min-width:760px) {
+    .rsheet { left:50%; right:auto; width:min(620px, calc(100% - 200px)); transform:translateX(-50%); bottom:20px;
+      background:rgba(255,255,255,.9); -webkit-backdrop-filter:blur(14px) saturate(160%); backdrop-filter:blur(14px) saturate(160%);
+      box-shadow:0 18px 44px rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.6); }
+  }
   .search input, .onb-search input { font-size:16px; }   /* 16px stops iPhone from zooming in when you tap a box */
   html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
   @media (max-width:600px) {
@@ -3049,7 +3055,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118174005";   // kept equal to version.json on every publish
+const BUILD = "20261118174737";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
