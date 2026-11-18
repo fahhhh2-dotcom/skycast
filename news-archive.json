@@ -14,6 +14,9 @@
       "id": "wtvf-2026-11-14-nashville-frost",
       "published": "2026-11-14T06:39:26-05:00",
       "tag": "Cold",
+      "states": [
+        "TN"
+      ],
       "icon": "🌡️",
       "title": "Nashville in for a sunny but chilly weekend, with frost possible tonight",
       "summary": "Middle Tennessee will run about 7 to 10 degrees below average this weekend, with a high near 52 on Saturday. A low around 29 could bring patchy frost and freezing temps by Sunday morning, so cover sensitive plants. Readings should get closer to normal next week.",
@@ -24,6 +27,9 @@
       "id": "actionnews5-2026-11-13-midsouth-drought",
       "published": "2026-11-13T16:28:00-06:00",
       "tag": "Local",
+      "states": [
+        "AR"
+      ],
       "icon": "🏜️",
       "title": "Mid-South drought eases in spots but keeps spreading in eastern Arkansas",
       "summary": "Memphis has picked up 3.41 inches of rain this month, more than August through October combined, yet it is still about an inch below normal for November. Most of West Tennessee and north Mississippi improved to moderate or severe drought, while eastern Arkansas keeps getting worse. Little rain is expected until a front around Thanksgiving week.",
@@ -44,6 +50,9 @@
       "id": "accuweather-2026-11-13-texas-weekend-rain",
       "published": "2026-11-13T13:11:00-06:00",
       "tag": "Rain",
+      "states": [
+        "TX"
+      ],
       "icon": "🌧️",
       "title": "Weekend storm brings a long-awaited soaking to Texas",
       "summary": "The storm that brought rain and mountain snow to California is crossing Texas and Oklahoma into early next week. Dallas has had just 0.19 inch of rain since Oct. 5, so the downpours should mostly help. Houston, Austin and San Antonio also get storms, and flash flooding is possible in central and coastal Texas.",
@@ -64,6 +73,9 @@
       "id": "abcnews-2026-11-13-west-storms",
       "published": "2026-11-13T06:28:00-05:00",
       "tag": "Storm",
+      "states": [
+        "CA"
+      ],
       "icon": "🌊",
       "title": "Storm train hits the West with Sierra snow, strong winds and huge surf",
       "summary": "A string of storms is moving across the West, with up to 2 feet of snow possible on the highest Sierra Nevada peaks near Lake Tahoe and Mammoth Lakes. A high surf warning from Monterey to Crescent City calls for waves as high as 35 feet on Saturday, and another storm could arrive Wednesday.",
@@ -74,6 +86,9 @@
       "id": "nbcboston-2026-11-13-noreaster",
       "published": "2026-11-13T05:48:00-05:00",
       "tag": "Local",
+      "states": [
+        "MA"
+      ],
       "icon": "🌧️",
       "title": "Boston gets mostly cold rain as the nor'easter moves out",
       "summary": "Greater Boston saw mainly a cold rain from Friday's nor'easter, with north-northeast winds gusting to around 30 mph. Some higher spots in New England picked up a few inches of snow before the storm pulled away.",

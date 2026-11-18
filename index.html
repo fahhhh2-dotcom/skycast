@@ -480,7 +480,22 @@
   .story .st-act { display:flex; gap:14px; align-items:center; }
   .story .st-share { color:var(--soft); cursor:pointer; padding:2px 0; }
   .story .st-share:hover { color:var(--text); }
-  .tabs a.dot::after { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:#ff4d5a; margin-left:5px; vertical-align:2px; }
+  /* "New stories" badge on the News tab (own class so it never picks up the global .dot styles) */
+  .tabs a.has-new { position:relative; }
+  .tabs a.has-new::after { content:""; position:absolute; top:3px; right:2px; width:8px; height:8px; border-radius:50%; background:#ff4d5a; box-shadow:0 0 0 2px rgba(255,255,255,.9); animation:newsPing 2.4s ease-out infinite; pointer-events:none; }
+  @keyframes newsPing { 0% { box-shadow:0 0 0 2px rgba(255,255,255,.9), 0 0 0 2px rgba(255,77,90,.55); } 70%,100% { box-shadow:0 0 0 2px rgba(255,255,255,.9), 0 0 0 9px rgba(255,77,90,0); } }
+  @media (prefers-reduced-motion: reduce) { .tabs a.has-new::after { animation:none; } }
+  /* Local news */
+  .nlocal { margin-top:18px; background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  .nlocal .nl-ic { font-size:1.5rem; }
+  .nlocal small { display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:1.3px; color:var(--accent); font-weight:800; }
+  .nlocal b { display:block; font-size:1rem; margin-top:2px; }
+  .nlocal .mini-btn { margin-left:auto; flex:0 0 auto; color:var(--text); }
+  .nl-more { display:block; text-align:center; text-decoration:none; color:var(--text); background:var(--panel); border:1px dashed var(--line); border-radius:16px; padding:13px 14px; font-weight:700; font-size:.9rem; margin-top:4px; }
+  .nl-empty { text-align:center; color:var(--soft); padding:26px 16px 18px; font-size:.92rem; line-height:1.5; }
+  .nl-pick { display:flex; align-items:center; gap:10px; }
+  .nl-pick span { margin-left:auto; color:var(--soft); font-weight:600; font-size:.82rem; }
+  .nl-pick.on { border-color:var(--accent); }
   .ntest { background:none; border:0; color:var(--soft); font:inherit; font-size:.78rem; font-weight:700; text-decoration:underline; cursor:pointer; padding:6px 0 0; display:none; }
   .arch { margin-top:26px; background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:4px 16px; }
   .arch summary { cursor:pointer; list-style:none; padding:14px 0; font-weight:800; font-size:.95rem; display:flex; justify-content:space-between; align-items:center; }
@@ -1111,6 +1126,7 @@
     <div class="news-head"><div class="nh-row"><h2>Weather news</h2><button class="mini-btn nws-raw" id="newsListen" type="button" style="display:none">🔊 Listen</button></div><span>The 9 latest real weather stories, summed up in plain words. Tap one to read the full article.</span></div>
     <div id="newsUpd" class="news-upd nws-raw"></div>
     <div id="newsChips" class="nchips nws-raw"></div>
+    <div id="newsLocal" class="nws-raw"></div>
     <div id="newsList"><div class="msg"><div class="spinner"></div>Loading news…</div></div>
     <div id="newsArch" class="nws-raw"></div>
   </main>
@@ -1271,6 +1287,12 @@
     </section>
   </div>
 </div>
+<div class="sheet" id="localView"><div class="sheet-in">
+  <div class="sh-top"><b>📍 Choose your local place</b><button class="mini-btn" id="localClose" type="button">Done</button></div>
+  <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Pick one of your places. The Local tab will show weather stories from that state.</p>
+  <div id="localPicks"></div>
+  <p class="sh-note">Want another place? Search for it on the Weather tab and save it, then pick it here.</p>
+</div></div>
 <div class="sheet" id="plusView"><div class="sheet-in">
   <div class="sh-top"><b>⭐ SkyCast Plus</b><button class="mini-btn" id="plusClose">Done</button></div>
   <p class="sh-note" style="font-size:.88rem;color:var(--soft)">Radar, warnings, the tornado tracker, the jet stream, storm outlooks and the 14-day forecast are free for everyone. Plus extras are <b style="color:var(--text)">coming soon</b>.</p>
@@ -3013,7 +3035,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261116193300";   // kept equal to version.json on every publish
+const BUILD = "20261118152341";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -4659,6 +4681,8 @@ async function loadNewsArchive(current) {
     const list = ((await r.json()).articles || []).filter(a => !ids.has(a.id) && !isNaN(Date.parse(a.published)))
       .sort((a, b) => Date.parse(b.published) - Date.parse(a.published));
     archLoaded = Date.now();
+    newsArchAll = list;
+    if (newsFilter === "Local") renderNews(newsAll);
     if (!list.length) { $("newsArch").innerHTML = ""; return; }
     const es = lang === "es", wasOpen = !!$("newsArch").querySelector("details[open]");
     let html = `<details class="arch"${wasOpen ? " open" : ""}><summary>${es ? "Noticias anteriores" : "Earlier stories"} (${list.length})</summary>`;
@@ -4693,19 +4717,64 @@ function isNear(a, terms) {
 }
 const TAG_ES = { All:"Todas", Storm:"Tormenta", Snow:"Nieve", Cold:"Frío", Heat:"Calor", Rain:"Lluvia", Flood:"Inundación", Hurricane:"Huracán", Tornado:"Tornado", Wind:"Viento", Fire:"Incendio", Forecast:"Pronóstico", Science:"Ciencia", Climate:"Clima", Local:"Local", "Near you":"Cerca de ti" };
 const tagL = t => lang === "es" ? (TAG_ES[t] || t) : t;
-let newsAll = [], newsShown = [], newsFilter = "All";
+let newsAll = [], newsShown = [], newsFilter = "All", newsArchAll = [];
+/* Local news: the person picks one of their places; the Local tab shows stories from that state */
+const STATE_CODE = Object.fromEntries(Object.entries(US_STATES).map(([k, v]) => [v.toLowerCase(), k]));
+const stCode = s => { if (!s) return ""; const t = String(s).trim(); return US_STATES[t.toUpperCase()] ? t.toUpperCase() : (STATE_CODE[t.toLowerCase()] || ""); };
+function newsLocal() { try { const l = JSON.parse(localStorage.getItem("skycast_news_local") || "null"); return l && stCode(l.admin1) ? l : null; } catch(e) { return null; } }
+function localPlaces() {
+  const out = [], seen = new Set(), add = (name, admin1, cur) => {
+    const code = stCode(admin1); if (!code) return;
+    const k = (name + "|" + code).toLowerCase(); if (seen.has(k)) return; seen.add(k);
+    out.push({ name, admin1: US_STATES[code], cur });
+  };
+  if (place.current && data && data.locName) add(data.locName.name, data.locName.admin1, true);
+  else if (place.name && place.name !== "Current location") add(place.name, place.admin1);
+  (typeof saved !== "undefined" ? saved : []).forEach(p => p && add(p.name, p.admin1));
+  return out;
+}
+function isLocalStory(a, loc) {
+  const code = stCode(loc.admin1); if (!code) return false;
+  if (Array.isArray(a.states) && a.states.length) return a.states.map(x => String(x).toUpperCase()).includes(code);
+  return isNear(a, [US_STATES[code], ...(loc.name && loc.name.length >= 4 ? [loc.name] : [])]);
+}
+function openLocalPicker() {
+  const list = localPlaces(), cur = newsLocal(), es = lang === "es";
+  $("localPicks").innerHTML = list.length
+    ? list.map((p, i) => `<button class="sh-btn nl-pick${cur && cur.name === p.name && stCode(cur.admin1) === stCode(p.admin1) ? " on" : ""}" type="button" data-lp="${i}">${p.cur ? "📍" : "🏙️"} ${esc(p.name)}<span>${esc(p.admin1)}${cur && cur.name === p.name && stCode(cur.admin1) === stCode(p.admin1) ? " ✓" : ""}</span></button>`).join("")
+    : `<div class="nl-empty">${es ? "Aún no tienes lugares guardados en EE. UU." : "You don't have any saved U.S. places yet."}</div>`;
+  $("localPicks").onclick = e => {
+    const b = e.target.closest("[data-lp]"); if (!b) return;
+    const p = list[+b.dataset.lp];
+    try { localStorage.setItem("skycast_news_local", JSON.stringify({ name: p.name, admin1: p.admin1 })); } catch(e2) {}
+    $("localView").classList.remove("open");
+    newsFilter = "Local"; stopListening(); renderNews(newsAll);
+  };
+  $("localView").classList.add("open");
+}
+$("localClose").onclick = () => $("localView").classList.remove("open");
+$("localView").onclick = e => { if (e.target.id === "localView") $("localView").classList.remove("open"); };
+function renderLocalNews() {
+  const loc = newsLocal(), es = lang === "es";
+  if (!loc) { $("newsLocal").innerHTML = ""; return null; }
+  const st = US_STATES[stCode(loc.admin1)];
+  $("newsLocal").innerHTML = `<div class="nlocal"><span class="nl-ic">📍</span><span><small>${es ? "Tus noticias locales" : "Your local news"}</small><b>${esc(loc.name)}${loc.name !== st ? ", " + esc(st) : ""}</b></span><button class="mini-btn" type="button" id="localChange">${es ? "Cambiar" : "Change"}</button></div>`;
+  $("localChange").onclick = openLocalPicker;
+  const ids = new Set(), stories = [...newsAll, ...newsArchAll].filter(a => !ids.has(a.id) && ids.add(a.id) && isLocalStory(a, loc));
+  return { loc, st, stories };
+}
 function newsSeen() { try { return JSON.parse(localStorage.getItem("skycast_news_seen") || "null"); } catch(e) { return null; } }
 function updateNewsDot() {
   const seen = newsSeen() || [], fresh = newsAll.some(a => !seen.includes(a.id));
   if (location.hash === "#news" && newsAll.length) { markNewsSeen(); return; }
-  $("tabN").classList.toggle("dot", fresh);
+  $("tabN").classList.toggle("has-new", fresh);
   $("tabN").setAttribute("aria-label", fresh ? (lang === "es" ? "Noticias, hay noticias nuevas" : "News, new stories") : (lang === "es" ? "Noticias" : "News"));
 }
 function markNewsSeen() {
   if (!newsAll.length) return;
   const seen = newsSeen() || [];
   try { localStorage.setItem("skycast_news_seen", JSON.stringify([...new Set([...newsAll.map(a => a.id), ...seen])].slice(0, 200))); } catch(e) {}
-  $("tabN").classList.remove("dot"); $("tabN").setAttribute("aria-label", lang === "es" ? "Noticias" : "News");
+  $("tabN").classList.remove("has-new"); $("tabN").setAttribute("aria-label", lang === "es" ? "Noticias" : "News");
 }
 function storyHTML(a, i, near) {
   const ms = Date.parse(a.published);
@@ -4723,11 +4792,24 @@ function renderNews(list) {
     t.style.display = "none"; return;
   }
   const terms = nearTerms(), nearIds = new Set(list.filter(a => isNear(a, terms)).map(a => a.id));
-  const tags = [...new Set(list.map(a => a.tag || "Weather"))];
-  if (newsFilter !== "All" && newsFilter !== "Near you" && !tags.includes(newsFilter)) newsFilter = "All";
+  const tags = [...new Set(list.map(a => a.tag || "Weather"))].filter(t => t !== "Local");
+  if (newsFilter !== "All" && newsFilter !== "Near you" && newsFilter !== "Local" && !tags.includes(newsFilter)) newsFilter = "All";
   if (newsFilter === "Near you" && !nearIds.size) newsFilter = "All";
-  const chips = ["All", ...(nearIds.size ? ["Near you"] : []), ...tags];
-  $("newsChips").innerHTML = chips.length > 2 ? chips.map(c => `<button type="button" data-f="${esc(c)}" class="${c === newsFilter ? "on" : ""}" aria-pressed="${c === newsFilter}">${c === "Near you" ? "📍 " : ""}${esc(tagL(c))}</button>`).join("") : "";
+  if (newsFilter === "Local" && !newsLocal()) newsFilter = "All";
+  const chips = ["All", "Local", ...(nearIds.size ? ["Near you"] : []), ...tags];
+  $("newsChips").innerHTML = chips.map(c => `<button type="button" data-f="${esc(c)}" class="${c === newsFilter ? "on" : ""}" aria-pressed="${c === newsFilter}">${c === "Near you" || c === "Local" ? "📍 " : ""}${esc(tagL(c))}</button>`).join("");
+  if (newsFilter === "Local") {
+    const r = renderLocalNews(), es = lang === "es";
+    newsShown = r.stories;
+    const more = `<a class="nl-more" href="https://news.google.com/search?q=${encodeURIComponent(r.st + " weather")}&hl=en-US&gl=US&ceid=US:en" target="_blank" rel="noopener">🔎 ${es ? "Más noticias del clima de " : "More "}${esc(r.st)}${es ? "" : " weather news"} ↗︎</a>`;
+    $("newsList").innerHTML = (r.stories.length
+      ? `<div class="news-day nws-raw">${esc(r.st)}</div>` + r.stories.map((a, i) => storyHTML(a, i, false)).join("")
+      : `<div class="nl-empty">${es ? "Hoy no hay noticias del clima de " + esc(r.st) + " en SkyCast." : "No SkyCast stories from " + esc(r.st) + " right now. New stories are added every morning."}</div>`) + more;
+    $("newsListen").style.display = r.stories.length && "speechSynthesis" in window ? "" : "none";
+    updateNewsDot();
+    return;
+  }
+  $("newsLocal").innerHTML = "";
   const shown = list.filter(a => newsFilter === "All" || (newsFilter === "Near you" ? nearIds.has(a.id) : (a.tag || "Weather") === newsFilter));
   const near = shown.filter(a => nearIds.has(a.id)), rest = shown.filter(a => !nearIds.has(a.id));
   newsShown = [...near, ...rest];
@@ -4753,6 +4835,7 @@ function renderNews(list) {
 }
 $("newsChips").addEventListener("click", e => {
   const b = e.target.closest("button[data-f]"); if (!b) return;
+  if (b.dataset.f === "Local" && (!newsLocal() || newsFilter === "Local")) { openLocalPicker(); return; }
   newsFilter = b.dataset.f; stopListening(); renderNews(newsAll);
 });
 async function shareStory(a) {

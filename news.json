@@ -5,6 +5,9 @@
       "id": "abc7-2026-11-18-bay-area-waterspouts",
       "published": "2026-11-18T05:11:59-08:00",
       "tag": "Local",
+      "states": [
+        "CA"
+      ],
       "icon": "🌪️",
       "title": "Rare waterspouts and tornado warnings hit the Bay Area as storms roll in",
       "summary": "Two waterspouts spun up over San Francisco Bay near Candlestick Point and Brisbane, something NOAA records show hasn't happened there in 28 years. No damage was reported. Santa Cruz County also saw two tornado warnings without a confirmed tornado, and Wednesday's storm could drop 1 to 2 inches of rain.",
@@ -25,6 +28,9 @@
       "id": "foxweather-2026-11-17-california-atmospheric-river",
       "published": "2026-11-17T09:06:00-05:00",
       "tag": "Storm",
+      "states": [
+        "CA"
+      ],
       "icon": "🌧️",
       "title": "Next atmospheric river puts 30 million Californians at risk of flash flooding",
       "summary": "Another atmospheric river reaches California Tuesday night, bringing a flash flood threat to more than 30 million people through Thursday. The Bay Area could get 2 to 3 inches of rain Wednesday, then heavy rain shifts to Los Angeles Thursday, where burn scars face debris flow risk. The highest Sierra peaks could see over 4 feet of snow.",
@@ -55,6 +61,9 @@
       "id": "foxweather-2026-11-16-florida-flood-week",
       "published": "2026-11-16T10:46:00-05:00",
       "tag": "Flood",
+      "states": [
+        "FL"
+      ],
       "icon": "🌊",
       "title": "Florida's Atlantic coast faces a week of flooding rain, with Brevard most at risk",
       "summary": "Repeated downpours are set to soak Florida's east coast from Tuesday through Friday, with 4 to 6 inches widely and over 8 inches in spots. Parts of Brevard County face a Level 3 of 4 flash flood risk Wednesday. Forecasters say the storms could turn into a coastal storm by Saturday, bringing wind and rain to the Southeast.",
@@ -65,6 +74,9 @@
       "id": "fox35-2026-11-16-florida-heavy-rain",
       "published": "2026-11-16T05:49:00-05:00",
       "tag": "Rain",
+      "states": [
+        "FL"
+      ],
       "icon": "🌧️",
       "title": "Florida's Atlantic coast braces for days of heavy rain bands",
       "summary": "Easterly winds off the Atlantic could push repeated bands of heavy rain into Central Florida from Tuesday through Friday. Most areas may see 2 to 4 inches, with 5 to 7 possible in spots, and flooding is most likely south of Cape Canaveral midweek. The St. Johns River is already in major flood at Cocoa.",
@@ -75,6 +87,9 @@
       "id": "abc7-2026-11-15-socal-high-surf",
       "published": "2026-11-15T23:11:00-08:00",
       "tag": "Storm",
+      "states": [
+        "CA"
+      ],
       "icon": "🌊",
       "title": "Big surf pounds Southern California beaches and closes piers",
       "summary": "Waves of 6 to 9 feet were forecast in spots like Ventura's Surfers Point on Sunday, and piers in Manhattan Beach, Huntington Beach, Ventura and San Diego's Pacific Beach closed at times. Waves washed away a protective berm in Seal Beach. Dangerous rip currents may last all week as rain chances return Monday.",
