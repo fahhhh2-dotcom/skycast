@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "id": "foxweather-2026-11-14-super-el-nino-west-snow",
+      "published": "2026-11-14T14:19:00-05:00",
+      "tag": "Snow",
+      "icon": "❄️",
+      "title": "Super El Niño could mean a snowier winter for the Mountain West",
+      "summary": "After record-low snowpack last winter, NOAA and European outlooks favor above-average snow from November to March for the Sierra Nevada, Great Basin, Wasatch and central Rockies. The Cascades may come in below average. That mountain snow is a key water source for the Colorado River and the Southwest.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/super-el-nino-increase-snow-mountain-west-winter"
+    },
+    {
+      "id": "wtvf-2026-11-14-nashville-frost",
+      "published": "2026-11-14T06:39:26-05:00",
+      "tag": "Cold",
+      "icon": "🌡️",
+      "title": "Nashville in for a sunny but chilly weekend, with frost possible tonight",
+      "summary": "Middle Tennessee will run about 7 to 10 degrees below average this weekend, with a high near 52 on Saturday. A low around 29 could bring patchy frost and freezing temps by Sunday morning, so cover sensitive plants. Readings should get closer to normal next week.",
+      "source": "NewsChannel 5 Nashville",
+      "url": "https://www.newschannel5.com/weather/november-14-2026-dry-chilly-weekend-with-frost-and-freezing-conditions"
+    },
+    {
+      "id": "actionnews5-2026-11-13-midsouth-drought",
+      "published": "2026-11-13T16:28:00-06:00",
+      "tag": "Local",
+      "icon": "🏜️",
+      "title": "Mid-South drought eases in spots but keeps spreading in eastern Arkansas",
+      "summary": "Memphis has picked up 3.41 inches of rain this month, more than August through October combined, yet it is still about an inch below normal for November. Most of West Tennessee and north Mississippi improved to moderate or severe drought, while eastern Arkansas keeps getting worse. Little rain is expected until a front around Thanksgiving week.",
+      "source": "Action News 5",
+      "url": "https://www.actionnews5.com/2026/11/13/breakdown-drought-improvements-not-everyone/"
+    },
+    {
       "id": "gizmodo-2026-11-13-polar-vortex",
       "published": "2026-11-13T15:25:00-05:00",
       "tag": "Cold",

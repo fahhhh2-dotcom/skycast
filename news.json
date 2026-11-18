@@ -1,6 +1,26 @@
 {
-  "updated": "2026-11-17T10:40:24-06:00",
+  "updated": "2026-11-18T10:41:24-06:00",
   "articles": [
+    {
+      "id": "abc7-2026-11-18-bay-area-waterspouts",
+      "published": "2026-11-18T05:11:59-08:00",
+      "tag": "Local",
+      "icon": "🌪️",
+      "title": "Rare waterspouts and tornado warnings hit the Bay Area as storms roll in",
+      "summary": "Two waterspouts spun up over San Francisco Bay near Candlestick Point and Brisbane, something NOAA records show hasn't happened there in 28 years. No damage was reported. Santa Cruz County also saw two tornado warnings without a confirmed tornado, and Wednesday's storm could drop 1 to 2 inches of rain.",
+      "source": "ABC7 San Francisco",
+      "url": "https://abc7news.com/live-updates/live-bay-area-storm-updates-tornado-warning-issued-santa-cruz-county-waterspouts-spotted-san-francisco/20045464/entry/20047161/"
+    },
+    {
+      "id": "cnn-2026-11-17-super-el-nino-records",
+      "published": "2026-11-17T16:58:00-05:00",
+      "tag": "Science",
+      "icon": "🔬",
+      "title": "Record-setting super El Niño comes as Atlantic logs just one hurricane",
+      "summary": "Parts of the eastern tropical Pacific are running up to 18°F warmer than normal, and by many measures this is the strongest super El Niño yet seen. The Atlantic has produced only one hurricane this season, a first since 1925. Waters off California are also near record warmth.",
+      "source": "CNN",
+      "url": "https://www.yahoo.com/news/science/articles/not-parents-el-ni-o-215812013.html"
+    },
     {
       "id": "foxweather-2026-11-17-california-atmospheric-river",
       "published": "2026-11-17T09:06:00-05:00",
@@ -20,6 +40,16 @@
       "summary": "This weekend, Nov. 20-22, a storm could spread snow from the Four Corners toward the Northern Plains, while a new system brings rain and mountain snow from San Francisco to Seattle. Showers linger in Florida and along the Southeast coast, and storms may reach the I-95 corridor Sunday. Thanksgiving week looks warmer than average for most of the country.",
       "source": "The Weather Channel",
       "url": "https://weather.com/2026/11/17/holiday/thanksgiving/thanksgiving-getaway-weekend-weather-outlook-west-central-us"
+    },
+    {
+      "id": "accuweather-2026-11-16-eastern-warmup",
+      "published": "2026-11-16T12:49:00-06:00",
+      "tag": "Heat",
+      "icon": "☀️",
+      "title": "Sunny, unusually mild days ahead for much of the eastern U.S.",
+      "summary": "High pressure will keep much of the East dry and sunny this week, with highs 5 to 15 degrees above average. New York and Chicago could reach the mid-60s Thursday and Friday, and Nashville, Atlanta and Charlotte may near 70. The dry stretch could raise wildfire risk in drought areas.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-forecasts/november-warmup-to-spread-across-much-of-eastern-us-how-long-will-it-last/1959124"
     },
     {
       "id": "foxweather-2026-11-16-florida-flood-week",
@@ -60,36 +90,6 @@
       "summary": "A storm could bring rain from the Mississippi and Ohio valleys to the East Coast early in Thanksgiving week, then move offshore before the holiday. The Northeast and Great Lakes look unusually warm, while the Southwest and southern Plains run cooler. Severe storms are possible in Texas and the Gulf Coast over the holiday weekend.",
       "source": "FOX Weather",
       "url": "https://www.foxweather.com/weather-news/thanksgiving-weather-outlook-we-two-weeks-away-from-turkey-time"
-    },
-    {
-      "id": "foxweather-2026-11-14-super-el-nino-west-snow",
-      "published": "2026-11-14T14:19:00-05:00",
-      "tag": "Snow",
-      "icon": "❄️",
-      "title": "Super El Niño could mean a snowier winter for the Mountain West",
-      "summary": "After record-low snowpack last winter, NOAA and European outlooks favor above-average snow from November to March for the Sierra Nevada, Great Basin, Wasatch and central Rockies. The Cascades may come in below average. That mountain snow is a key water source for the Colorado River and the Southwest.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/super-el-nino-increase-snow-mountain-west-winter"
-    },
-    {
-      "id": "wtvf-2026-11-14-nashville-frost",
-      "published": "2026-11-14T06:39:26-05:00",
-      "tag": "Cold",
-      "icon": "🌡️",
-      "title": "Nashville in for a sunny but chilly weekend, with frost possible tonight",
-      "summary": "Middle Tennessee will run about 7 to 10 degrees below average this weekend, with a high near 52 on Saturday. A low around 29 could bring patchy frost and freezing temps by Sunday morning, so cover sensitive plants. Readings should get closer to normal next week.",
-      "source": "NewsChannel 5 Nashville",
-      "url": "https://www.newschannel5.com/weather/november-14-2026-dry-chilly-weekend-with-frost-and-freezing-conditions"
-    },
-    {
-      "id": "actionnews5-2026-11-13-midsouth-drought",
-      "published": "2026-11-13T16:28:00-06:00",
-      "tag": "Local",
-      "icon": "🏜️",
-      "title": "Mid-South drought eases in spots but keeps spreading in eastern Arkansas",
-      "summary": "Memphis has picked up 3.41 inches of rain this month, more than August through October combined, yet it is still about an inch below normal for November. Most of West Tennessee and north Mississippi improved to moderate or severe drought, while eastern Arkansas keeps getting worse. Little rain is expected until a front around Thanksgiving week.",
-      "source": "Action News 5",
-      "url": "https://www.actionnews5.com/2026/11/13/breakdown-drought-improvements-not-everyone/"
     }
   ]
 }
