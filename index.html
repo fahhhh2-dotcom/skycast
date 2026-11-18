@@ -77,6 +77,20 @@
     /* wide left column: conditions tiles sit 4 across, sun and moon side by side */
     .o-cond .tiles { grid-template-columns: repeat(4, 1fr); }
     .o-cond .sun svg { max-height:96px; }
+    /* News on computers: one easy-to-read column, a bit wider and roomier */
+    main.newswrap { display:block; max-width:860px; padding:32px 28px 64px; }
+    .news-head h2 { font-size:2rem; }
+    .news-head span { font-size:.95rem; }
+    #newsList .story { padding:22px 24px 18px; margin-bottom:16px; }
+    #newsList .story h3 { font-size:1.22rem; }
+    #newsList .story p { font-size:.97rem; }
+  }
+  /* big screens: use more of the width */
+  @media (min-width: 1360px) {
+    main { max-width:1320px; }
+    .bar-in, .cities { max-width:1320px; }
+    main { grid-template-columns: minmax(0,1.7fr) minmax(0,1fr); gap:22px; }
+    .col { gap:22px; }
   }
   /* phones & tablets: one column, most-used things first */
   @media (max-width: 959px) {
@@ -728,7 +742,7 @@
   .st-map { margin-top:8px; border:1px solid var(--line); background:transparent; color:var(--text); font:inherit; font-weight:700; font-size:.8rem; padding:7px 12px; border-radius:999px; cursor:pointer; }
   /* ===== Extras ===== */
   .xgrid { display:grid; gap:18px; grid-template-columns: 1fr; }
-  @media (min-width:600px) { .xgrid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width:600px) { .xgrid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } }   /* one card fills the row, two sit side by side */
   @media (max-width:959px) { .xgrid { gap:14px; } }
   .xbig { font-size:2rem; font-weight:800; line-height:1; }
   .xsub { font-size:.85rem; color:var(--soft); margin-top:6px; line-height:1.45; }
@@ -1084,7 +1098,6 @@
       <section class="panel" id="xStars" style="display:none"><div class="ph"><h3>🌌 Stargazing tonight <span class="plus-pill">PLUS</span></h3><span></span></div><div id="starsBody"></div></section>
       <section class="panel" id="xDay" style="display:none"><div class="ph"><h3>📅 On this day <span class="plus-pill">PLUS</span></h3><span id="dayDate"></span></div><div id="dayBody"></div></section>
     </div>
-    <section class="panel o-x" id="xQuiz"><div class="ph"><h3>🧠 Weather quiz</h3><span id="quizStreak"></span></div><div id="quizBody"></div><div class="fact" id="factBody"></div></section>
   </div>
 
   <div class="col col-r">
@@ -1117,6 +1130,7 @@
       <button class="ntest" id="pushTest" type="button">Send a test alert</button>
       <button class="mini-btn" id="extraBtn" style="width:100%;padding:9px;font-size:.82rem">🔔 Extra alerts mode: rain, snow, storms, freeze ›</button>
     </section>
+    <section class="panel o-x" id="xQuiz"><div class="ph"><h3>🧠 Weather quiz</h3><span id="quizStreak"></span></div><div id="quizBody"></div><div class="fact" id="factBody"></div></section>
   </div>
 </main>
 </div>
@@ -3035,7 +3049,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118172900";   // kept equal to version.json on every publish
+const BUILD = "20261118174005";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
