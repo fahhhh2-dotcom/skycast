@@ -96,7 +96,7 @@
   @media (max-width: 959px) {
     .col { display:contents; }
     .hero { order:1; } #alerts { order:2; } #tips { order:3; } .o-hourly { order:4; } .o-days { order:5; }
-    .o-storm { order:6; } .o-x { order:7; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; } .o-safety { order:2; } .o-sounds { order:12; }
+    .o-storm { order:6; } .o-x { order:7; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; } .o-safety { order:2; } .o-sounds { order:3; }
   }
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:20px; min-width:0; }
   .ph { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
@@ -3112,7 +3112,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118204455";   // kept equal to version.json on every publish
+const BUILD = "20261118204550";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
