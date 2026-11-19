@@ -1181,7 +1181,7 @@
       <button class="mini-btn" id="extraBtn" style="width:100%;padding:9px;font-size:.82rem">🔔 Extra alerts mode: rain, snow, storms, freeze ›</button>
     </section>
     <section class="panel o-safety" id="safetyPanel" style="display:none"><div class="ph"><h3>🛟 What to do right now</h3><span id="safetyFor"></span></div><div class="sg-list" id="safetyList"></div></section>
-    <section class="panel o-sounds" id="soundsPanel"><div class="ph"><h3>🎧 Weather sounds <span class="plus-pill">PLUS</span></h3><span id="sndNow"></span></div>
+    <section class="panel o-sounds" id="soundsPanel" style="display:none"><div class="ph"><h3>🎧 Weather sounds <span class="plus-pill">PLUS</span></h3><span id="sndNow"></span></div>
       <div id="sndCtl">
         <div class="snd-auto" id="sndAuto"></div>
         <div class="snd-ctl"><button class="playbig" id="sndPlay" type="button">🔊 Turn on</button><input type="range" id="sndVol" min="0" max="100" value="60" aria-label="Volume"></div>
@@ -3112,7 +3112,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118204246";   // kept equal to version.json on every publish
+const BUILD = "20261118204455";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -4711,6 +4711,7 @@ const sounds = (() => {
   function stop() { try { keepAlive && keepAlive.pause(); } catch(e) {} if (!ctx) { playing = false; paint(); return; } master.gain.setTargetAtTime(0, ctx.currentTime, 0.25); setTimeout(() => { if (!playing) stopAll(); }, 900); playing = false; $("sndNow").textContent = ""; paint(); }
   function paint() {
     const plus = isPlus();
+    $("soundsPanel").style.display = plus ? "" : "none";   // Plus only: hidden for everyone else
     $("sndCtl").hidden = !plus; $("sndLock").hidden = plus;
     const k = pick(), [ic, name, why] = KINDS[k], city = (place.current && data && data.locName && data.locName.name) || (place.name === "Current location" ? "your area" : place.name);
     $("sndAuto").innerHTML = `<span class="si">${ic}</span><span><b>${name}</b><small>${why.replace("{c}", esc(city))}. ${mode && plus ? "Sound changes by itself when the weather does." : "Turn on sound mode to hear it while SkyCast is open."}</small></span>`;
@@ -4747,12 +4748,7 @@ function renderPlusLocks() {
     if (data) { try { renderGolden(); } catch(e) { console.warn(e); $("goldenBody").innerHTML = `<div class="xsub" style="margin-top:0">Golden hour couldn't load for this spot right now. Try again in a little while.</div>`; $("xGolden").style.display = ""; } }
     else if ($("goldenBody").querySelector("[data-open-plus2]")) $("goldenBody").innerHTML = "";   // never leave the lock up for a member
   }
-  else {
-    $("goldenWhen").textContent = "";
-    $("goldenBody").innerHTML = `<div class="xsub" style="margin-top:0">See the best light for photos every morning and evening, the sunset time, blue hour and a sunset rating.</div><button class="lockbtn" type="button" data-open-plus2>⭐ Unlock with SkyCast Plus</button>`;
-    $("goldenBody").querySelector("[data-open-plus2]").onclick = () => $("plusView").classList.add("open");
-    $("xGolden").style.display = "";
-  }
+  else $("xGolden").style.display = "none";   // Plus only: hidden for everyone else
   try { sounds.sync(); sounds.refresh(); } catch(e) {}
 }
 
