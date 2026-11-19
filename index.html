@@ -3109,7 +3109,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118181739";   // kept equal to version.json on every publish
+const BUILD = "20261118181951";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3545,6 +3545,26 @@ async function pullCloud(uid) {
   return false;
 }
 setInterval(() => pushCloud(), 5000);
+/* Plus moves between your devices by itself: while SkyCast is open, it checks your account now and then
+   (and whenever you come back to the app) and turns Plus on if another device of yours unlocked it */
+let cloudPlusAt = 0;
+async function checkCloudPlus(force) {
+  if (!FB || !syncUid || document.hidden || (!force && Date.now() - cloudPlusAt < 90000)) return;
+  cloudPlusAt = Date.now();
+  try {
+    const d = await FB.fs.getDoc(FB.fs.doc(FB.db, "users", syncUid));
+    const c = d.exists() ? ((d.data().data || {}).skycast_plus_code || "") : "";
+    const mine = localStorage.getItem("skycast_plus_code") || "";
+    const valid = x => PLUS_CODE_HASHES.includes(x) || ONE_TIME_CODE_HASHES.includes(x);
+    if (c && valid(c) && !valid(mine)) {
+      localStorage.setItem("skycast_plus_code", c); lastPushed = JSON.stringify(snapLocal());
+      paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels();
+      toast("⭐ SkyCast Plus is on: it came from your account");
+    } else if (valid(mine) && c !== mine) pushCloud(true);   // this device has Plus and the account doesn't know yet
+  } catch(e) {}
+}
+setInterval(() => checkCloudPlus(), 120000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checkCloudPlus(); });
 document.addEventListener("visibilitychange", () => { if (document.hidden) pushCloud(); });
 
 fbReady.then(F => F.au.onAuthStateChanged(F.auth, async u => {
@@ -3555,6 +3575,7 @@ fbReady.then(F => F.au.onAuthStateChanged(F.auth, async u => {
     try { localStorage.setItem("skycast_session", "1"); } catch(e) {}
     if (await pullCloud(u.uid)) { location.reload(); return; }
     checkPlusAccount();
+    checkCloudPlus(true);
     markSeen();
     if (window.onSignedIn) window.onSignedIn();
   } else {
