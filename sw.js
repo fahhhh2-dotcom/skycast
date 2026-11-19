@@ -2,7 +2,7 @@
 // - keeps the app itself (page, icons, map library, fonts) saved so it opens without internet
 // - always tries the network first for the page, so updates show up right away
 // - weather data is saved by the page itself (localStorage), not here
-const CACHE = "skycast-v60";
+const CACHE = "skycast-v61";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg", "./apple-touch-icon.png", "./icon-192.png", "./icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
 
@@ -20,7 +20,7 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (!isAsset(url)) return;               // weather APIs and map tiles go straight to the network
-  if (url.origin === self.location.origin && !url.pathname.includes("/weather/")) return;
+  // (the worker's scope already keeps it to SkyCast's own folder)
   if (url.pathname.endsWith("version.json")) return;
   // the page itself: always ask GitHub for the newest copy (no 10-minute saved copy)
   const fresh = req.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith("/");

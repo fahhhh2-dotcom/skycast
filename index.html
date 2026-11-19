@@ -774,8 +774,15 @@
   .sg.live { border-color:rgba(255,90,100,.7); box-shadow:0 0 0 2px rgba(255,90,100,.25); }
   .alert .sg-go { display:inline-block; margin-top:10px; border:0; border-radius:99px; background:#fff; color:#0b1424; font:inherit; font-weight:800; font-size:.8rem; padding:7px 14px; cursor:pointer; }
   .snd-row { display:flex; flex-wrap:wrap; gap:8px; }
-  .installtop { flex:0 0 auto; border:0; border-radius:12px; padding:9px 14px; font:inherit; font-weight:800; font-size:.85rem; color:#0b1424; background:linear-gradient(135deg,#ffd36b,#ff9a4d); cursor:pointer; white-space:nowrap; }
-  @media (max-width:899px) { .installtop { display:none !important; } }   /* the header button is for computers; phones use Settings */
+  /* "Get the SkyCast app" card (same idea as Nimbus) */
+  .apptip { display:flex; gap:12px; align-items:center; padding:14px 16px; }
+  .apptip img { width:46px; height:46px; border-radius:12px; flex:none; box-shadow:0 4px 12px rgba(0,0,0,.25); }
+  .apptip p { font-size:.9rem; line-height:1.4; color:var(--soft); }
+  .apptip p b { color:var(--text); font-size:.98rem; }
+  .apptip .go { flex:none; margin-left:auto; border:0; border-radius:999px; padding:9px 16px; font:inherit; font-weight:800; font-size:.88rem; color:#0b1424; background:linear-gradient(135deg,#ffd36b,#ff9a4d); cursor:pointer; }
+  .apptip .x { flex:none; margin-left:auto; background:none; border:0; color:var(--soft); font-size:1.4rem; line-height:1; cursor:pointer; padding:4px 6px; }
+  .apptip .go + .x { margin-left:0; }
+  #getApp:empty { display:none; }
   .snd-auto { display:flex; align-items:center; gap:12px; }
   .snd-auto .si { font-size:2rem; line-height:1; }
   .snd-auto b { display:block; font-size:1rem; }
@@ -1090,7 +1097,6 @@
     <div class="results" id="results"></div>
   </div>
   <div class="seg"><button id="uF" class="on">°F</button><button id="uC">°C</button></div>
-  <button class="installtop" id="installTop" type="button" hidden>⬇️ Install app</button>
   <button class="iconbtn gear" id="gearBtn" aria-label="Settings">⚙️</button>
 </div></div>
 
@@ -1112,6 +1118,7 @@
 <div class="view on" id="viewW">
 <main>
   <div class="col">
+    <div id="getApp"></div>
     <div class="alerts" id="alerts"></div>
     <section class="panel hero">
       <canvas id="sky"></canvas>
@@ -3112,7 +3119,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118204550";   // kept equal to version.json on every publish
+const BUILD = "20261118204832";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3607,8 +3614,23 @@ $("acctBtn").onclick = openAccount;
 /* Install SkyCast as an app (computers: Chrome and Edge show their own Install box; other browsers get steps on install.html) */
 let installEvt = null;
 const installed = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+// a card at the top, like Nimbus: "Get the SkyCast app" with an Install button (or the steps for iPhone and Mac Safari)
+function showAppTip() {
+  let hidden = false; try { hidden = localStorage.getItem("skycast_app_tip_hidden") === "1"; } catch(e) {}
+  if (installed() || hidden) { $("getApp").innerHTML = ""; return; }
+  const ua = navigator.userAgent, iOSdev = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const macSafari = !iOSdev && /Macintosh/.test(ua) && /Safari\//.test(ua) && !/Chrome|Chromium|Edg|Firefox/.test(ua);
+  let text = "", btn = false;
+  if (installEvt) { text = matchMedia("(min-width:900px)").matches ? "Install it on this computer. It opens in its own window with its own icon." : "Add it to your home screen."; btn = true; }
+  else if (iOSdev) text = "Tap the Share button <b style='font-size:inherit'>↑</b>, then “Add to Home Screen”.";
+  else if (macSafari) text = "In Safari's menu bar, click File → “Add to Dock”.";
+  else { $("getApp").innerHTML = ""; return; }
+  $("getApp").innerHTML = `<div class="panel apptip"><img src="icon-192.png" alt=""><p><b>Get the SkyCast app</b><br>${text}</p>${btn ? '<button class="go" type="button">Install</button>' : ""}<button class="x" type="button" aria-label="Dismiss">×</button></div>`;
+  $("getApp").querySelector(".x").onclick = () => { try { localStorage.setItem("skycast_app_tip_hidden", "1"); } catch(e) {} $("getApp").innerHTML = ""; };
+  const go = $("getApp").querySelector(".go"); if (go) go.onclick = doInstall;
+}
 function paintInstall() {
-  $("installTop").hidden = !installEvt || installed();
+  showAppTip();
   $("installBtn").textContent = installed() ? "✓ SkyCast is installed on this device" : (matchMedia("(min-width:900px)").matches ? "💻 Install SkyCast on this computer" : "⬇️ Install SkyCast as an app");
 }
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; paintInstall(); });
@@ -3620,7 +3642,6 @@ async function doInstall() {
   try { await installEvt.userChoice; } catch(e) {}
   installEvt = null; paintInstall();
 }
-$("installTop").onclick = doInstall;
 $("installBtn").onclick = doInstall;
 paintInstall();
 $("refreshBtn").onclick = async () => {
