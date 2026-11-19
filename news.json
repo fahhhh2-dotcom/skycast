@@ -1,6 +1,36 @@
 {
-  "updated": "2026-11-18T10:41:24-06:00",
+  "updated": "2026-11-19T10:41:26-06:00",
   "articles": [
+    {
+      "id": "weathercom-2026-11-19-december-warm-outlook",
+      "published": "2026-11-19T06:00:00-05:00",
+      "tag": "Forecast",
+      "icon": "☀️",
+      "title": "El Niño could make December one of the warmest on record in the U.S.",
+      "summary": "Forecasters expect most of the country to run warmer than a typical December, with the strongest warm signal in the Midwest, Great Lakes and interior Northeast. California and much of the Southeast may turn out wetter than usual.",
+      "source": "The Weather Channel",
+      "url": "https://www.yahoo.com/news/weather-news/articles/december-could-winters-most-weirdly-110000703.html"
+    },
+    {
+      "id": "sacbee-2026-11-18-california-atmospheric-river-record",
+      "published": "2026-11-18T17:15:00-08:00",
+      "tag": "Storm",
+      "icon": "🌧️",
+      "title": "San Francisco sets a rain record as third atmospheric river hits California",
+      "summary": "San Francisco got 2.31 inches of rain Wednesday, a daily record dating to 1918, as flooding spread across the Bay Area. Gusts topped 50 mph near Sacramento and Modesto, and heavy Sierra snow shut I-80 at Donner Pass.",
+      "source": "The Sacramento Bee",
+      "url": "https://www.yahoo.com/news/weather-news/articles/atmospheric-river-continues-thursday-california-011553310.html"
+    },
+    {
+      "id": "weathercom-2026-11-18-east-coast-storm-kyle",
+      "published": "2026-11-18T16:00:00-05:00",
+      "tag": "Storm",
+      "icon": "🌀",
+      "title": "Weekend East Coast storm could become Subtropical Storm Kyle",
+      "summary": "A low expected to form off Florida by Friday may bring rain, wind and coastal flooding from northeast Florida to Virginia this weekend, then reach the Northeast Sunday into Monday. It could earn the name Kyle, and flight delays are possible at Northeast hubs Monday.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/19/forecast/regional/east-coast-storm-coastal-flooding-winds-rain-kyle"
+    },
     {
       "id": "abc7-2026-11-18-bay-area-waterspouts",
       "published": "2026-11-18T05:11:59-08:00",
@@ -69,42 +99,6 @@
       "summary": "Repeated downpours are set to soak Florida's east coast from Tuesday through Friday, with 4 to 6 inches widely and over 8 inches in spots. Parts of Brevard County face a Level 3 of 4 flash flood risk Wednesday. Forecasters say the storms could turn into a coastal storm by Saturday, bringing wind and rain to the Southeast.",
       "source": "FOX Weather",
       "url": "https://www.foxweather.com/weather-news/week-rain-nasty-winds-douse-florida-flood-threat"
-    },
-    {
-      "id": "fox35-2026-11-16-florida-heavy-rain",
-      "published": "2026-11-16T05:49:00-05:00",
-      "tag": "Rain",
-      "states": [
-        "FL"
-      ],
-      "icon": "🌧️",
-      "title": "Florida's Atlantic coast braces for days of heavy rain bands",
-      "summary": "Easterly winds off the Atlantic could push repeated bands of heavy rain into Central Florida from Tuesday through Friday. Most areas may see 2 to 4 inches, with 5 to 7 possible in spots, and flooding is most likely south of Cape Canaveral midweek. The St. Johns River is already in major flood at Cocoa.",
-      "source": "FOX 35 Orlando",
-      "url": "https://www.fox35orlando.com/news/orlando-weather-el-nino-may-bring-heavy-rainfall-flooding-risk-week"
-    },
-    {
-      "id": "abc7-2026-11-15-socal-high-surf",
-      "published": "2026-11-15T23:11:00-08:00",
-      "tag": "Storm",
-      "states": [
-        "CA"
-      ],
-      "icon": "🌊",
-      "title": "Big surf pounds Southern California beaches and closes piers",
-      "summary": "Waves of 6 to 9 feet were forecast in spots like Ventura's Surfers Point on Sunday, and piers in Manhattan Beach, Huntington Beach, Ventura and San Diego's Pacific Beach closed at times. Waves washed away a protective berm in Seal Beach. Dangerous rip currents may last all week as rain chances return Monday.",
-      "source": "ABC7 Los Angeles",
-      "url": "https://abc7.com/post/large-waves-continue-pound-southern-california-coast-rain-chances-return-surf-hazards-persist/20043533"
-    },
-    {
-      "id": "foxweather-2026-11-15-thanksgiving-outlook",
-      "published": "2026-11-15T09:51:00-05:00",
-      "tag": "Forecast",
-      "icon": "🦃",
-      "title": "Early Thanksgiving outlook: warm North, cooler and stormier South",
-      "summary": "A storm could bring rain from the Mississippi and Ohio valleys to the East Coast early in Thanksgiving week, then move offshore before the holiday. The Northeast and Great Lakes look unusually warm, while the Southwest and southern Plains run cooler. Severe storms are possible in Texas and the Gulf Coast over the holiday weekend.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/thanksgiving-weather-outlook-we-two-weeks-away-from-turkey-time"
     }
   ]
 }

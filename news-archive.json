@@ -1,6 +1,42 @@
 {
   "articles": [
     {
+      "id": "fox35-2026-11-16-florida-heavy-rain",
+      "published": "2026-11-16T05:49:00-05:00",
+      "tag": "Rain",
+      "states": [
+        "FL"
+      ],
+      "icon": "🌧️",
+      "title": "Florida's Atlantic coast braces for days of heavy rain bands",
+      "summary": "Easterly winds off the Atlantic could push repeated bands of heavy rain into Central Florida from Tuesday through Friday. Most areas may see 2 to 4 inches, with 5 to 7 possible in spots, and flooding is most likely south of Cape Canaveral midweek. The St. Johns River is already in major flood at Cocoa.",
+      "source": "FOX 35 Orlando",
+      "url": "https://www.fox35orlando.com/news/orlando-weather-el-nino-may-bring-heavy-rainfall-flooding-risk-week"
+    },
+    {
+      "id": "abc7-2026-11-15-socal-high-surf",
+      "published": "2026-11-15T23:11:00-08:00",
+      "tag": "Storm",
+      "states": [
+        "CA"
+      ],
+      "icon": "🌊",
+      "title": "Big surf pounds Southern California beaches and closes piers",
+      "summary": "Waves of 6 to 9 feet were forecast in spots like Ventura's Surfers Point on Sunday, and piers in Manhattan Beach, Huntington Beach, Ventura and San Diego's Pacific Beach closed at times. Waves washed away a protective berm in Seal Beach. Dangerous rip currents may last all week as rain chances return Monday.",
+      "source": "ABC7 Los Angeles",
+      "url": "https://abc7.com/post/large-waves-continue-pound-southern-california-coast-rain-chances-return-surf-hazards-persist/20043533"
+    },
+    {
+      "id": "foxweather-2026-11-15-thanksgiving-outlook",
+      "published": "2026-11-15T09:51:00-05:00",
+      "tag": "Forecast",
+      "icon": "🦃",
+      "title": "Early Thanksgiving outlook: warm North, cooler and stormier South",
+      "summary": "A storm could bring rain from the Mississippi and Ohio valleys to the East Coast early in Thanksgiving week, then move offshore before the holiday. The Northeast and Great Lakes look unusually warm, while the Southwest and southern Plains run cooler. Severe storms are possible in Texas and the Gulf Coast over the holiday weekend.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/thanksgiving-weather-outlook-we-two-weeks-away-from-turkey-time"
+    },
+    {
       "id": "foxweather-2026-11-14-super-el-nino-west-snow",
       "published": "2026-11-14T14:19:00-05:00",
       "tag": "Snow",
