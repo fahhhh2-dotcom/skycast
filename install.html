@@ -60,8 +60,25 @@
   </div>
 
   <div class="card hide" id="desktop">
-    <a class="btn" href="./">Open SkyCast</a>
-    <div class="note" style="text-align:center">Scan this page's QR code with your phone to add SkyCast to its home screen.</div>
+    <div style="font-weight:800;font-size:1.15rem;margin-bottom:12px">💻 Put SkyCast on your computer</div>
+    <button class="btn" id="pcInstall" style="display:none">⬇️ Install SkyCast</button>
+    <ol id="pcChrome" class="hide" style="margin-top:12px">
+      <li>Click the <b>install icon</b> at the right end of the address bar (a little screen with a down arrow).</li>
+      <li>Or click the <b>⋮</b> menu → <b>Cast, save and share</b> → <b>Install page as app</b>.</li>
+      <li>Click <b>Install</b>.</li>
+    </ol>
+    <ol id="pcEdge" class="hide" style="margin-top:12px">
+      <li>Click the <b>⋯</b> menu at the top right.</li>
+      <li>Click <b>Apps</b> → <b>Install this site as an app</b>.</li>
+      <li>Click <b>Install</b>.</li>
+    </ol>
+    <ol id="pcSafari" class="hide" style="margin-top:12px">
+      <li>In Safari's menu bar, click <b>File</b> → <b>Add to Dock</b>.</li>
+      <li>Click <b>Add</b>. SkyCast shows up in your Dock and Launchpad.</li>
+    </ol>
+    <div id="pcFirefox" class="hide note" style="opacity:.9;font-size:.9rem;margin-top:0">Firefox can't install websites as apps. Open this page in <b>Chrome</b> or <b>Edge</b> to install SkyCast, or press <b>Ctrl + D</b> (<b>⌘ + D</b> on Mac) to bookmark it.</div>
+    <a class="btn alt" style="margin-top:16px" href="./">Open SkyCast</a>
+    <div class="note">It opens in its own window, gets its own icon on your desktop or taskbar, and stays up to date by itself. Nothing to download from a store.</div>
   </div>
 </div>
 <script>
@@ -72,7 +89,16 @@
   if (ios && /CriOS|FxiOS|EdgiOS|GSA/.test(ua)) document.getElementById("notSafari").classList.remove("hide");
   if (android) document.getElementById("android").classList.remove("hide");
   if (!ios && !android) document.getElementById("desktop").classList.remove("hide");
+  if (!ios && !android) {
+    const edge = /Edg\//.test(ua), firefox = /Firefox\//.test(ua), chrome = /Chrome\//.test(ua) && !edge && !/OPR\//.test(ua), safari = /Safari\//.test(ua) && !/Chrome|Chromium/.test(ua);
+    document.getElementById(edge ? "pcEdge" : firefox ? "pcFirefox" : safari ? "pcSafari" : "pcChrome").classList.remove("hide");
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});   // needed so Chrome and Edge offer "Install"
   let deferred = null;
+  const pcBtn = document.getElementById("pcInstall");
+  addEventListener("beforeinstallprompt", e => { pcBtn.style.display = ""; });
+  pcBtn.onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; pcBtn.style.display = "none"; };
+  addEventListener("appinstalled", () => { pcBtn.style.display = "none"; pcBtn.insertAdjacentHTML("afterend", '<div class="note" style="opacity:.9;font-size:.95rem">✓ Installed! Find SkyCast in your apps.</div>'); });
   const btn = document.getElementById("installBtn");
   btn.style.display = "none";
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; btn.style.display = ""; });
