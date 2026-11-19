@@ -96,7 +96,7 @@
   @media (max-width: 959px) {
     .col { display:contents; }
     .hero { order:1; } #alerts { order:2; } #tips { order:3; } .o-hourly { order:4; } .o-days { order:5; }
-    .o-storm { order:6; } .o-x { order:7; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; } .o-safety { order:11; } .o-sounds { order:12; }
+    .o-storm { order:6; } .o-x { order:7; } .radar-teaser { order:6; } .o-cond { order:7; } .news-teaser { order:8; } #afdPanel { order:9; } #comparePanel { order:10; } .notify { order:11; } .o-safety { order:2; } .o-sounds { order:12; }
   }
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:20px; min-width:0; }
   .ph { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
@@ -774,6 +774,11 @@
   .sg.live { border-color:rgba(255,90,100,.7); box-shadow:0 0 0 2px rgba(255,90,100,.25); }
   .alert .sg-go { display:inline-block; margin-top:10px; border:0; border-radius:99px; background:#fff; color:#0b1424; font:inherit; font-weight:800; font-size:.8rem; padding:7px 14px; cursor:pointer; }
   .snd-row { display:flex; flex-wrap:wrap; gap:8px; }
+  .snd-auto { display:flex; align-items:center; gap:12px; }
+  .snd-auto .si { font-size:2rem; line-height:1; }
+  .snd-auto b { display:block; font-size:1rem; }
+  .snd-auto small { display:block; font-size:.82rem; color:var(--soft); margin-top:2px; line-height:1.35; }
+  .lockbtn { display:block; width:100%; margin-top:12px; border:0; border-radius:14px; padding:12px 14px; font:inherit; font-weight:800; font-size:.92rem; color:#0b1424; background:linear-gradient(135deg,#ffd36b,#ff9a4d); cursor:pointer; }
   .snd-row button { border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-weight:700; font-size:.85rem; padding:8px 12px; border-radius:99px; cursor:pointer; }
   .snd-row button.on { background:var(--text); color:#0b1424; border-color:var(--text); }
   html.light .snd-row button.on { background:#0e1d38; color:#fff; border-color:#0e1d38; }
@@ -1134,7 +1139,7 @@
     <section class="panel o-x" id="xOutside" style="display:none"><div class="ph"><h3>🏃 Best time to go outside <span class="plus-pill">PLUS</span></h3><span>Next 12 hours</span></div><div id="outsideBody"></div></section>
     <div class="xgrid o-x">
       <section class="panel" id="xFrost" style="display:none"><div class="ph"><h3>🌱 Frost alert for plants</h3><span id="frostWhen"></span></div><div id="frostBody"></div></section>
-      <section class="panel" id="xGolden" style="display:none"><div class="ph"><h3>🌅 Golden hour</h3><span id="goldenWhen"></span></div><div id="goldenBody"></div></section>
+      <section class="panel" id="xGolden" style="display:none"><div class="ph"><h3>🌅 Golden hour <span class="plus-pill">PLUS</span></h3><span id="goldenWhen"></span></div><div id="goldenBody"></div></section>
       <section class="panel" id="xSnow" style="display:none"><div class="ph"><h3>❄️ Snow Day Predictor</h3><span>Tomorrow</span></div><div id="snowBody"></div></section>
       <section class="panel" id="xAir" style="display:none"><div class="ph"><h3>🌫️ Air quality <span class="plus-pill">PLUS</span></h3><span id="airTime"></span></div><div id="airBody"></div></section>
       <section class="panel" id="xStars" style="display:none"><div class="ph"><h3>🌌 Stargazing tonight <span class="plus-pill">PLUS</span></h3><span></span></div><div id="starsBody"></div></section>
@@ -1172,11 +1177,13 @@
       <button class="ntest" id="pushTest" type="button">Send a test alert</button>
       <button class="mini-btn" id="extraBtn" style="width:100%;padding:9px;font-size:.82rem">🔔 Extra alerts mode: rain, snow, storms, freeze ›</button>
     </section>
-    <section class="panel o-safety" id="safetyPanel"><div class="ph"><h3>🛟 Storm safety guides</h3><span>What to do</span></div><div class="sg-list" id="safetyList"></div></section>
-    <section class="panel o-sounds" id="soundsPanel"><div class="ph"><h3>🎧 Weather sounds</h3><span id="sndNow"></span></div>
-      <div class="snd-row" id="sndKinds"></div>
-      <div class="snd-ctl"><button class="playbig" id="sndPlay" type="button">▶ Play</button><input type="range" id="sndVol" min="0" max="100" value="60" aria-label="Volume"></div>
-      <div class="xsub">Calm sounds made right in your browser. "Match" picks sounds for the weather outside.</div>
+    <section class="panel o-safety" id="safetyPanel" style="display:none"><div class="ph"><h3>🛟 What to do right now</h3><span id="safetyFor"></span></div><div class="sg-list" id="safetyList"></div></section>
+    <section class="panel o-sounds" id="soundsPanel"><div class="ph"><h3>🎧 Weather sounds <span class="plus-pill">PLUS</span></h3><span id="sndNow"></span></div>
+      <div id="sndCtl">
+        <div class="snd-auto" id="sndAuto"></div>
+        <div class="snd-ctl"><button class="playbig" id="sndPlay" type="button">🔊 Turn on</button><input type="range" id="sndVol" min="0" max="100" value="60" aria-label="Volume"></div>
+      </div>
+      <div id="sndLock" hidden><div class="xsub" style="margin-top:0">Rain, thunder, wind, birds and more that match the weather outside.</div><button class="lockbtn" type="button" data-open-plus>⭐ Unlock with SkyCast Plus</button></div>
     </section>
     <section class="panel o-x" id="xQuiz"><div class="ph"><h3>🧠 Weather quiz</h3><span id="quizStreak"></span></div><div id="quizBody"></div><div class="fact" id="factBody"></div></section>
   </div>
@@ -1288,6 +1295,7 @@
   <div class="cardtoggles" id="cardToggles"></div>
   <div class="sh-note" id="cardNote"></div>
   <div class="sh-row"><span>Animated weather icons</span><div class="seg"><button data-anim="on">On</button><button data-anim="off">Off</button></div></div>
+  <div class="sh-row"><span>🎧 Weather sounds <span class="plus-pill">PLUS</span></span><div class="seg"><button data-sndmode="on">On</button><button data-sndmode="off">Off</button></div></div>
   <div class="sh-h">Widgets</div>
   <button class="sh-btn" id="widgetBtn">🧩 Add a SkyCast widget</button>
   <div class="sh-note">Put SkyCast's temperature and forecast right on your home screen.</div>
@@ -3099,7 +3107,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118175745";   // kept equal to version.json on every publish
+const BUILD = "20261118180244";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3737,6 +3745,8 @@ const PLUS_FEATURES = [
   ["🌌", "Stargazing tonight", "Clouds, moon and a rating for tonight's sky."],
   ["📅", "On this day", "Record highs and lows for today's date."],
   ["🎨", "Plus backgrounds", "Animated rain, snow and starry-night backgrounds."],
+  ["🎧", "Weather sounds", "Rain, thunder, wind and more that match the weather outside."],
+  ["🌅", "Golden hour", "Golden hour times and a sunset rating every day."],
   ["⏰", "Morning briefing", "A summary of your day the first time you open SkyCast each morning."],
   ["🏅", "Supporter badge", "A Plus badge on your account."],
   ["🚀", "Early access", "Try new SkyCast features before everyone else."]
@@ -4552,10 +4562,14 @@ function guideFor(ev) {
 }
 function renderSafety() {
   const live = new Set((alerts || []).filter(a => !(a.ends || a.expires) || Date.parse(a.ends || a.expires) > Date.now()).map(a => guideFor(a.event)).filter(Boolean));
-  const keys = Object.keys(GUIDES).sort((a, b) => live.has(b) - live.has(a));
-  const open = new Set([...document.querySelectorAll("#safetyList .sg.open")].map(x => x.dataset.g));
+  // only shown when there's an active alert, and only the guides for those alerts
+  const keys = Object.keys(GUIDES).filter(k => live.has(k));
+  $("safetyPanel").style.display = keys.length ? "" : "none";
+  if (!keys.length) { $("safetyList").innerHTML = ""; return; }
+  $("safetyFor").textContent = "Active alert";
+  const closed = new Set([...document.querySelectorAll("#safetyList .sg:not(.open)")].map(x => x.dataset.g));
   $("safetyList").innerHTML = keys.map(k => { const [ic, name, body] = GUIDES[k];
-    return `<div class="sg${live.has(k) ? " live" : ""}${open.has(k) ? " open" : ""}" data-g="${k}"><button type="button"><i>${ic}</i>${name}${live.has(k) ? '<em class="sg-now">ALERT NOW</em>' : ""}<span>›</span></button><div class="sg-body">${body}</div></div>`; }).join("");
+    return `<div class="sg live${closed.has(k) ? "" : " open"}" data-g="${k}"><button type="button"><i>${ic}</i>${name}<span>›</span></button><div class="sg-body">${body}</div></div>`; }).join("");
   document.querySelectorAll("#safetyList .sg > button").forEach(b => b.onclick = () => b.parentElement.classList.toggle("open"));
 }
 function openGuide(k, scroll) {
@@ -4567,9 +4581,11 @@ function openGuide(k, scroll) {
 
 /* --- Weather sounds: made live with the Web Audio API (no sound files needed) --- */
 const sounds = (() => {
-  const KINDS = [["auto", "✨ Match"], ["rain", "🌧️ Rain"], ["storm", "⛈️ Thunder"], ["wind", "💨 Wind"], ["snow", "❄️ Snowy hush"], ["day", "🐦 Birds"], ["night", "🦗 Night"]];
-  let ctx = null, master = null, nodes = [], timers = [], playing = false, kind = "auto";
-  try { kind = localStorage.getItem("skycast_snd") || "auto"; } catch(e) {}
+  // the sound always matches the weather where you are
+  const KINDS = { rain: ["🌧️", "Gentle rain", "It's raining in {c}"], storm: ["⛈️", "Rain and thunder", "Thunderstorms in {c}"], wind: ["💨", "Wind", "It's windy in {c}"],
+    snow: ["❄️", "Snowy hush", "It's snowing in {c}"], day: ["🐦", "Birds", "It's calm out in {c}"], night: ["🦗", "Night crickets", "It's a calm night in {c}"] };
+  let ctx = null, master = null, nodes = [], timers = [], playing = false, mode = false, cur = "";
+  try { mode = localStorage.getItem("skycast_sound_mode") === "on"; } catch(e) {}
   const vol = () => (+$("sndVol").value / 100) ** 1.5 * 0.9;
   function noiseBuf(type) {
     const n = ctx.sampleRate * 3, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
@@ -4604,16 +4620,16 @@ const sounds = (() => {
       for (let k = 0; k < 3; k++) { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.03, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
         o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.05); t += 0.06; } }); }
   function pick() {
-    if (kind !== "auto") return kind;
-    if (!data) return "rain";
+    if (!data) return "day";
     const code = data.current.weather_code, day = isDayAt(data.current.time), wind10 = data.current.wind_speed_10m || 0;
     return code >= 95 ? "storm" : [71, 73, 75, 77, 85, 86].includes(code) ? "snow" : code >= 51 ? "rain" : wind10 >= 35 ? "wind" : day ? "day" : "night";
   }
   function build() {
     const k = pick();
-    if (k === "rain") rain(1); else if (k === "storm") { rain(1.1); thunder(); } else if (k === "wind") wind(1);
+    cur = k;
+    if (k === "rain") rain(0.6); else if (k === "storm") { rain(0.8); thunder(); } else if (k === "wind") wind(1);
     else if (k === "snow") { noise("brown", [["lowpass", 420]], 0.35); wind(0.35); } else if (k === "day") { wind(0.25); birds(); } else { noise("brown", [["lowpass", 300]], 0.15); crickets(); }
-    $("sndNow").innerHTML = (KINDS.find(x => x[0] === k) || ["", ""])[1] + '<span class="snd-wave"><i></i><i></i><i></i></span>';
+    $("sndNow").innerHTML = 'Playing<span class="snd-wave"><i></i><i></i><i></i></span>';
   }
   function stopAll() { timers.forEach(clearTimeout); timers = []; nodes.forEach(n => { try { n.stop && n.stop(); } catch(e) {} try { n.disconnect(); } catch(e) {} }); nodes = []; }
   function start() {
@@ -4621,23 +4637,51 @@ const sounds = (() => {
     ctx.resume(); master.gain.setTargetAtTime(vol(), ctx.currentTime, 0.4);
     stopAll(); build(); playing = true; paint();
   }
-  function stop() { if (!ctx) return; master.gain.setTargetAtTime(0, ctx.currentTime, 0.25); setTimeout(() => { if (!playing) stopAll(); }, 900); playing = false; $("sndNow").textContent = ""; paint(); }
+  function stop() { if (!ctx) { playing = false; paint(); return; } master.gain.setTargetAtTime(0, ctx.currentTime, 0.25); setTimeout(() => { if (!playing) stopAll(); }, 900); playing = false; $("sndNow").textContent = ""; paint(); }
   function paint() {
-    $("sndKinds").innerHTML = KINDS.map(([k, n]) => `<button type="button" data-k="${k}" class="${k === kind ? "on" : ""}" aria-pressed="${k === kind}">${n}</button>`).join("");
-    $("sndPlay").textContent = playing ? "⏸ Stop" : "▶ Play";
+    const plus = isPlus();
+    $("sndCtl").hidden = !plus; $("sndLock").hidden = plus;
+    const k = pick(), [ic, name, why] = KINDS[k], city = (place.current && data && data.locName && data.locName.name) || (place.name === "Current location" ? "your area" : place.name);
+    $("sndAuto").innerHTML = `<span class="si">${ic}</span><span><b>${name}</b><small>${why.replace("{c}", esc(city))}. ${mode && plus ? "Sound changes by itself when the weather does." : "Turn on sound mode to hear it while SkyCast is open."}</small></span>`;
+    $("sndPlay").textContent = mode && plus ? "🔇 Turn off" : "🔊 Turn on";
+    if (!playing) $("sndNow").textContent = "";
+    document.querySelectorAll("[data-sndmode]").forEach(b => b.classList.toggle("on", (b.dataset.sndmode === "on") === (mode && plus)));
   }
-  $("sndKinds").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return; kind = b.dataset.k; try { localStorage.setItem("skycast_snd", kind); } catch(err) {} if (playing) start(); else paint(); };
-  $("sndPlay").onclick = () => playing ? stop() : start();
+  // Sound mode is a SkyCast Plus feature. It's remembered on this device and plays while SkyCast is open.
+  function setMode(on) {
+    if (on && !isPlus()) { $("sheet").classList.remove("open"); $("plusView").classList.add("open"); return; }
+    mode = !!on; try { localStorage.setItem("skycast_sound_mode", mode ? "on" : "off"); } catch(e) {}
+    if (mode) start(); else stop();
+    paint();
+  }
+  // browsers only allow sound after you tap something, so a saved "on" starts at your first tap
+  const firstTap = () => { if (mode && isPlus() && !playing && !document.hidden) start(); };
+  ["pointerdown", "keydown"].forEach(ev => document.addEventListener(ev, firstTap, { once: false, passive: true }));
+  $("sndPlay").onclick = () => setMode(!mode);
+  document.querySelectorAll("[data-sndmode]").forEach(b => b.onclick = () => setMode(b.dataset.sndmode === "on"));
+  document.querySelectorAll("[data-open-plus]").forEach(b => b.onclick = () => $("plusView").classList.add("open"));
   $("sndVol").oninput = () => { if (ctx && playing) master.gain.setTargetAtTime(vol(), ctx.currentTime, 0.1); };
-  document.addEventListener("visibilitychange", () => { if (document.hidden && playing) stop(); });   // stop when you leave the app
+  // quiet while you're away from the app, back on when you return
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { if (playing) stop(); } else if (mode && isPlus() && ctx) start(); });
   paint();
-  return { refresh() { if (playing && kind === "auto") start(); } };
+  return {
+    refresh() { if (playing && pick() !== cur) start(); else paint(); },   // the weather changed: switch sounds to match
+    sync() { if (!isPlus() && playing) stop(); paint(); }   // Plus turned off: go quiet and show the lock
+  };
 })();
 
 /* --- run the weather-tab extras whenever the forecast draws --- */
 function renderExtras() {
   try { renderQuiz(); } catch(e) { console.warn(e); }
-  if (data) { try { renderFrost(); } catch(e) { console.warn(e); } try { renderGolden(); } catch(e) { console.warn(e); } }
+  if (data) { try { renderFrost(); } catch(e) { console.warn(e); } }
+  if (isPlus()) { if (data) { try { renderGolden(); } catch(e) { console.warn(e); } } }
+  else {
+    $("goldenWhen").textContent = "";
+    $("goldenBody").innerHTML = `<div class="xsub" style="margin-top:0">See the best light for photos every morning and evening, the sunset time, blue hour and a sunset rating.</div><button class="lockbtn" type="button" data-open-plus2>⭐ Unlock with SkyCast Plus</button>`;
+    $("goldenBody").querySelector("[data-open-plus2]").onclick = () => $("plusView").classList.add("open");
+    $("xGolden").style.display = "";
+  }
+  try { sounds.sync(); sounds.refresh(); } catch(e) {}
   try { renderSafety(); } catch(e) { console.warn(e); }
   const on = isPlus();
   if (data) { try { renderSnowDay(); } catch(e) { console.warn(e); } }   // Snow Day Predictor is free for everyone
