@@ -3107,7 +3107,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118180244";   // kept equal to version.json on every publish
+const BUILD = "20261118181034";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3752,6 +3752,7 @@ const PLUS_FEATURES = [
   ["🚀", "Early access", "Try new SkyCast features before everyone else."]
 ];
 function paintPlus() {
+  setTimeout(() => { try { if (typeof renderPlusLocks === "function") renderPlusLocks(); } catch(e) {} }, 0);
   document.querySelectorAll("[data-plus-list]").forEach(ul => ul.innerHTML = PLUS_FEATURES.map(([i, t, d]) => `<li><span>${i}</span><div><b>${t}</b>${d}</div></li>`).join(""));
   const on = isPlus();
   const bmc = PLUS_PROVIDER === "bmc" || PLUS_PROVIDER === "cashapp";
@@ -4670,11 +4671,12 @@ const sounds = (() => {
   };
 })();
 
-/* --- run the weather-tab extras whenever the forecast draws --- */
-function renderExtras() {
-  try { renderQuiz(); } catch(e) { console.warn(e); }
-  if (data) { try { renderFrost(); } catch(e) { console.warn(e); } }
-  if (isPlus()) { if (data) { try { renderGolden(); } catch(e) { console.warn(e); } } }
+/* --- Golden hour and sound mode: members see them, everyone else sees "Unlock with SkyCast Plus" --- */
+function renderPlusLocks() {
+  if (isPlus()) {
+    if (data) { try { renderGolden(); } catch(e) { console.warn(e); $("goldenBody").innerHTML = `<div class="xsub" style="margin-top:0">Golden hour couldn't load for this spot right now. Try again in a little while.</div>`; $("xGolden").style.display = ""; } }
+    else if ($("goldenBody").querySelector("[data-open-plus2]")) $("goldenBody").innerHTML = "";   // never leave the lock up for a member
+  }
   else {
     $("goldenWhen").textContent = "";
     $("goldenBody").innerHTML = `<div class="xsub" style="margin-top:0">See the best light for photos every morning and evening, the sunset time, blue hour and a sunset rating.</div><button class="lockbtn" type="button" data-open-plus2>⭐ Unlock with SkyCast Plus</button>`;
@@ -4682,6 +4684,13 @@ function renderExtras() {
     $("xGolden").style.display = "";
   }
   try { sounds.sync(); sounds.refresh(); } catch(e) {}
+}
+
+/* --- run the weather-tab extras whenever the forecast draws --- */
+function renderExtras() {
+  try { renderQuiz(); } catch(e) { console.warn(e); }
+  if (data) { try { renderFrost(); } catch(e) { console.warn(e); } }
+  renderPlusLocks();
   try { renderSafety(); } catch(e) { console.warn(e); }
   const on = isPlus();
   if (data) { try { renderSnowDay(); } catch(e) { console.warn(e); } }   // Snow Day Predictor is free for everyone
