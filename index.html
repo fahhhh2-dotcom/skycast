@@ -1296,6 +1296,8 @@
   <div class="sh-note" id="cardNote"></div>
   <div class="sh-row"><span>Animated weather icons</span><div class="seg"><button data-anim="on">On</button><button data-anim="off">Off</button></div></div>
   <div class="sh-row"><span>🎧 Weather sounds <span class="plus-pill">PLUS</span></span><div class="seg"><button data-sndmode="on">On</button><button data-sndmode="off">Off</button></div></div>
+  <button class="sh-btn" id="refreshBtn" type="button">🔄 Get the newest SkyCast</button>
+  <div class="sh-note">Reloads SkyCast so you have the latest version.</div>
   <div class="sh-h">Widgets</div>
   <button class="sh-btn" id="widgetBtn">🧩 Add a SkyCast widget</button>
   <div class="sh-note">Put SkyCast's temperature and forecast right on your home screen.</div>
@@ -3107,7 +3109,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118181034";   // kept equal to version.json on every publish
+const BUILD = "20261118181739";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3501,7 +3503,8 @@ function saveAccount(a) { account = { ...account, ...a }; try { localStorage.set
 function displayName() { return account.name || (account.email ? account.email.split("@")[0] : ""); }
 
 /* settings that follow your account to other devices */
-const SYNC_KEYS = ["skycast", "skycast_saved", "skycast_prefs", "skycast_bg", "skycast_notif", "skycast_onboarded", "skycast_layer", "skycast_range", "skycast_speed"];
+const SYNC_KEYS = ["skycast", "skycast_saved", "skycast_prefs", "skycast_bg", "skycast_notif", "skycast_onboarded", "skycast_layer", "skycast_range", "skycast_speed",
+  "skycast_plus_code", "skycast_sound_mode"];   // a Plus code follows your account to every device you sign in on
 const snapLocal = () => { const o = {}; SYNC_KEYS.forEach(k => { try { const v = localStorage.getItem(k); if (v != null) o[k] = v; } catch(e) {} }); return o; };
 let syncUid = null, lastPushed = "";
 async function pushCloud(force) {
@@ -3532,7 +3535,9 @@ async function pullCloud(uid) {
       const local = snapLocal(); let changed = false;
       SYNC_KEYS.forEach(k => { if (cloud[k] != null && cloud[k] !== local[k]) { try { localStorage.setItem(k, cloud[k]); changed = true; } catch(e) {} } });
       if (!account.name && d.data().name) saveAccount({ name: d.data().name });
-      lastPushed = JSON.stringify(snapLocal());
+      // this device has something the account doesn't yet (like a Plus code typed here): send it up
+      const missing = SYNC_KEYS.some(k => local[k] != null && cloud[k] == null);
+      lastPushed = missing ? "" : JSON.stringify(snapLocal());
       return changed;
     }
     await pushCloud(true);
@@ -3575,6 +3580,11 @@ function openAccount() {
   $("acctDelete").textContent = "🗑️ Delete account"; delete $("acctDelete").dataset.sure;
 }
 $("acctBtn").onclick = openAccount;
+$("refreshBtn").onclick = async () => {
+  $("refreshBtn").textContent = "🔄 Updating…";
+  try { const r = await navigator.serviceWorker?.getRegistration(); if (r) await r.update(); } catch(e) {}
+  location.reload();
+};
 $("acctClose").onclick = () => $("acctView").classList.remove("open");
 $("acctView").onclick = e => { if (e.target.id === "acctView") $("acctView").classList.remove("open"); };
 $("acctCityBtn").onclick = () => { $("acctView").classList.remove("open"); location.hash = "#weather"; setTimeout(() => $("q").focus(), 200); };
@@ -3813,6 +3823,7 @@ document.querySelectorAll("[data-plus-code]").forEach(f => f.addEventListener("s
     }
   } else if (!PLUS_CODE_HASHES.includes(h)) { msg.textContent = (PLUS_PROVIDER === "soon" ? "That code didn't work. Check the code and try again." : PLUS_PROVIDER === "cashapp" ? "That code didn't work. Check the code we sent you after your Cash App payment." : "That code didn't work. Check the members-only post for the current code."); return; }
   try { localStorage.setItem("skycast_plus_code", h); } catch(err) {}
+  try { pushCloud(true); } catch(err) {}   // so Plus follows your account to your other devices
   inp.value = ""; msg.textContent = "";
   paintPlus(); paintAccount(); applyBg(); if (data) renderPlusPanels();
   toast("⭐ Welcome to SkyCast Plus!");
