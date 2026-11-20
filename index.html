@@ -1037,10 +1037,16 @@
   .trow .ti { font-size:1.5rem; } .trow .tt { text-align:right; font-weight:700; } .trow .tt small { display:block; font-weight:500; color: var(--soft); font-size:.78rem; }
   .tflag { grid-column: 1 / -1; margin-top:-2px; font-size:.8rem; font-weight:700; color:#ffd36b; }
   .tnote { margin-top:8px; font-size:.78rem; color: var(--soft); }
+  /* ===== Night: the whole page looks like the current-weather box, with twinkling stars everywhere ===== */
+  #nightFx { position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:none; }
+  html:not([data-bg]) body.t-night #nightFx { display:block; }
+  html:not([data-bg]) body.t-night::before { background: linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.06)), linear-gradient(180deg, var(--top) 0%, var(--top) 35%, var(--top2) 100%); }
+  html:not([data-bg]) body.t-night .bar > .bar-in { background: linear-gradient(rgba(255,255,255,.17), rgba(255,255,255,.17)), var(--top); }
 </style>
 </head>
 <body class="t-day">
 <canvas id="plusFx" aria-hidden="true"></canvas>
+<canvas id="nightFx" aria-hidden="true"></canvas>
 <div id="boot" role="status" aria-label="SkyCast is starting">
   <div class="boot-in">
     <svg class="boot-scene" viewBox="0 0 160 150" aria-hidden="true">
@@ -1954,6 +1960,7 @@ function render() {
   const kind = kindOf(c.weather_code, isDayAt(c.time));
   document.body.className = "t-" + kind;
   sky.set(kind);
+  nightFx.set(kind === "night");
 
   const loc = [place.current && place.name === "Current location" ? "Current location" : place.name, place.admin1, place.country].filter((v,i,a) => v && a.indexOf(v) === i).join(", ");
   const when = new Date(c.time).toLocaleDateString(LOC(),{weekday:"long", month:"short", day:"numeric"}) + " · " + fmtTime(c.time);
@@ -2172,6 +2179,36 @@ const sky = (() => {
   addEventListener("resize", size);
   setTimeout(() => { size(); start(); }, 0);
   return { set(k) { if (k !== kind) { kind = k; seed(); } start(); } };
+})();
+
+/* ---------- night: twinkling stars across the whole page (same look as the current-weather box) ---------- */
+const nightFx = (() => {
+  const cv = $("nightFx"), ctx = cv.getContext("2d");
+  const DPR = Math.min(devicePixelRatio || 1, 1.5);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let on = false, parts = [], w = 0, h = 0, t = 0, last = 0, running = false;
+  function size() {
+    w = cv.width = Math.round(innerWidth * DPR); h = cv.height = Math.round(innerHeight * DPR);
+    const n = Math.min(260, Math.round(innerWidth * innerHeight / 9000));
+    parts = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, s: Math.random(), p: Math.random() * 6.28 }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h); ctx.fillStyle = "#fff";
+    parts.forEach(q => { ctx.globalAlpha = .3 + .7 * Math.abs(Math.sin(q.p + t * .02 * (0.5 + q.s))); ctx.beginPath(); ctx.arc(q.x, q.y, (0.6 + q.s) * DPR, 0, 6.28); ctx.fill(); });
+    ctx.globalAlpha = 1;
+  }
+  function frame(ts) {
+    if (!on || document.hidden || location.hash === "#radar" || document.documentElement.hasAttribute("data-bg")) { running = false; return; }
+    requestAnimationFrame(frame);
+    if (ts - last < 33) return;            // about 30 frames a second, like the current-weather box
+    last = ts; t += 1; draw();
+  }
+  function start() { if (!on) return; if (reduce) { draw(); return; } if (!running) { running = true; requestAnimationFrame(frame); } }
+  addEventListener("resize", () => { if (on) { size(); start(); if (reduce) draw(); } });
+  addEventListener("hashchange", start);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) start(); });
+  new MutationObserver(start).observe(document.documentElement, { attributes: true, attributeFilter: ["data-bg"] });
+  return { set(v) { if (v === on) { start(); return; } on = v; if (on) { size(); start(); } else ctx.clearRect(0, 0, w, h); } };
 })();
 
 /* ---------- Radar ----------
@@ -3119,7 +3156,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261118205302";   // kept equal to version.json on every publish
+const BUILD = "20261120100000";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
