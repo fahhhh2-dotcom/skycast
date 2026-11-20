@@ -1037,11 +1037,11 @@
   .trow .ti { font-size:1.5rem; } .trow .tt { text-align:right; font-weight:700; } .trow .tt small { display:block; font-weight:500; color: var(--soft); font-size:.78rem; }
   .tflag { grid-column: 1 / -1; margin-top:-2px; font-size:.8rem; font-weight:700; color:#ffd36b; }
   .tnote { margin-top:8px; font-size:.78rem; color: var(--soft); }
-  /* ===== Night: the whole page looks like the current-weather box, with twinkling stars everywhere ===== */
+  /* ===== The whole page looks like the current-weather box, with twinkling stars everywhere (day and night) ===== */
   #nightFx { position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:none; }
-  html:not([data-bg]) body.t-night #nightFx { display:block; }
-  html:not([data-bg]) body.t-night::before { background: linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.06)), linear-gradient(180deg, var(--top) 0%, var(--top) 35%, var(--top2) 100%); }
-  html:not([data-bg]) body.t-night .bar > .bar-in { background: linear-gradient(rgba(255,255,255,.17), rgba(255,255,255,.17)), var(--top); }
+  html:not([data-bg]) body #nightFx { display:block; }
+  html:not([data-bg]) body::before { background: linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.06)), linear-gradient(180deg, var(--top) 0%, var(--top) 35%, var(--top2) 100%); }
+  html:not([data-bg]) body .bar > .bar-in { background: linear-gradient(rgba(255,255,255,.17), rgba(255,255,255,.17)), var(--top); }
 </style>
 </head>
 <body class="t-day">
@@ -1960,7 +1960,7 @@ function render() {
   const kind = kindOf(c.weather_code, isDayAt(c.time));
   document.body.className = "t-" + kind;
   sky.set(kind);
-  nightFx.set(kind === "night");
+  nightFx.set(true);
 
   const loc = [place.current && place.name === "Current location" ? "Current location" : place.name, place.admin1, place.country].filter((v,i,a) => v && a.indexOf(v) === i).join(", ");
   const when = new Date(c.time).toLocaleDateString(LOC(),{weekday:"long", month:"short", day:"numeric"}) + " · " + fmtTime(c.time);
@@ -2136,13 +2136,13 @@ function renderTiles() {
 /* ---------- animated sky ---------- */
 const sky = (() => {
   const cv = $("sky"), ctx = cv.getContext("2d");
-  let kind = "day", parts = [], w = 0, h = 0, t = 0;
+  let kind = "day", parts = [], stars = [], w = 0, h = 0, t = 0;
   const DPR = Math.min(devicePixelRatio || 1, 1.25);
   let visible = true, last = 0, running = false;
   function size() { const r = cv.getBoundingClientRect(); w = cv.width = Math.round(r.width * DPR); h = cv.height = Math.round(r.height * DPR); seed(); }
   function seed() {
-    parts = [];
-    const n = kind === "rain" || kind === "storm" ? 70 : kind === "snow" ? 55 : kind === "night" ? 50 : kind === "cloudy" || kind === "fog" ? 5 : 0;
+    parts = []; stars = Array.from({ length: 50 }, () => ({ x: Math.random() * w, y: Math.random() * h, s: Math.random(), p: Math.random() * 6.28 }));
+    const n = kind === "rain" || kind === "storm" ? 70 : kind === "snow" ? 55 : kind === "cloudy" || kind === "fog" ? 5 : 0;
     for (let i = 0; i < n; i++) parts.push({ x: Math.random() * w, y: Math.random() * h, s: Math.random(), p: Math.random() * 6.28 });
   }
   new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) start(); }).observe(cv);
@@ -2161,7 +2161,7 @@ const sky = (() => {
       g.addColorStop(0, "rgba(255,220,130,.55)"); g.addColorStop(.25, "rgba(255,200,110,.15)"); g.addColorStop(1, "rgba(255,200,110,0)");
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
     }
-    if (kind === "night") parts.forEach(p => { ctx.globalAlpha = .3 + .7 * Math.abs(Math.sin(p.p + t * .02 * (0.5 + p.s))); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(p.x, p.y * .8, (0.6 + p.s) * d, 0, 6.28); ctx.fill(); });
+    stars.forEach(p => { ctx.globalAlpha = .3 + .7 * Math.abs(Math.sin(p.p + t * .02 * (0.5 + p.s))); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(p.x, p.y * .8, (0.6 + p.s) * d, 0, 6.28); ctx.fill(); });
     if (kind === "rain" || kind === "storm") {
       ctx.strokeStyle = "rgba(190,220,255,.45)"; ctx.lineWidth = 1.2 * d;
       parts.forEach(p => { p.y += (9 + p.s * 8) * d; p.x -= 1.5 * d; if (p.y > h) { p.y = -20; p.x = Math.random() * w * 1.1; } ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + 3 * d, p.y - (10 + p.s * 8) * d); ctx.stroke(); });
@@ -2210,6 +2210,7 @@ const nightFx = (() => {
   new MutationObserver(start).observe(document.documentElement, { attributes: true, attributeFilter: ["data-bg"] });
   return { set(v) { if (v === on) { start(); return; } on = v; if (on) { size(); start(); } else ctx.clearRect(0, 0, w, h); } };
 })();
+nightFx.set(true);   // stars show all the time, even before the forecast loads
 
 /* ---------- Radar ----------
    Real radar (past 50 min): NWS NEXRAD via Iowa State Mesonet in the US; RainViewer latest frame elsewhere.
@@ -3156,7 +3157,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261120100000";   // kept equal to version.json on every publish
+const BUILD = "20261120110000";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
