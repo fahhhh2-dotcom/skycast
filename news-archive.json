@@ -1,6 +1,29 @@
 {
   "articles": [
     {
+      "id": "accuweather-2026-11-16-eastern-warmup",
+      "published": "2026-11-16T12:49:00-06:00",
+      "tag": "Heat",
+      "icon": "☀️",
+      "title": "Sunny, unusually mild days ahead for much of the eastern U.S.",
+      "summary": "High pressure will keep much of the East dry and sunny this week, with highs 5 to 15 degrees above average. New York and Chicago could reach the mid-60s Thursday and Friday, and Nashville, Atlanta and Charlotte may near 70. The dry stretch could raise wildfire risk in drought areas.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-forecasts/november-warmup-to-spread-across-much-of-eastern-us-how-long-will-it-last/1959124"
+    },
+    {
+      "id": "foxweather-2026-11-16-florida-flood-week",
+      "published": "2026-11-16T10:46:00-05:00",
+      "tag": "Flood",
+      "states": [
+        "FL"
+      ],
+      "icon": "🌊",
+      "title": "Florida's Atlantic coast faces a week of flooding rain, with Brevard most at risk",
+      "summary": "Repeated downpours are set to soak Florida's east coast from Tuesday through Friday, with 4 to 6 inches widely and over 8 inches in spots. Parts of Brevard County face a Level 3 of 4 flash flood risk Wednesday. Forecasters say the storms could turn into a coastal storm by Saturday, bringing wind and rain to the Southeast.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/week-rain-nasty-winds-douse-florida-flood-threat"
+    },
+    {
       "id": "fox35-2026-11-16-florida-heavy-rain",
       "published": "2026-11-16T05:49:00-05:00",
       "tag": "Rain",
