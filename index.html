@@ -1037,11 +1037,112 @@
   .trow .ti { font-size:1.5rem; } .trow .tt { text-align:right; font-weight:700; } .trow .tt small { display:block; font-weight:500; color: var(--soft); font-size:.78rem; }
   .tflag { grid-column: 1 / -1; margin-top:-2px; font-size:.8rem; font-weight:700; color:#ffd36b; }
   .tnote { margin-top:8px; font-size:.78rem; color: var(--soft); }
-  /* ===== The whole page looks like the current-weather box, with twinkling stars everywhere (day and night) ===== */
+  /* ===== The whole page looks like the current-weather box (no stars in the background) ===== */
   #nightFx { position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:none; }
   html:not([data-bg]) body #nightFx { display:block; }
   html:not([data-bg]) body::before { background: linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.06)), linear-gradient(180deg, var(--top) 0%, var(--top) 35%, var(--top2) 100%); }
   html:not([data-bg]) body .bar > .bar-in { background: linear-gradient(rgba(255,255,255,.17), rgba(255,255,255,.17)), var(--top); }
+
+  /* ===== Top bar stays at the top of the page (it scrolls away instead of following you) ===== */
+  .bar, html body .bar { position: relative; top: auto; }
+
+  /* ===== Computers: a roomy dashboard layout ===== */
+  @media (min-width: 1080px) {
+    /* top bar: one flat full-width strip instead of a floating capsule */
+    html body .bar { padding: 0; border-bottom: 1px solid rgba(255,255,255,.18) !important; }
+    .bar > .bar-in, html:not([data-bg]) body .bar > .bar-in { max-width: 1520px; padding: 18px 40px; border-radius: 0; border: 0;
+      background: transparent !important; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; gap: 28px; }
+    .bar > .bar-in::before { display: none; }
+    .brand .mark { width: 40px; height: 40px; }
+    .brand .word { font-size: 1.45rem; }
+    .bar .tabs { background: transparent; border: 0; box-shadow: none; gap: 6px; padding: 0; }
+    .bar .tabs a { font-size: 1rem; padding: 10px 18px; border-radius: 12px; }
+    .bar .tabs a.on, html.light .bar .tabs a.on { background: rgba(255,255,255,.2); box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); text-shadow: none; }
+    .search { max-width: 460px; }
+    .search input { padding-top: 12px; padding-bottom: 12px; }
+    .cities, .bar-in { max-width: 1520px !important; }
+    .cities { padding: 20px 40px 0; }
+    .updbanner { max-width: 1440px; }
+    html.onradar .bar-in > .seg { margin-left: auto; }
+
+    /* weather page: 12-column grid, wide hero on top, cards in rows of three */
+    #viewW main { max-width: 1520px; padding: 28px 40px 64px; display: grid; gap: 26px;
+      grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: row dense; align-items: stretch; }
+    #viewW .col, #viewW .xgrid { display: contents; }
+    #viewW main > * , #viewW .col > *, #viewW .xgrid > * { grid-column: span 4; order: 7; }
+    #viewW .panel { padding: 26px; border-radius: 26px; }
+    #viewW .ph { margin-bottom: 18px; }
+    #viewW #getApp, #viewW #alerts { grid-column: 1 / -1 !important; order: 1; }
+    #alerts:empty { display: none; }
+    .alerts { margin: 0; }
+
+    /* hero: full-width banner */
+    #viewW .col > .panel.hero { grid-column: 1 / -1 !important; order: 2; min-height: 340px; padding: 0; }
+    .hero-in { padding: 34px 40px 30px; min-height: 340px; }
+    .loc { font-size: 1.3rem; }
+    .when { font-size: .95rem; }
+    .t-big { font-size: 10rem; letter-spacing: -7px; }
+    .cond-ic { font-size: 6rem; }
+    .cond-tx { font-size: 1.5rem; }
+    .cond-sub { font-size: 1rem; }
+    .chips { gap: 12px; margin-top: 24px; }
+    .chip { padding: 10px 18px; font-size: .95rem; }
+    .summary { max-width: 760px; font-size: 1.02rem; }
+
+    /* 7 days: one wide row of day columns */
+    #viewW .col > .o-days { grid-column: 1 / -1 !important; order: 3; }
+    #viewW #tgraph { display: none; }
+    #days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+    .day { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 8px; margin: 0; padding: 18px 10px 16px;
+      background: var(--panel2); border: 1px solid var(--line); border-radius: 20px; }
+    .day + .day { border-top: 1px solid var(--line); }
+    .day.sel + .detail + .day, .detail + .day { border-top: 1px solid var(--line); }
+    .day.sel { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); }
+    .day .dn { font-size: 1rem; }
+    .day .di { font-size: 2.2rem; }
+    .day .dp { min-height: 1.1em; }
+    .day > div:nth-child(4) { width: 100%; flex-direction: column; gap: 6px !important; }
+    .day > div:nth-child(4) .bar2 { width: 70%; flex: none !important; }
+    .day .dn { order: 1; } .day .di { order: 2; } .day .dhi { order: 3; font-size: 1.3rem; } .day > div:nth-child(4) { order: 4; } .day .dp { order: 5; }
+    .day .dlo { text-align: center; }
+    .day .chev { display: none; }
+    .detail { grid-column: 1 / -1; margin: 4px 0 0; }
+    .see14 { max-width: 320px; margin-left: auto; margin-right: auto; display: block; }
+
+    /* wider cards */
+    #viewW .col > .o-hourly { grid-column: span 8; order: 4; }
+    #viewW .o-hourly .hscroll { margin: 0 -26px; padding: 0 26px 4px; }
+    #viewW .col > .radar-teaser, #viewW .col > #safetyPanel { order: 4; }
+    #viewW .col > .o-cond { grid-column: span 8; order: 5; }
+    .o-cond .tiles { gap: 16px; }
+    #viewW .col > #stormPanel { order: 5; }
+    #viewW .col > #tips, #viewW .col > #newsTeaser { order: 6; }
+    .radar-teaser { flex-direction: column; align-items: flex-start; justify-content: center; }
+    .radar-teaser .go { align-self: flex-start; }
+    #viewW .col > #travelPanel, #viewW .col > #brief { order: 6; }
+    #viewW .col > #afdPanel { grid-column: span 8; order: 7; }
+    #viewW .col > .o-plus { grid-column: 1 / -1 !important; order: 8; }
+    footer { max-width: 1440px; }
+
+    /* news page: magazine grid, newest story large */
+    main.newswrap { max-width: 1440px; padding: 40px 40px 72px; }
+    .news-head h2 { font-size: 2.4rem; }
+    .news-head span { font-size: 1rem; max-width: 640px; }
+    #newsList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; }
+    #newsList > :not(.story) { grid-column: 1 / -1; }
+    #newsList .news-day { display: none; }
+    #newsList { margin-top: 26px; }
+    #newsList .story { margin: 0; padding: 24px 26px 20px; border-radius: 24px; display: flex; flex-direction: column; }
+    #newsList .story p { flex: 1; }
+    #newsList > a.story:first-of-type { grid-column: span 2; grid-row: span 2; padding: 38px 42px 30px; justify-content: flex-end;
+      background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.04)), var(--panel); }
+    #newsList > a.story:first-of-type p { flex: 0 0 auto; font-size: 1.15rem; max-width: 720px; }
+    #newsList > a.story:first-of-type h3 { font-size: 2.2rem; line-height: 1.18; margin: 16px 0 14px; letter-spacing: -.6px; }
+    #newsList > a.story:first-of-type .st-ic { font-size: 2.4rem; }
+    #newsList > a.story:first-of-type .st-top { font-size: .85rem; }
+    #newsList > a.story:first-of-type .st-src { margin-top: 22px; font-size: .9rem; }
+    #newsArch { margin-top: 28px; }
+  }
 </style>
 </head>
 <body class="t-day">
@@ -1960,7 +2061,7 @@ function render() {
   const kind = kindOf(c.weather_code, isDayAt(c.time));
   document.body.className = "t-" + kind;
   sky.set(kind);
-  nightFx.set(true);
+  nightFx.set(false);
 
   const loc = [place.current && place.name === "Current location" ? "Current location" : place.name, place.admin1, place.country].filter((v,i,a) => v && a.indexOf(v) === i).join(", ");
   const when = new Date(c.time).toLocaleDateString(LOC(),{weekday:"long", month:"short", day:"numeric"}) + " · " + fmtTime(c.time);
@@ -2161,7 +2262,6 @@ const sky = (() => {
       g.addColorStop(0, "rgba(255,220,130,.55)"); g.addColorStop(.25, "rgba(255,200,110,.15)"); g.addColorStop(1, "rgba(255,200,110,0)");
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
     }
-    stars.forEach(p => { ctx.globalAlpha = .3 + .7 * Math.abs(Math.sin(p.p + t * .02 * (0.5 + p.s))); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(p.x, p.y * .8, (0.6 + p.s) * d, 0, 6.28); ctx.fill(); });
     if (kind === "rain" || kind === "storm") {
       ctx.strokeStyle = "rgba(190,220,255,.45)"; ctx.lineWidth = 1.2 * d;
       parts.forEach(p => { p.y += (9 + p.s * 8) * d; p.x -= 1.5 * d; if (p.y > h) { p.y = -20; p.x = Math.random() * w * 1.1; } ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + 3 * d, p.y - (10 + p.s * 8) * d); ctx.stroke(); });
@@ -2181,7 +2281,7 @@ const sky = (() => {
   return { set(k) { if (k !== kind) { kind = k; seed(); } start(); } };
 })();
 
-/* ---------- night: twinkling stars across the whole page (same look as the current-weather box) ---------- */
+/* ---------- background stars (turned off) ---------- */
 const nightFx = (() => {
   const cv = $("nightFx"), ctx = cv.getContext("2d");
   const DPR = Math.min(devicePixelRatio || 1, 1.5);
@@ -2210,7 +2310,7 @@ const nightFx = (() => {
   new MutationObserver(start).observe(document.documentElement, { attributes: true, attributeFilter: ["data-bg"] });
   return { set(v) { if (v === on) { start(); return; } on = v; if (on) { size(); start(); } else ctx.clearRect(0, 0, w, h); } };
 })();
-nightFx.set(true);   // stars show all the time, even before the forecast loads
+nightFx.set(false);   // no stars in the background
 
 /* ---------- Radar ----------
    Real radar (past 50 min): NWS NEXRAD via Iowa State Mesonet in the US; RainViewer latest frame elsewhere.
@@ -3157,7 +3257,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261120110000";   // kept equal to version.json on every publish
+const BUILD = "20261120135000";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
