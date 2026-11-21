@@ -1203,26 +1203,51 @@
     html body .radarpanel .torpill { top: 64px; }
   }
 
-  /* computers: labeled layer list on the left, legend always open on the right, player in the middle */
+  /* hide/show buttons only exist on computers */
+  @media (max-width: 1079px) { html body .radarpanel .tl-hd, html body .radarpanel .lp-hd { display: none !important; } }
+
+  /* computers: small layer list on the left, big legend on the right, both can be hidden; player in the middle */
   @media (min-width: 1080px) {
-    html body .radarpanel .tools, html body .radarpanel.fs .tools { right: auto; left: 20px; top: 20px; width: 214px; max-height: calc(100% - 40px);
-      padding: 8px; gap: 2px; border-radius: 20px; align-items: stretch; }
-    html body .radarpanel .tools::before { content: "Map layers"; display: block; padding: 8px 10px 6px; font-size: .7rem; font-weight: 800;
-      letter-spacing: 1.3px; text-transform: uppercase; color: rgba(255,255,255,.6); }
-    html body .radarpanel .tools button { width: 100%; height: 40px; display: flex; align-items: center; justify-content: flex-start; gap: 12px;
-      padding: 0 12px; border-radius: 12px; font: inherit; font-weight: 600; font-size: .92rem; color:#fff; opacity: .85; }
-    html body .radarpanel .tools button:hover { background: rgba(255,255,255,.1); opacity: 1; }
+    html body .radarpanel .tools, html body .radarpanel.fs .tools { right: auto; left: 20px; top: 20px; width: 168px; max-height: calc(100% - 40px);
+      padding: 6px; gap: 1px; border-radius: 16px; align-items: stretch; }
+    html body .radarpanel .tools button:not(.tl-hd) { width: 100%; height: 32px; display: flex; align-items: center; justify-content: flex-start; gap: 9px;
+      padding: 0 9px; border-radius: 10px; font: inherit; font-weight: 600; font-size: .8rem; color:#fff; opacity: .85; }
+    html body .radarpanel .tools button:not(.tl-hd):hover { background: rgba(255,255,255,.1); opacity: 1; }
     html body .radarpanel .tools button.on { opacity: 1; }
-    html body .radarpanel .tools button svg { width: 20px; height: 20px; flex: 0 0 auto; }
-    html body .radarpanel .tools button::after { display: inline; }
+    html body .radarpanel .tools button svg { width: 16px; height: 16px; flex: 0 0 auto; }
+    html body .radarpanel .tools button:not(.tl-hd)::after { display: inline; }
+    /* the hide/show header buttons */
+    html body .radarpanel .tl-hd, html body .radarpanel .lp-hd { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
+      border: 0; background: none; color: rgba(255,255,255,.7); font: inherit; cursor: pointer; padding: 6px 9px 6px; border-radius: 10px; }
+    html body .radarpanel .tl-hd { font-size: .66rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; height: 30px; }
+    html body .radarpanel .tl-hd:hover, html body .radarpanel .lp-hd:hover { background: rgba(255,255,255,.1); color:#fff; }
+    html body .radarpanel .tl-hd i, html body .radarpanel .lp-hd i { font-style: normal; font-size: 1rem; line-height: 1; transition: transform .2s; }
+    html body .radarpanel .tools.closed { width: auto; }
+    html body .radarpanel .tools.closed button:not(.tl-hd) { display: none; }
+    html body .radarpanel .tools.closed .tl-hd { color:#fff; font-size: .8rem; letter-spacing: .3px; text-transform: none; font-weight: 700; height: 34px; padding: 0 12px; }
+    html body .radarpanel .tools.closed .tl-hd i, html body .radarpanel .legpanel.closed .lp-hd i { transform: rotate(180deg); }
+    /* leaflet's + and − buttons move out from under the layer list */
+    html body .radarpanel .leaflet-top.leaflet-left { top: auto; bottom: 20px; }
+    html body .radarpanel .leaflet-top.leaflet-left .leaflet-control { margin: 0 0 0 20px; }
     html body .radarpanel .locpill, html body .radarpanel.fs .locpill { top: 20px; }
     html body .radarpanel #recenterBtn, html body .radarpanel.fs #recenterBtn { top: 20px; right: 20px; }
     html body .radarpanel .toolbtn.fsb, html body .radarpanel.fs .toolbtn.fsb { top: 76px; right: 20px; left: auto; }
-    html body .radarpanel .legtab, html body .radarpanel .lp-x { display: none; }
-    html body .radarpanel .legpanel, html body .radarpanel.fs .legpanel { display: block; left: auto; right: 20px; top: auto; bottom: 20px; width: 300px;
-      max-height: calc(100% - 152px); border-radius: 20px; padding: 16px 18px; }
-    html body .radarpanel .rsheet { left: 254px; right: 340px; width: auto; transform: none; bottom: 20px; max-width: 760px; margin: 0 auto; }
-    html body .radarpanel .layerpill { left: 254px; right: 340px; bottom: calc(var(--sheeth, 170px) + 32px); max-width: 760px; margin: 0 auto; }
+    html body .radarpanel .legtab, html body .radarpanel .lp-x, html body .radarpanel .lp-top > b { display: none; }
+    /* big legend */
+    html body .radarpanel .legpanel, html body .radarpanel.fs .legpanel { display: block; left: auto; right: 20px; top: auto; bottom: 20px; width: 400px;
+      max-height: calc(100% - 152px); border-radius: 22px; padding: 14px 22px 20px; font-size: 1.05rem; }
+    html body .radarpanel .legpanel .lp-top { margin: 0 -10px 6px; }
+    html body .radarpanel .lp-hd { font-size: 1.2rem; font-weight: 800; color:#fff; letter-spacing: -.2px; padding: 6px 10px; }
+    html body .radarpanel .legpanel .rtime { font-size: 1rem; }
+    html body .radarpanel .legpanel .lgrow, html body .radarpanel .legpanel .legend { font-size: .9rem; }
+    html body .radarpanel .legpanel .nextrain { font-size: 1rem; }
+    html body .radarpanel .legpanel.closed { width: auto; padding: 6px; max-height: none; }
+    html body .radarpanel .legpanel.closed > :not(.lp-top) { display: none; }
+    html body .radarpanel .legpanel.closed .lp-top { margin: 0; }
+    html body .radarpanel .legpanel.closed .lp-hd { font-size: .95rem; padding: 4px 12px; height: 34px; }
+    /* player sits between the two panels */
+    html body .radarpanel .rsheet { left: 208px; right: 440px; width: auto; transform: none; bottom: 20px; max-width: 760px; margin: 0 auto; }
+    html body .radarpanel .layerpill { left: 208px; right: 440px; bottom: calc(var(--sheeth, 170px) + 32px); max-width: 760px; margin: 0 auto; }
     html body .radarpanel .torpill { top: 76px; }
   }
 </style>
@@ -1407,7 +1432,7 @@
       <div class="locmenu" id="locMenu"></div>
       <button class="legtab" id="legTab">Legend</button>
       <div class="legpanel" id="legPanel">
-        <div class="lp-top"><b>Legend</b><button class="lp-x" id="legClose" aria-label="Close">✕</button></div>
+        <div class="lp-top"><b>Legend</b><button class="lp-x" id="legClose" aria-label="Close">✕</button><button class="lp-hd" id="legTog" type="button" aria-expanded="true"><span>Legend</span><i aria-hidden="true">⌃</i></button></div>
         <div class="rtime" id="rtime">—</div>
         <div class="lgrow" id="legendBox"></div>
         <div class="nextrain" id="nextRain"></div>
@@ -1416,6 +1441,7 @@
       </div>
       <button class="toolbtn" id="recenterBtn" aria-label="Center on my city"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v3.5M12 18.5V22M2 12h3.5M18.5 12H22"/></svg></button>
       <div class="tools">
+        <button class="tl-hd" id="layersTog" type="button" aria-expanded="true"><span>Map layers</span><i aria-hidden="true">⌃</i></button>
         <button data-layer="radar" class="on" aria-label="Radar" title="Radar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6.4-6.4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></button>
         <button data-layer="sat" aria-label="Satellite" title="Satellite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="6" height="6" rx="1" transform="rotate(45 12 12)"/><path d="M7 7L4 4M17 17l3 3M6.5 13.5l-3 3 4 4 3-3M17.5 10.5l3-3-4-4-3 3"/></svg></button>
         <button data-layer="totals" aria-label="Rain totals" title="Rain totals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/></svg></button>
@@ -3339,7 +3365,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261120174800";   // kept equal to version.json on every publish
+const BUILD = "20261120181800";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -5248,6 +5274,19 @@ $("locPill").onclick = e => {
 document.addEventListener("click", e => { if (!e.target.closest("#locMenu, #locPill")) $("locMenu").classList.remove("open"); });
 $("legTab").onclick = () => $("legPanel").classList.toggle("open");
 $("legClose").onclick = () => $("legPanel").classList.remove("open");
+/* computers: the layer list and the legend can be hidden and shown again (remembered on this device) */
+function setPanelOpen(btn, el, key, open) {
+  el.classList.toggle("closed", !open); btn.setAttribute("aria-expanded", String(open));
+  btn.title = open ? "Hide" : "Show";
+  try { localStorage.setItem(key, open ? "1" : "0"); } catch(e) {}
+}
+[["layersTog", ".radarpanel .tools", "skycast_layers_open"], ["legTog", "#legPanel", "skycast_legend_open"]].forEach(([id, sel, key]) => {
+  const btn = $(id), el = document.querySelector(sel);
+  if (!btn || !el) return;
+  let open = true; try { open = localStorage.getItem(key) !== "0"; } catch(e) {}
+  setPanelOpen(btn, el, key, open);
+  btn.onclick = () => setPanelOpen(btn, el, key, el.classList.contains("closed"));
+});
 document.querySelectorAll("[data-range]").forEach(b => b.onclick = () => setRange(b.dataset.range));
 document.querySelectorAll("[data-range]").forEach(b => b.classList.toggle("on", b.dataset.range === rangeMode));
 function setBarH() { document.documentElement.style.setProperty("--barh", document.querySelector(".bar").offsetHeight + "px"); }
