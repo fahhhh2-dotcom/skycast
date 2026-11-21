@@ -246,6 +246,19 @@
   .notify .nt { font-size:.85rem; color:var(--soft); flex:1; min-width:180px; }
   .notify .nt b { color:var(--text); display:block; font-size:.95rem; }
   .nbtn { border:0; border-radius:12px; padding:10px 16px; font:inherit; font-weight:700; font-size:.88rem; background:var(--accent); color:#0b1424; cursor:pointer; white-space:nowrap; }
+  .o-email .em-lead { font-size:.9rem; color:var(--soft); margin:-6px 0 12px; }
+  .em-form { display:grid; gap:10px; }
+  .em-form input[type=email] { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font:inherit; font-size:16px; outline:none; }
+  .em-form input[type=email]:focus { border-color: rgba(255,255,255,.4); }
+  .em-form input[type=email]::placeholder { color:var(--faint); }
+  .em-opts { display:flex; flex-wrap:wrap; gap:8px 18px; font-size:.88rem; }
+  .em-opts label { display:flex; align-items:center; gap:7px; cursor:pointer; }
+  .em-opts input { width:17px; height:17px; accent-color: var(--accent); }
+  .em-opts small { color:var(--faint); }
+  .em-form .nbtn { justify-self:start; }
+  .em-form .nbtn:disabled { opacity:.6; cursor:default; }
+  .em-msg { font-size:.85rem; color:var(--soft); min-height:1.2em; }
+  .em-msg.ok { color:#7dffb0; } .em-msg.err { color:#ffb3b3; }
   .nbtn.on { background:rgba(77,255,148,.18); color:#7dffb0; border:1px solid rgba(77,255,148,.4); cursor:default; }
   .leaflet-popup-content-wrapper, .leaflet-popup-tip { background:#121b2e; color:#f4f7ff; border:1px solid rgba(255,255,255,.15); }
   .leaflet-popup-content { font-family:inherit; font-size:.85rem; line-height:1.45; max-height:260px; overflow:auto; }
@@ -1413,6 +1426,19 @@
       <button class="nbtn" id="notifyBtn">Allow notifications</button>
       <button class="ntest" id="pushTest" type="button">Send a test alert</button>
       <button class="mini-btn" id="extraBtn" style="width:100%;padding:9px;font-size:.82rem">🔔 Extra alerts mode: rain, snow, storms, freeze ›</button>
+    </section>
+    <section class="panel o-email" id="emailPanel" style="display:none">
+      <div class="ph"><h3>📧 Email updates</h3><span>Free</span></div>
+      <p class="em-lead">Get the weather and news in your inbox every morning.</p>
+      <form id="emailForm" class="em-form" novalidate>
+        <input id="emailAddr" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-label="Your email" required>
+        <div class="em-opts">
+          <label><input type="checkbox" id="emailFc" checked> Morning forecast <small id="emailFor"></small></label>
+          <label><input type="checkbox" id="emailNews" checked> Weather news</label>
+        </div>
+        <button class="nbtn" id="emailBtn" type="submit">Sign me up</button>
+        <div class="em-msg" id="emailMsg" role="status"></div>
+      </form>
     </section>
     <section class="panel o-safety" id="safetyPanel" style="display:none"><div class="ph"><h3>🛟 What to do right now</h3><span id="safetyFor"></span></div><div class="sg-list" id="safetyList"></div></section>
     <section class="panel o-sounds" id="soundsPanel" style="display:none"><div class="ph"><h3>🎧 Weather sounds <span class="plus-pill">PLUS</span></h3><span id="sndNow"></span></div>
@@ -3378,7 +3404,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261120182100";   // kept equal to version.json on every publish
+const BUILD = "20261120203100";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -3409,6 +3435,37 @@ let saved = [];
 try { saved = JSON.parse(localStorage.getItem("skycast_saved") || "[]"); } catch(e) {}
 const keyOf = p => p.latitude.toFixed(2) + "," + p.longitude.toFixed(2);
 const persistSaved = () => { try { localStorage.setItem("skycast_saved", JSON.stringify(saved)); } catch(e) {} };
+/* ---------- Email updates (daily forecast + weather news, sent by the SkyCast alert server) ---------- */
+const emailPlace = () => (place.current && data && data.locName ? data.locName.name + ", " + data.locName.admin1 : [place.name, place.admin1].filter(Boolean).join(", ")) || "your city";
+async function initEmail() {
+  const base = await pushServer();
+  if (!base) return;
+  try { const h = await (await fetch(base + "/health", { cache: "no-store" })).json(); if (!h.email) return; } catch(e) { return; }
+  const es = lang === "es";
+  $("emailPanel").style.display = "";
+  const setFor = () => { $("emailFor").textContent = "· " + emailPlace(); };
+  setFor(); setInterval(setFor, 5000);
+  try { const saved = localStorage.getItem("skycast_email"); if (saved) $("emailAddr").value = saved; } catch(e) {}
+  $("emailForm").onsubmit = async ev => {
+    ev.preventDefault();
+    const msg = $("emailMsg"), email = $("emailAddr").value.trim();
+    const say = (t, cls) => { msg.textContent = t; msg.className = "em-msg " + (cls || ""); };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return say(es ? "Escribe un correo válido." : "Type a valid email address.", "err");
+    if (!$("emailFc").checked && !$("emailNews").checked) return say(es ? "Elige al menos una opción." : "Pick at least one option.", "err");
+    $("emailBtn").disabled = true; say(es ? "Enviando…" : "Sending…");
+    try {
+      const r = await postJSON(base + "/email/subscribe", { email, lat: place.latitude, lon: place.longitude, name: emailPlace(), lang, forecast: $("emailFc").checked, news: $("emailNews").checked });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) { say(es ? "¡Listo! Revisa tu correo y toca el botón para confirmar." : "Almost done! Check your inbox and tap the button to confirm.", "ok"); try { localStorage.setItem("skycast_email", email); } catch(e) {} }
+      else if (r.status === 429) say(es ? "Demasiados intentos. Prueba más tarde." : "Too many tries. Try again later.", "err");
+      else if (j.error === "US locations only") say(es ? "Solo funciona para ciudades de EE. UU." : "Email updates work for US cities only.", "err");
+      else say(es ? "No se pudo enviar. Prueba otra vez." : "Couldn't sign you up. Try again.", "err");
+    } catch(e) { say(es ? "Sin conexión. Prueba otra vez." : "No connection. Try again.", "err"); }
+    $("emailBtn").disabled = false;
+  };
+}
+setTimeout(initEmail, 1500);
+
 function toast(msg) { $("toast").textContent = msg; clearTimeout(toast.t); toast.t = setTimeout(() => $("toast").textContent = "", 3500); }
 function renderCities() {
   const cur = keyOf(place);
@@ -3532,7 +3589,7 @@ const ES = {
   "No rain or snow expected near": "No se espera lluvia ni nieve cerca de", "in the next 7 days.": "en los próximos 7 días.",
   "SkyCast covers the United States only. Search for a US city or town.": "SkyCast solo cubre Estados Unidos. Busca una ciudad de EE. UU.",
   "US locations only": "Solo ubicaciones de EE. UU.", "United States": "Estados Unidos",
-  "News": "Noticias", "Weather news": "Noticias del clima", "Read": "Leer", "Loading news…": "Cargando noticias…",
+  "News": "Noticias", "Weather news": "Noticias del clima", "Email updates": "Correos del clima", "Get the weather and news in your inbox every morning.": "Recibe el clima y las noticias en tu correo cada mañana.", "Morning forecast": "Pronóstico de la mañana", "Sign me up": "Suscribirme", "Free": "Gratis", "Read": "Leer", "Loading news…": "Cargando noticias…",
   "The 9 latest real weather stories, summed up in plain words. Tap one to read the full article.": "Las 9 noticias reales más recientes sobre el clima, resumidas en palabras sencillas (en inglés). Toca una para leer el artículo completo.",
   "Warning notifications": "Notificaciones de alertas", "Official weather warnings": "Alertas oficiales del clima", "Extra alerts mode": "Modo de alertas extra",
   "Rain coming": "Viene lluvia", "Snow coming": "Viene nieve", "Thunderstorms coming": "Vienen tormentas", "Freezing temperatures tonight": "Temperaturas bajo cero esta noche",
