@@ -1246,8 +1246,21 @@
     html body .radarpanel .legpanel.closed .lp-top { margin: 0; }
     html body .radarpanel .legpanel.closed .lp-hd { font-size: .95rem; padding: 4px 12px; height: 34px; }
     /* player sits between the two panels */
-    html body .radarpanel .rsheet { left: 208px; right: 440px; width: auto; transform: none; bottom: 20px; max-width: 760px; margin: 0 auto; }
-    html body .radarpanel .layerpill { left: 208px; right: 440px; bottom: calc(var(--sheeth, 170px) + 32px); max-width: 760px; margin: 0 auto; }
+    /* player is centered on the screen */
+    html body .radarpanel .rsheet { left: 50%; right: auto; transform: translateX(-50%); bottom: 20px; margin: 0;
+      width: min(720px, calc(100% - 80px)); max-width: none; }
+    html body .radarpanel .layerpill { left: 50%; right: auto; transform: translateX(-50%); bottom: calc(var(--sheeth, 170px) + 32px); margin: 0;
+      width: min(720px, calc(100% - 80px)); max-width: none; }
+  }
+  /* wide screens: the open legend fits beside the centered player */
+  @media (min-width: 1080px) {
+    html body .radarpanel .rsheet, html body .radarpanel .layerpill { width: min(720px, calc(100% - 900px)); min-width: min(560px, calc(100% - 80px)); }
+    html body .radarpanel.leg-closed .rsheet, html body .radarpanel.leg-closed .layerpill { width: min(720px, calc(100% - 340px)); }
+  }
+  /* smaller computer screens: the open legend moves up so the centered player never covers it */
+  @media (min-width: 1080px) and (max-width: 1659px) {
+    html body .radarpanel .legpanel, html body .radarpanel.fs .legpanel { bottom: calc(var(--sheeth, 170px) + 32px); max-height: calc(100% - var(--sheeth, 170px) - 160px); }
+    html body .radarpanel .legpanel.closed { bottom: 20px; max-height: none; }
     html body .radarpanel .torpill { top: 76px; }
   }
 </style>
@@ -3365,7 +3378,7 @@ addEventListener("online", () => load(true));
 
 
 /* ---------- Auto-update: reload when a newer version of SkyCast is published ---------- */
-const BUILD = "20261120181800";   // kept equal to version.json on every publish
+const BUILD = "20261120182100";   // kept equal to version.json on every publish
 async function checkForUpdate(opts) {
   try {
     const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -5277,6 +5290,7 @@ $("legClose").onclick = () => $("legPanel").classList.remove("open");
 /* computers: the layer list and the legend can be hidden and shown again (remembered on this device) */
 function setPanelOpen(btn, el, key, open) {
   el.classList.toggle("closed", !open); btn.setAttribute("aria-expanded", String(open));
+  if (el.id === "legPanel") $("radarPanel").classList.toggle("leg-closed", !open);
   btn.title = open ? "Hide" : "Show";
   try { localStorage.setItem(key, open ? "1" : "0"); } catch(e) {}
 }
