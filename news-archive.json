@@ -1,6 +1,29 @@
 {
   "articles": [
     {
+      "id": "foxweather-2026-11-17-california-atmospheric-river",
+      "published": "2026-11-17T09:06:00-05:00",
+      "tag": "Storm",
+      "states": [
+        "CA"
+      ],
+      "icon": "🌧️",
+      "title": "Next atmospheric river puts 30 million Californians at risk of flash flooding",
+      "summary": "Another atmospheric river reaches California Tuesday night, bringing a flash flood threat to more than 30 million people through Thursday. The Bay Area could get 2 to 3 inches of rain Wednesday, then heavy rain shifts to Los Angeles Thursday, where burn scars face debris flow risk. The highest Sierra peaks could see over 4 feet of snow.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/30-million-along-california-coast-under-flash-flood-threat-from-latest-atmospheric-river-storm"
+    },
+    {
+      "id": "weathercom-2026-11-17-weekend-travel-outlook",
+      "published": "2026-11-17T05:33:00-05:00",
+      "tag": "Forecast",
+      "icon": "🌨️",
+      "title": "Rain and mountain snow could slow weekend travel in the West and Plains",
+      "summary": "This weekend, Nov. 20-22, a storm could spread snow from the Four Corners toward the Northern Plains, while a new system brings rain and mountain snow from San Francisco to Seattle. Showers linger in Florida and along the Southeast coast, and storms may reach the I-95 corridor Sunday. Thanksgiving week looks warmer than average for most of the country.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/17/holiday/thanksgiving/thanksgiving-getaway-weekend-weather-outlook-west-central-us"
+    },
+    {
       "id": "accuweather-2026-11-16-eastern-warmup",
       "published": "2026-11-16T12:49:00-06:00",
       "tag": "Heat",

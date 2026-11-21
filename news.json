@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T10:39:23-06:00",
+  "updated": "2026-11-21T10:41:06-06:00",
   "articles": [
     {
       "id": "foxweather-2026-11-20-thanksgiving-coastal-storms",
@@ -10,6 +10,26 @@
       "summary": "Pacific storms arrive Tuesday with heavy rain, flash flood risk and feet of mountain snow in the West. In the East, a storm brings soaking rain and damaging gusts from Florida to Maine around Thanksgiving, and wind could disrupt the Macy's parade. Colder air late in the week may bring snow to the Great Lakes and interior Northeast.",
       "source": "FOX Weather",
       "url": "https://www.foxweather.com/weather-news/thanksgiving-east-west-coastal-storms-travel"
+    },
+    {
+      "id": "accuweather-2026-11-20-northeast-cold-snap",
+      "published": "2026-11-20T04:07:00-06:00",
+      "tag": "Cold",
+      "icon": "🥶",
+      "title": "Sharp cold snap to follow weekend warmth in the Midwest and Northeast",
+      "summary": "The East stays mild into the weekend, but a cold front crossing the Midwest Sunday opens the door to Canadian air early next week. Morning lows in parts of Pennsylvania and New York could be 15 to 25 degrees colder Wednesday than Monday. Lake-effect snow showers may slick roads near Cleveland and Erie, though no widespread heavy snow is expected.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-news/northeast-warmth-to-give-way-to-sharp-cooldown-ahead-of-thanksgiving/1961727"
+    },
+    {
+      "id": "foxweather-2026-11-19-plains-midwest-storms",
+      "published": "2026-11-19T23:27:00-05:00",
+      "tag": "Storm",
+      "icon": "⛈️",
+      "title": "Wind, rain and storms to bump early Thanksgiving trips in the Plains and Midwest",
+      "summary": "A storm system brings gusts near 40 mph to southern Minnesota and Missouri Friday, plus rain in the Twin Cities. On Saturday, showers and storms spread across the Plains, and a few near Oklahoma City or Kansas City could bring hail. Colder air follows Sunday, though travel delays should stay limited this weekend.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/early-thanksgiving-travel-bumpy-winds-rain-thunderstorms-midwest-plains"
     },
     {
       "id": "cnn-2026-11-19-florida-flooding-rescues",
@@ -73,29 +93,6 @@
       "summary": "Parts of the eastern tropical Pacific are running up to 18°F warmer than normal, and by many measures this is the strongest super El Niño yet seen. The Atlantic has produced only one hurricane this season, a first since 1925. Waters off California are also near record warmth.",
       "source": "CNN",
       "url": "https://www.yahoo.com/news/science/articles/not-parents-el-ni-o-215812013.html"
-    },
-    {
-      "id": "foxweather-2026-11-17-california-atmospheric-river",
-      "published": "2026-11-17T09:06:00-05:00",
-      "tag": "Storm",
-      "states": [
-        "CA"
-      ],
-      "icon": "🌧️",
-      "title": "Next atmospheric river puts 30 million Californians at risk of flash flooding",
-      "summary": "Another atmospheric river reaches California Tuesday night, bringing a flash flood threat to more than 30 million people through Thursday. The Bay Area could get 2 to 3 inches of rain Wednesday, then heavy rain shifts to Los Angeles Thursday, where burn scars face debris flow risk. The highest Sierra peaks could see over 4 feet of snow.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/30-million-along-california-coast-under-flash-flood-threat-from-latest-atmospheric-river-storm"
-    },
-    {
-      "id": "weathercom-2026-11-17-weekend-travel-outlook",
-      "published": "2026-11-17T05:33:00-05:00",
-      "tag": "Forecast",
-      "icon": "🌨️",
-      "title": "Rain and mountain snow could slow weekend travel in the West and Plains",
-      "summary": "This weekend, Nov. 20-22, a storm could spread snow from the Four Corners toward the Northern Plains, while a new system brings rain and mountain snow from San Francisco to Seattle. Showers linger in Florida and along the Southeast coast, and storms may reach the I-95 corridor Sunday. Thanksgiving week looks warmer than average for most of the country.",
-      "source": "The Weather Channel",
-      "url": "https://weather.com/2026/11/17/holiday/thanksgiving/thanksgiving-getaway-weekend-weather-outlook-west-central-us"
     }
   ]
 }
