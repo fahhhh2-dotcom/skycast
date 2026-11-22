@@ -1,6 +1,39 @@
 {
   "articles": [
     {
+      "id": "weathercom-2026-11-18-east-coast-storm-kyle",
+      "published": "2026-11-18T16:00:00-05:00",
+      "tag": "Storm",
+      "icon": "🌀",
+      "title": "Weekend East Coast storm could become Subtropical Storm Kyle",
+      "summary": "A low expected to form off Florida by Friday may bring rain, wind and coastal flooding from northeast Florida to Virginia this weekend, then reach the Northeast Sunday into Monday. It could earn the name Kyle, and flight delays are possible at Northeast hubs Monday.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/19/forecast/regional/east-coast-storm-coastal-flooding-winds-rain-kyle"
+    },
+    {
+      "id": "abc7-2026-11-18-bay-area-waterspouts",
+      "published": "2026-11-18T05:11:59-08:00",
+      "tag": "Local",
+      "states": [
+        "CA"
+      ],
+      "icon": "🌪️",
+      "title": "Rare waterspouts and tornado warnings hit the Bay Area as storms roll in",
+      "summary": "Two waterspouts spun up over San Francisco Bay near Candlestick Point and Brisbane, something NOAA records show hasn't happened there in 28 years. No damage was reported. Santa Cruz County also saw two tornado warnings without a confirmed tornado, and Wednesday's storm could drop 1 to 2 inches of rain.",
+      "source": "ABC7 San Francisco",
+      "url": "https://abc7news.com/live-updates/live-bay-area-storm-updates-tornado-warning-issued-santa-cruz-county-waterspouts-spotted-san-francisco/20045464/entry/20047161/"
+    },
+    {
+      "id": "cnn-2026-11-17-super-el-nino-records",
+      "published": "2026-11-17T16:58:00-05:00",
+      "tag": "Science",
+      "icon": "🔬",
+      "title": "Record-setting super El Niño comes as Atlantic logs just one hurricane",
+      "summary": "Parts of the eastern tropical Pacific are running up to 18°F warmer than normal, and by many measures this is the strongest super El Niño yet seen. The Atlantic has produced only one hurricane this season, a first since 1925. Waters off California are also near record warmth.",
+      "source": "CNN",
+      "url": "https://www.yahoo.com/news/science/articles/not-parents-el-ni-o-215812013.html"
+    },
+    {
       "id": "foxweather-2026-11-17-california-atmospheric-river",
       "published": "2026-11-17T09:06:00-05:00",
       "tag": "Storm",

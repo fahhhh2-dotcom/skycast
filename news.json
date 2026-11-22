@@ -1,6 +1,36 @@
 {
-  "updated": "2026-11-21T10:41:06-06:00",
+  "updated": "2026-11-22T10:40:11-06:00",
   "articles": [
+    {
+      "id": "weathercom-2026-11-22-macys-parade-weather-history",
+      "published": "2026-11-22T07:00:00-05:00",
+      "tag": "Forecast",
+      "icon": "🎈",
+      "title": "A century of Macy's parade weather, from snow to balloon-grounding wind",
+      "summary": "With the 100th Macy's parade days away, The Weather Channel looked back at its weather extremes: 1971 was the only year every balloon stayed grounded, 1989 brought 4.4 inches of snow, and 2018 was the coldest at 17 degrees. Strong gusts in 1997 led to the city's balloon wind limits. This year's outlook hints at a cold, wet morning.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/22/news/weather/macys-thanksgiving-parade-weather-history"
+    },
+    {
+      "id": "foxweather-2026-11-21-texas-prediction-system",
+      "published": "2026-11-21T14:26:00-05:00",
+      "tag": "Science",
+      "icon": "🔬",
+      "title": "Texas builds a $24 million flood-warning weather network in the Hill Country",
+      "summary": "Texas is rolling out a $24 million weather network across the Hill Country, run by Texas Tech, after the deadly July 2025 Guadalupe River floods. It adds 40 weather stations, three gap-filling radars and a high-resolution 48-hour forecast model. Parts are already working, with full deployment set for fall 2027.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/texas-prediction-system-launches-following-devastating-texas-hill-country-floods"
+    },
+    {
+      "id": "foxweather-2026-11-21-california-king-tides",
+      "published": "2026-11-21T13:03:00-05:00",
+      "tag": "Flood",
+      "icon": "🌊",
+      "title": "San Francisco braces for possibly record King Tides during Thanksgiving week",
+      "summary": "San Francisco Mayor Daniel Lurie urged residents to avoid nonessential travel Monday through Wednesday as King Tides and storms threaten flooding. The Coast Guard says El Niño, warmer ocean water and the lunar cycle could push tides to their highest in 18 years, with the worst coastal flooding expected Tuesday through Thursday.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/extreme-weather/san-francisco-mayor-issues-warning-residents-prepare-ahead-never-before-seen-king-tides"
+    },
     {
       "id": "foxweather-2026-11-20-thanksgiving-coastal-storms",
       "published": "2026-11-20T10:37:00-05:00",
@@ -60,39 +90,6 @@
       "summary": "San Francisco got 2.31 inches of rain Wednesday, a daily record dating to 1918, as flooding spread across the Bay Area. Gusts topped 50 mph near Sacramento and Modesto, and heavy Sierra snow shut I-80 at Donner Pass.",
       "source": "The Sacramento Bee",
       "url": "https://www.yahoo.com/news/weather-news/articles/atmospheric-river-continues-thursday-california-011553310.html"
-    },
-    {
-      "id": "weathercom-2026-11-18-east-coast-storm-kyle",
-      "published": "2026-11-18T16:00:00-05:00",
-      "tag": "Storm",
-      "icon": "🌀",
-      "title": "Weekend East Coast storm could become Subtropical Storm Kyle",
-      "summary": "A low expected to form off Florida by Friday may bring rain, wind and coastal flooding from northeast Florida to Virginia this weekend, then reach the Northeast Sunday into Monday. It could earn the name Kyle, and flight delays are possible at Northeast hubs Monday.",
-      "source": "The Weather Channel",
-      "url": "https://weather.com/2026/11/19/forecast/regional/east-coast-storm-coastal-flooding-winds-rain-kyle"
-    },
-    {
-      "id": "abc7-2026-11-18-bay-area-waterspouts",
-      "published": "2026-11-18T05:11:59-08:00",
-      "tag": "Local",
-      "states": [
-        "CA"
-      ],
-      "icon": "🌪️",
-      "title": "Rare waterspouts and tornado warnings hit the Bay Area as storms roll in",
-      "summary": "Two waterspouts spun up over San Francisco Bay near Candlestick Point and Brisbane, something NOAA records show hasn't happened there in 28 years. No damage was reported. Santa Cruz County also saw two tornado warnings without a confirmed tornado, and Wednesday's storm could drop 1 to 2 inches of rain.",
-      "source": "ABC7 San Francisco",
-      "url": "https://abc7news.com/live-updates/live-bay-area-storm-updates-tornado-warning-issued-santa-cruz-county-waterspouts-spotted-san-francisco/20045464/entry/20047161/"
-    },
-    {
-      "id": "cnn-2026-11-17-super-el-nino-records",
-      "published": "2026-11-17T16:58:00-05:00",
-      "tag": "Science",
-      "icon": "🔬",
-      "title": "Record-setting super El Niño comes as Atlantic logs just one hurricane",
-      "summary": "Parts of the eastern tropical Pacific are running up to 18°F warmer than normal, and by many measures this is the strongest super El Niño yet seen. The Atlantic has produced only one hurricane this season, a first since 1925. Waters off California are also near record warmth.",
-      "source": "CNN",
-      "url": "https://www.yahoo.com/news/science/articles/not-parents-el-ni-o-215812013.html"
     }
   ]
 }
