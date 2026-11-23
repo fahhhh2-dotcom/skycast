@@ -1,6 +1,26 @@
 {
   "articles": [
     {
+      "id": "weathercom-2026-11-19-december-warm-outlook",
+      "published": "2026-11-19T06:00:00-05:00",
+      "tag": "Forecast",
+      "icon": "☀️",
+      "title": "El Niño could make December one of the warmest on record in the U.S.",
+      "summary": "Forecasters expect most of the country to run warmer than a typical December, with the strongest warm signal in the Midwest, Great Lakes and interior Northeast. California and much of the Southeast may turn out wetter than usual.",
+      "source": "The Weather Channel",
+      "url": "https://www.yahoo.com/news/weather-news/articles/december-could-winters-most-weirdly-110000703.html"
+    },
+    {
+      "id": "sacbee-2026-11-18-california-atmospheric-river-record",
+      "published": "2026-11-18T17:15:00-08:00",
+      "tag": "Storm",
+      "icon": "🌧️",
+      "title": "San Francisco sets a rain record as third atmospheric river hits California",
+      "summary": "San Francisco got 2.31 inches of rain Wednesday, a daily record dating to 1918, as flooding spread across the Bay Area. Gusts topped 50 mph near Sacramento and Modesto, and heavy Sierra snow shut I-80 at Donner Pass.",
+      "source": "The Sacramento Bee",
+      "url": "https://www.yahoo.com/news/weather-news/articles/atmospheric-river-continues-thursday-california-011553310.html"
+    },
+    {
       "id": "weathercom-2026-11-18-east-coast-storm-kyle",
       "published": "2026-11-18T16:00:00-05:00",
       "tag": "Storm",
