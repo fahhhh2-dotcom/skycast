@@ -1,6 +1,26 @@
 {
-  "updated": "2026-11-23T10:40:27-06:00",
+  "updated": "2026-11-24T10:40:37-06:00",
   "articles": [
+    {
+      "id": "weathercom-2026-11-24-thanksgiving-travel-delays",
+      "published": "2026-11-24T06:30:00-05:00",
+      "tag": "Forecast",
+      "icon": "✈️",
+      "title": "Thanksgiving travel: Northeast airports brace for big delays as storms hit both coasts",
+      "summary": "Rain spreads across the Southeast on Wednesday, then heavy rain and strong gusts reach the mid-Atlantic and Northeast on Thanksgiving Day, when significant delays are expected at all of the region's hub airports. The Pacific Northwest stays wet with mountain snow, and Saturday looks like a decent travel day for most.",
+      "source": "The Weather Channel",
+      "url": "https://weather.com/2026/11/24/holiday/thanksgiving/thanksgiving-travel-weather-forecast-us-storms"
+    },
+    {
+      "id": "foxweather-2026-11-23-west-coast-king-tide-flooding",
+      "published": "2026-11-23T21:06:00-05:00",
+      "tag": "Flood",
+      "icon": "🌊",
+      "title": "King tides and Pacific storms could bring historic flooding to the Bay Area",
+      "summary": "Full-moon king tides plus onshore winds and waves could push West Coast water levels toward record territory, peaking Wednesday. Around San Francisco Bay, water could rise 3 feet above normally dry ground, putting parts of SFO at risk. Coastal Flood Warnings run through Thursday.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/historic-coastal-flooding-threat-looms-over-west-coast-thanksgiving-travel-begins"
+    },
     {
       "id": "weathercom-2026-11-23-east-coast-thanksgiving-storm",
       "published": "2026-11-23T10:00:00-05:00",
@@ -10,6 +30,16 @@
       "summary": "A coastal storm will push up the East Coast from Wednesday into Friday, with peak impacts in much of the Northeast on Thanksgiving Day. Many areas could see 1 to 4 inches of rain and gusts over 50 mph, while king tides could worsen coastal flooding, especially around Charleston, South Carolina.",
       "source": "The Weather Channel",
       "url": "https://weather.com/2026/11/23/holiday/thanksgiving/east-coast-thanksgiving-storm-wind-rain-flooding"
+    },
+    {
+      "id": "foxweather-2026-11-23-midwest-thanksgiving-snow",
+      "published": "2026-11-23T04:19:00-05:00",
+      "tag": "Snow",
+      "icon": "🌨️",
+      "title": "Thanksgiving storm could turn rain to wet snow in parts of the Midwest",
+      "summary": "A storm arriving late Wednesday may pull in enough cold air to change rain to wet snow or a wintry mix in parts of Illinois, Indiana, Ohio and Michigan, most likely Thursday afternoon and night. Highways like I-70, I-75 and I-94 and airports in Chicago, Detroit and Cleveland could see delays.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/thanksgiving-storm-could-bring-snow-heavy-rain-midwest-millions-travel-holiday"
     },
     {
       "id": "foxweather-2026-11-22-west-coast-storm-train",
@@ -60,36 +90,6 @@
       "summary": "Pacific storms arrive Tuesday with heavy rain, flash flood risk and feet of mountain snow in the West. In the East, a storm brings soaking rain and damaging gusts from Florida to Maine around Thanksgiving, and wind could disrupt the Macy's parade. Colder air late in the week may bring snow to the Great Lakes and interior Northeast.",
       "source": "FOX Weather",
       "url": "https://www.foxweather.com/weather-news/thanksgiving-east-west-coastal-storms-travel"
-    },
-    {
-      "id": "accuweather-2026-11-20-northeast-cold-snap",
-      "published": "2026-11-20T04:07:00-06:00",
-      "tag": "Cold",
-      "icon": "🥶",
-      "title": "Sharp cold snap to follow weekend warmth in the Midwest and Northeast",
-      "summary": "The East stays mild into the weekend, but a cold front crossing the Midwest Sunday opens the door to Canadian air early next week. Morning lows in parts of Pennsylvania and New York could be 15 to 25 degrees colder Wednesday than Monday. Lake-effect snow showers may slick roads near Cleveland and Erie, though no widespread heavy snow is expected.",
-      "source": "AccuWeather",
-      "url": "https://www.accuweather.com/en/weather-news/northeast-warmth-to-give-way-to-sharp-cooldown-ahead-of-thanksgiving/1961727"
-    },
-    {
-      "id": "foxweather-2026-11-19-plains-midwest-storms",
-      "published": "2026-11-19T23:27:00-05:00",
-      "tag": "Storm",
-      "icon": "⛈️",
-      "title": "Wind, rain and storms to bump early Thanksgiving trips in the Plains and Midwest",
-      "summary": "A storm system brings gusts near 40 mph to southern Minnesota and Missouri Friday, plus rain in the Twin Cities. On Saturday, showers and storms spread across the Plains, and a few near Oklahoma City or Kansas City could bring hail. Colder air follows Sunday, though travel delays should stay limited this weekend.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/early-thanksgiving-travel-bumpy-winds-rain-thunderstorms-midwest-plains"
-    },
-    {
-      "id": "cnn-2026-11-19-florida-flooding-rescues",
-      "published": "2026-11-19T19:56:00-05:00",
-      "tag": "Flood",
-      "icon": "🌊",
-      "title": "Florida flooding forces over 100 rescues as storm eyes East Coast",
-      "summary": "Days of torrential rain flooded Florida's Atlantic coast, and more than 100 people were rescued in Brevard County on Thursday. Hollywood got over a foot of rain in hours. The storm, which has a medium chance of becoming Kyle, is expected to move up the East Coast Sunday into Monday.",
-      "source": "CNN",
-      "url": "https://sg.news.yahoo.com/severe-flooding-hits-parts-coastal-124957253.html"
     }
   ]
 }

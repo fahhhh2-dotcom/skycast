@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "id": "accuweather-2026-11-20-northeast-cold-snap",
+      "published": "2026-11-20T04:07:00-06:00",
+      "tag": "Cold",
+      "icon": "🥶",
+      "title": "Sharp cold snap to follow weekend warmth in the Midwest and Northeast",
+      "summary": "The East stays mild into the weekend, but a cold front crossing the Midwest Sunday opens the door to Canadian air early next week. Morning lows in parts of Pennsylvania and New York could be 15 to 25 degrees colder Wednesday than Monday. Lake-effect snow showers may slick roads near Cleveland and Erie, though no widespread heavy snow is expected.",
+      "source": "AccuWeather",
+      "url": "https://www.accuweather.com/en/weather-news/northeast-warmth-to-give-way-to-sharp-cooldown-ahead-of-thanksgiving/1961727"
+    },
+    {
+      "id": "foxweather-2026-11-19-plains-midwest-storms",
+      "published": "2026-11-19T23:27:00-05:00",
+      "tag": "Storm",
+      "icon": "⛈️",
+      "title": "Wind, rain and storms to bump early Thanksgiving trips in the Plains and Midwest",
+      "summary": "A storm system brings gusts near 40 mph to southern Minnesota and Missouri Friday, plus rain in the Twin Cities. On Saturday, showers and storms spread across the Plains, and a few near Oklahoma City or Kansas City could bring hail. Colder air follows Sunday, though travel delays should stay limited this weekend.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/early-thanksgiving-travel-bumpy-winds-rain-thunderstorms-midwest-plains"
+    },
+    {
+      "id": "cnn-2026-11-19-florida-flooding-rescues",
+      "published": "2026-11-19T19:56:00-05:00",
+      "tag": "Flood",
+      "icon": "🌊",
+      "title": "Florida flooding forces over 100 rescues as storm eyes East Coast",
+      "summary": "Days of torrential rain flooded Florida's Atlantic coast, and more than 100 people were rescued in Brevard County on Thursday. Hollywood got over a foot of rain in hours. The storm, which has a medium chance of becoming Kyle, is expected to move up the East Coast Sunday into Monday.",
+      "source": "CNN",
+      "url": "https://sg.news.yahoo.com/severe-flooding-hits-parts-coastal-124957253.html"
+    },
+    {
       "id": "weathercom-2026-11-19-december-warm-outlook",
       "published": "2026-11-19T06:00:00-05:00",
       "tag": "Forecast",
