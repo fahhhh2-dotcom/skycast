@@ -1,6 +1,36 @@
 {
   "articles": [
     {
+      "id": "foxweather-2026-11-21-texas-prediction-system",
+      "published": "2026-11-21T14:26:00-05:00",
+      "tag": "Science",
+      "icon": "🔬",
+      "title": "Texas builds a $24 million flood-warning weather network in the Hill Country",
+      "summary": "Texas is rolling out a $24 million weather network across the Hill Country, run by Texas Tech, after the deadly July 2025 Guadalupe River floods. It adds 40 weather stations, three gap-filling radars and a high-resolution 48-hour forecast model. Parts are already working, with full deployment set for fall 2027.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/texas-prediction-system-launches-following-devastating-texas-hill-country-floods"
+    },
+    {
+      "id": "foxweather-2026-11-21-california-king-tides",
+      "published": "2026-11-21T13:03:00-05:00",
+      "tag": "Flood",
+      "icon": "🌊",
+      "title": "San Francisco braces for possibly record King Tides during Thanksgiving week",
+      "summary": "San Francisco Mayor Daniel Lurie urged residents to avoid nonessential travel Monday through Wednesday as King Tides and storms threaten flooding. The Coast Guard says El Niño, warmer ocean water and the lunar cycle could push tides to their highest in 18 years, with the worst coastal flooding expected Tuesday through Thursday.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/extreme-weather/san-francisco-mayor-issues-warning-residents-prepare-ahead-never-before-seen-king-tides"
+    },
+    {
+      "id": "foxweather-2026-11-20-thanksgiving-coastal-storms",
+      "published": "2026-11-20T10:37:00-05:00",
+      "tag": "Storm",
+      "icon": "⛈️",
+      "title": "Storms on both coasts could snarl Thanksgiving travel in 20+ states",
+      "summary": "Pacific storms arrive Tuesday with heavy rain, flash flood risk and feet of mountain snow in the West. In the East, a storm brings soaking rain and damaging gusts from Florida to Maine around Thanksgiving, and wind could disrupt the Macy's parade. Colder air late in the week may bring snow to the Great Lakes and interior Northeast.",
+      "source": "FOX Weather",
+      "url": "https://www.foxweather.com/weather-news/thanksgiving-east-west-coastal-storms-travel"
+    },
+    {
       "id": "accuweather-2026-11-20-northeast-cold-snap",
       "published": "2026-11-20T04:07:00-06:00",
       "tag": "Cold",

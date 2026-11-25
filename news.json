@@ -1,6 +1,26 @@
 {
-  "updated": "2026-11-24T10:40:37-06:00",
+  "updated": "2026-11-25T10:39:16-06:00",
   "articles": [
+    {
+      "id": "cbs-2026-11-25-thanksgiving-wind-snow-parade",
+      "published": "2026-11-25T09:34:00-05:00",
+      "tag": "Storm",
+      "icon": "🎈",
+      "title": "Wind threatens 100th Macy's parade balloons as snow aims at St. Louis",
+      "summary": "Over 44 million people were under alerts Wednesday, with gusts up to 70 mph possible from South Carolina to Massachusetts. Illinois and Missouri face up to 6 inches of snow, 9 in spots. In New York, balloons are grounded if winds reach 23 mph sustained or gust to 34 mph.",
+      "source": "CBS News",
+      "url": "https://www.cbsnews.com/news/maps-thanksgiving-storms-disrupt-holiday-festivities-travel/"
+    },
+    {
+      "id": "abc7sf-2026-11-24-sf-november-tide-record",
+      "published": "2026-11-24T12:58:00-08:00",
+      "tag": "Flood",
+      "icon": "🌊",
+      "title": "King tides push San Francisco water to a record November high",
+      "summary": "The Crissy Field tide gauge hit 8.23 feet Tuesday morning, topping the November mark of 7.97 feet set in 1982, the National Weather Service said. Wednesday's high tide could reach 8.5 feet, so more records may fall.",
+      "source": "ABC7 San Francisco",
+      "url": "https://abc7news.com/live-updates/live-bay-area-weather-updates-san-francisco-recovers-severe-flooding-more-storms-king-tides-coming-northern-california/20069742/entry/20076052/"
+    },
     {
       "id": "weathercom-2026-11-24-thanksgiving-travel-delays",
       "published": "2026-11-24T06:30:00-05:00",
@@ -42,6 +62,16 @@
       "url": "https://www.foxweather.com/weather-news/thanksgiving-storm-could-bring-snow-heavy-rain-midwest-millions-travel-holiday"
     },
     {
+      "id": "sciam-2026-11-22-record-hot-day",
+      "published": "2026-11-22T20:19:00+00:00",
+      "tag": "Science",
+      "icon": "🔬",
+      "title": "Earth logs its most abnormally hot day on record",
+      "summary": "Preliminary Copernicus data show the globe ran 2.12°C above the preindustrial average on Nov. 20. Scientists point to human-caused warming plus a powerful, still-growing El Niño, and say more days above 2°C are likely in the coming months.",
+      "source": "Scientific American",
+      "url": "https://www.yahoo.com/news/science/articles/earth-just-saw-most-anomalously-201900464.html"
+    },
+    {
       "id": "foxweather-2026-11-22-west-coast-storm-train",
       "published": "2026-11-22T07:30:00-05:00",
       "tag": "Rain",
@@ -60,36 +90,6 @@
       "summary": "With the 100th Macy's parade days away, The Weather Channel looked back at its weather extremes: 1971 was the only year every balloon stayed grounded, 1989 brought 4.4 inches of snow, and 2018 was the coldest at 17 degrees. Strong gusts in 1997 led to the city's balloon wind limits. This year's outlook hints at a cold, wet morning.",
       "source": "The Weather Channel",
       "url": "https://weather.com/2026/11/22/news/weather/macys-thanksgiving-parade-weather-history"
-    },
-    {
-      "id": "foxweather-2026-11-21-texas-prediction-system",
-      "published": "2026-11-21T14:26:00-05:00",
-      "tag": "Science",
-      "icon": "🔬",
-      "title": "Texas builds a $24 million flood-warning weather network in the Hill Country",
-      "summary": "Texas is rolling out a $24 million weather network across the Hill Country, run by Texas Tech, after the deadly July 2025 Guadalupe River floods. It adds 40 weather stations, three gap-filling radars and a high-resolution 48-hour forecast model. Parts are already working, with full deployment set for fall 2027.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/texas-prediction-system-launches-following-devastating-texas-hill-country-floods"
-    },
-    {
-      "id": "foxweather-2026-11-21-california-king-tides",
-      "published": "2026-11-21T13:03:00-05:00",
-      "tag": "Flood",
-      "icon": "🌊",
-      "title": "San Francisco braces for possibly record King Tides during Thanksgiving week",
-      "summary": "San Francisco Mayor Daniel Lurie urged residents to avoid nonessential travel Monday through Wednesday as King Tides and storms threaten flooding. The Coast Guard says El Niño, warmer ocean water and the lunar cycle could push tides to their highest in 18 years, with the worst coastal flooding expected Tuesday through Thursday.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/extreme-weather/san-francisco-mayor-issues-warning-residents-prepare-ahead-never-before-seen-king-tides"
-    },
-    {
-      "id": "foxweather-2026-11-20-thanksgiving-coastal-storms",
-      "published": "2026-11-20T10:37:00-05:00",
-      "tag": "Storm",
-      "icon": "⛈️",
-      "title": "Storms on both coasts could snarl Thanksgiving travel in 20+ states",
-      "summary": "Pacific storms arrive Tuesday with heavy rain, flash flood risk and feet of mountain snow in the West. In the East, a storm brings soaking rain and damaging gusts from Florida to Maine around Thanksgiving, and wind could disrupt the Macy's parade. Colder air late in the week may bring snow to the Great Lakes and interior Northeast.",
-      "source": "FOX Weather",
-      "url": "https://www.foxweather.com/weather-news/thanksgiving-east-west-coastal-storms-travel"
     }
   ]
 }
